@@ -11,3 +11,4 @@
 ^ssh_config$
 ^ssh_github_bpred$
 ^ssh_known_hosts$
+^LICENSE\.md$
