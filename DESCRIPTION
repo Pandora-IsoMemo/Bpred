@@ -1,0 +1,31 @@
+Package: mpiBpred
+Title: What the Package Does (one line, title case)
+Version: 0.2.14
+Authors@R: c(
+    person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
+    person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
+    )
+Maintainer: INWT Statistics <marcus.gross@inwt-statistics.de>
+Description: What the package does (one paragraph).
+Depends: R (>= 3.4.0), Rcpp (>= 0.12.0)
+Imports:
+  coda,
+  dplyr,
+  ggplot2 (>= 2.2.1),
+  rsync,
+  shiny,
+  shinyMatrix,
+  shinyWidgets,
+  shinycssloaders,
+  shinyjs,
+  shinythemes,
+  xlsx,
+  zip
+Suggests: lintr, testthat
+License: GPL (>=3)
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+NeedsCompilation: yes
+RoxygenNote: 7.1.1
+Remotes: INWTlab/rsync

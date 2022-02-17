@@ -1,0 +1,13 @@
+^.+\.Rproj$
+^\.Rproj\.user$
+^libWin$
+^libLinux$
+^libMac$
+^RScripts$
+^reports$
+^Dockerfile$
+^\.dockerignore$
+^\.ssh$
+^ssh_config$
+^ssh_github_bpred$
+^ssh_known_hosts$
