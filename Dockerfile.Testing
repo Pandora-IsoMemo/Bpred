@@ -1,0 +1,5 @@
+FROM inwt/r-shiny:4.1.2
+
+ADD . .
+
+RUN installPackage
