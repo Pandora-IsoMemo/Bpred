@@ -313,20 +313,8 @@ tagList(
           HTML("<br>"),
           actionButton("estimateY", "Estimate Y"),
           tags$hr(),
-          textAreaInput("notes", "Notes"),
-          downloadButton("downloadModel", "Download Model"),
-          HTML("<br>"),
-          fileInput("uploadModel", "Upload Model"),
-          tags$hr(),
-          tags$h4("Load remote model"),
-          selectInput(
-            "remoteModel",
-            "Remote model",
-            choices = NULL,
-            selected = NULL
-          ),
-          actionButton("loadRemoteModel", "Load remote model"),
-          helpText("Remote models are only available on on https://isomemoapp.com")
+          downloadModelUI("modelDownload", "Download Model"),
+          uploadModelUI("modelUpload", "Upload Model")
         ),
         mainPanel(width = 8,
                   tabsetPanel(
