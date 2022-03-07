@@ -78,7 +78,7 @@ uploadModelUI <- function(id, label) {
   tagList(
     HTML("<br>"),
     tags$h5(label),
-    fileInput(ns("uploadModel"), label = NULL),
+    fileInput(ns("uploadModel"), label = "Upload local model"),
     selectInput(
       ns("remoteModel"),
       label = "Select remote model",
