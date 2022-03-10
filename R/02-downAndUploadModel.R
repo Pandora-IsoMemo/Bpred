@@ -127,10 +127,17 @@ uploadModel <- function(input, output, session, yEstimates, formulas, data,
       load("model.Rdata")
       uploadedNotes(readLines("README.txt"))
     })
-    if (inherits(res, "try-error") || !exists("model") || !exists("formulasObj") || !exists("dataObj")) {
-      shinyjs::alert("Could not read model from file")
+    
+    if (inherits(res, "try-error")) {
+      shinyjs::alert("Could not load file.")
       return()
     }
+    
+    if (!exists("model") || !exists("formulasObj") || !exists("dataObj")) {
+      shinyjs::alert("File format not valid. Model object not found.")
+      return()
+    }
+    
     yEstimates(model)
     
     if (!is.null(model$data)) updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
