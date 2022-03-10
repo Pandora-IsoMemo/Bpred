@@ -49,6 +49,7 @@ downloadModel <- function(input, output, session, yEstimates, formulas, data, up
       zipdir <- tempdir()
       modelfile <- file.path(zipdir, "model.Rdata")
       notesfile <- file.path(zipdir, "README.txt")
+      helpfile <- file.path(zipdir, "help.html")
       
       model <- yEstimates()
       formulasObj <- reactiveValuesToList(formulas)
@@ -56,7 +57,8 @@ downloadModel <- function(input, output, session, yEstimates, formulas, data, up
       inputObj <- reactiveValuesToList(input)
       save(model, formulasObj, dataObj, inputObj, file = modelfile)
       writeLines(input$notes, notesfile)
-      zip::zipr(file, c(modelfile, notesfile))
+      save_html(getHelp(input$tab), helpfile)
+      zip::zipr(file, c(modelfile, notesfile, helpfile))
     }
   )
 }
