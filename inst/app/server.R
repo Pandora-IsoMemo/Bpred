@@ -563,89 +563,15 @@ if(is.null(input$regfunctions)){
     )
   })
 
-  output$downloadModel <- downloadHandler(
-    filename = function() {
-      gsub("[ ]", "_", paste0(Sys.time(), "_bpred.zip"))
-    },
-    content = function(file) {
-      zipdir <- tempdir()
-      modelfile <- file.path(zipdir, "model.Rdata")
-      notesfile <- file.path(zipdir, "README.txt")
-
-      model <- yEstimates()
-      formulasObj <- reactiveValuesToList(formulas)
-      dataObj <- reactiveValuesToList(data)
-      inputObj <- reactiveValuesToList(input)
-      save(model, formulasObj, dataObj, inputObj, file = modelfile)
-      writeLines(input$notes, notesfile)
-      zip::zipr(file, c(modelfile, notesfile))
-    }
-  )
+  uploadedNotes <- reactiveVal()
+  callModule(downloadModel, "modelDownload", 
+             yEstimates = yEstimates, formulas = formulas, data = data, 
+             uploadedNotes = uploadedNotes)
 
   inputFields <- reactiveVal()
-
-  observeEvent(input$uploadModel, {
-    res <- try({
-      zip::unzip(input$uploadModel$datapath)
-      load("model.Rdata")
-      updateTextAreaInput(session, "notes", value = readLines("README.txt"))
-    })
-    if (inherits(res, "try-error") || !exists("model") || !exists("formulasObj") || !exists("dataObj")) {
-      shinyjs::alert("Could not read model from file")
-      return()
-    }
-    yEstimates(model)
-
-    if (!is.null(model$data)) updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
-
-    for (n in names(dataObj)) data[[n]] <- dataObj[[n]]
-    for (n in names(formulasObj)) formulas[[n]] <- formulasObj[[n]]
-
-    inputFields(inputObj)
-
-    alert("Model loaded")
-  })
-
-  # Remote models
-  modelLocation <- reactive({
-    path <- file.path(tempdir(), "github")
-    dir.create(path)
-    path
-  })
-
-  remoteModels <- reactive({
-    if (!dir.exists(file.path(modelLocation(), "models"))) {
-      success <- system(paste("git clone github-bpred:isomemo/mpi-bpred.git", modelLocation()))
-      if (success != 0) return(NULL)
-    }
-    dir(file.path(modelLocation(), "models"))
-  })
-  observeEvent(remoteModels(), {
-    updateSelectInput(session, "remoteModel", choices = remoteModels())
-  })
-
-  observeEvent(input$loadRemoteModel, {
-    res <- try({
-      zip::unzip(file.path(modelLocation(), "models", input$remoteModel))
-      load("model.Rdata")
-      updateTextAreaInput(session, "notes", value = readLines("README.txt"))
-    })
-
-    if (inherits(res, "try-error") || !exists("model") || !exists("formulasObj") || !exists("dataObj")) {
-      shinyjs::alert("Could not read model from file")
-      return()
-    }
-    yEstimates(model)
-
-    if (!is.null(model$data)) updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
-
-    for (n in names(dataObj)) data[[n]] <- dataObj[[n]]
-    for (n in names(formulasObj)) formulas[[n]] <- formulasObj[[n]]
-
-    inputFields(inputObj)
-
-    alert("Model loaded")
-  })
+  callModule(uploadModel, "modelUpload", 
+             yEstimates = yEstimates, formulas = formulas, data = data, 
+             uploadedNotes = uploadedNotes, inputFields = inputFields)
 
   observeEvent(input$getHelp, {
     showModal(modalDialog(

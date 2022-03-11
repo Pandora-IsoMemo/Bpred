@@ -83,42 +83,65 @@ tagList(
             inputId = "f_yunc",
             label = "y-uncertainty (sd) - optional:",
             choices = character(0),
-            multiple = FALSE),
-          radioButtons(inputId = "selectFType", label = "Select formula type:",
-                       choices = c("Univariate linear regression" = "linear",
-                                   "Custom formula" = "custom")),
-          conditionalPanel(condition = "input.selectFType == 'linear'",
-          pickerInput(
-            inputId = "f_x",
-            label = "x variable:",
-            choices = character(0),
-            options = list(
-              "actions-box" = FALSE,
-              "none-selected-text" = 'No variables selected',
-              "max-options" = 1
-            ), multiple = FALSE),
-          selectInput(
-            inputId = "f_xunc",
-            label = "x-uncertainty (sd) - optional:",
-            choices = character(0),
-            multiple = FALSE),
-          selectInput(
-            "f_link",
-            "relationship (link)",
-            choices = list(
-              'linear' =  "linIntcp",
-              'linear without Intercept' =  "linNoIntcp",
-              'log-linear' = "log",
-              'sqrt-linear' = "sqrt")
-          )
+            multiple = FALSE
           ),
-          conditionalPanel(condition = "input.selectFType == 'custom'",
-                           textInput("formCustom",
-                                     "Custom formula (variables in brackets, parameters in curly braces):", "{a} * [x] + {b}"),
-                           selectizeInput("custom_x",
-                                          label = "x variables (same names as in formula)", choices = character(0), multiple = TRUE),
-                           selectizeInput("custom_x_unc",
-                                          label = "x unc variables (optional, same order as x variables)", choices = character(0), multiple = TRUE)
+          radioButtons(
+            inputId = "selectFType",
+            label = "Select formula type:",
+            choices = c(
+              "Univariate linear regression" = "linear",
+              "Custom formula" = "custom"
+            )
+          ),
+          conditionalPanel(
+            condition = "input.selectFType == 'linear'",
+            pickerInput(
+              inputId = "f_x",
+              label = "x variable:",
+              choices = character(0),
+              options = list(
+                "actions-box" = FALSE,
+                "none-selected-text" = 'No variables selected',
+                "max-options" = 1
+              ),
+              multiple = FALSE
+            ),
+            selectInput(
+              inputId = "f_xunc",
+              label = "x-uncertainty (sd) - optional:",
+              choices = character(0),
+              multiple = FALSE
+            ),
+            selectInput(
+              "f_link",
+              "relationship (link)",
+              choices = list(
+                'linear' =  "linIntcp",
+                'linear without Intercept' =  "linNoIntcp",
+                'log-linear' = "log",
+                'sqrt-linear' = "sqrt"
+              )
+            )
+          ),
+          conditionalPanel(
+            condition = "input.selectFType == 'custom'",
+            textInput(
+              "formCustom",
+              "Custom formula (variables in brackets, parameters in curly braces):",
+              "{a} * [x] + {b}"
+            ),
+            selectizeInput(
+              "custom_x",
+              label = "x variables (same names as in formula)",
+              choices = character(0),
+              multiple = TRUE
+            ),
+            selectizeInput(
+              "custom_x_unc",
+              label = "x unc variables (optional, same order as x variables)",
+              choices = character(0),
+              multiple = TRUE
+            )
           ),
           # pickerInput(
           #   inputId = "f_yunc",
@@ -142,50 +165,74 @@ tagList(
           #   ),
           #   multiple = FALSE
           # ),
-          sliderInput(inputId = "iter",
-                      label = "Number of total iterations",
-                      min = 500, max = 10000, step = 100, value = 2000),
-          sliderInput(inputId = "burnin",
-                      label = "Number of burnin iterations",
-                      min = 200, max = 3000, step = 100, value = 500),
-          sliderInput(inputId = "chains",
-                      label = "Number of MCMC chains",
-                      min = 1, max = 16, step = 1, value = 4),
+          sliderInput(
+            inputId = "iter",
+            label = "Number of total iterations",
+            min = 500,
+            max = 10000,
+            step = 100,
+            value = 2000
+          ),
+          sliderInput(
+            inputId = "burnin",
+            label = "Number of burnin iterations",
+            min = 200,
+            max = 3000,
+            step = 100,
+            value = 500
+          ),
+          sliderInput(
+            inputId = "chains",
+            label = "Number of MCMC chains",
+            min = 1,
+            max = 16,
+            step = 1,
+            value = 4
+          ),
           conditionalPanel(
             condition = "input.selectFType == 'custom'",
-            sliderInput(inputId = "thinning",
-                        label = "Thinning of MCMC chains",
-                        min = 1, max = 20, step = 1, value = 5)
+            sliderInput(
+              inputId = "thinning",
+              label = "Thinning of MCMC chains",
+              min = 1,
+              max = 20,
+              step = 1,
+              value = 5
+            )
           ),
           actionButton("saveFormula", "Define Formula")
         ),
-        mainPanel(
-          tabsetPanel(
-            id = "formTabs",
-            tabPanel(
-          "Defined Formulas",
-          tableOutput('formTable') %>% 
-            withSpinner(color ="#20c997")
-        ),
-        tabPanel(
-          "Convergence diagnostics",
-          pickerInput("convF", "Choose formula", choices = character(0)),
-          radioButtons(("diagType"), label = "Diagnostics Type",
-                       choices = c("Gelman Scale Reduction Factor" = "gelman",
-                                   "Raftery and Lewis" = "raftery",
-                                   "Geweke z-Score" = "geweke",
-                                   "Heidelberger-Welch" = "heidel")),
-          verbatimTextOutput(("diagnostics")),
-          textExportButton(("exportText"))
-        ),
-        tabPanel(
-          "Display formulas",
-          pickerInput("dispF", "Choose formula", choices = character(0)),
-          plotOutput("plotDisp"),
-          selectInput("xVarDisp", "Choose x variable", choices = character(0))
-        )
+        mainPanel(tabsetPanel(
+          id = "formTabs",
+          tabPanel(
+            "Defined Formulas",
+            tableOutput('formTable') %>%
+              withSpinner(color = "#20c997")
+          ),
+          tabPanel(
+            "Convergence diagnostics",
+            pickerInput("convF", "Choose formula", choices = character(0)),
+            radioButtons(("diagType"),
+                         label = "Diagnostics Type",
+                         choices = c(
+                           "Gelman Scale Reduction Factor" = "gelman",
+                           "Raftery and Lewis" = "raftery",
+                           "Geweke z-Score" = "geweke",
+                           "Heidelberger-Welch" = "heidel"
+                         )
+            ),
+            verbatimTextOutput(("diagnostics")),
+            textExportButton(("exportText"))
+          ),
+          tabPanel(
+            "Display formulas",
+            pickerInput("dispF", "Choose formula", choices = character(0)),
+            plotOutput("plotDisp"),
+            selectInput("xVarDisp", "Choose x variable", choices = character(0))
+          )
         ))
-    )),
+      )
+    ),
     # MEASURES -----------------------------------------------------------------------------------
     tabPanel(
       title = "Measures",
@@ -295,13 +342,11 @@ tagList(
             choices = c("normal", "lognormal", "gamma"),
             selected = "normal"
           ),
-          checkboxInput(
-            "rangeRestrict",
-            "Restrict range of dependent variable:",
-            value = FALSE
-          ),
+          checkboxInput("rangeRestrict",
+                        "Restrict range of dependent variable:",
+                        value = FALSE),
           conditionalPanel(
-             condition = "input.rangeRestrict == true",
+            condition = "input.rangeRestrict == true",
             numericInput("minRange", "Min restriction value (optional) ", value = NULL),
             numericInput("maxRange", "Max restriction value (optional) ", value = NULL)
           ),
@@ -311,159 +356,167 @@ tagList(
             value = TRUE
           ),
           HTML("<br>"),
-          actionButton("estimateY", "Estimate Y"),
-          tags$hr(),
-          textAreaInput("notes", "Notes"),
-          downloadButton("downloadModel", "Download Model"),
-          HTML("<br>"),
-          fileInput("uploadModel", "Upload Model"),
-          tags$hr(),
-          tags$h4("Load remote model"),
-          selectInput(
-            "remoteModel",
-            "Remote model",
-            choices = NULL,
-            selected = NULL
-          ),
-          actionButton("loadRemoteModel", "Load remote model"),
-          helpText("Remote models are only available on on https://isomemoapp.com")
+          actionButton("estimateY", "Estimate Y")#,
+          # tags$hr(),
+          # downloadModelUI("modelDownload", "Download Model"),
+          # uploadModelUI("modelUpload", "Upload Model")
         ),
-        mainPanel(width = 8,
-                  tabsetPanel(
-                    id = "summaryTabs",
-                    tabPanel(
-                      "Plot",
-                      value = "plotTab",
-                      selectInput(
-                        "summaryType",
-                        "Type",
-                        choices = c("Individual", "Combined", "Category"),
-                        selected = "Individual"
-                      ),
-                      conditionalPanel(
-                        condition = "input.summaryType == 'Category'",
-                        radioButtons("meanType", label = "Type of category distribution", choices = c("Mean distribution" = "1", "Total variance distribution" = "2"))
-                      ),
-                      selectInput(
-                        "summaryPlotType",
-                        "Plot Type",
-                        choices = c("KernelDensity", "Histogram", "Boxplot"),
-                        selected = "KernelDensity"
-                      ),
-                      conditionalPanel(
-                        condition = "input.summaryPlotType == 'Histogram'",
-                        sliderInput("nBins", label = "Number of histogram bins", min = 3, max = 500, value = 50, step = 1)
-                      ),
-                      
-                      plotOutput("plot") %>% withSpinner(color =
-                                                           "#20c997"),
-                      actionButton("exportPlot", "Export Plot"),
-                      actionButton("exportData", "Export Data")
+        mainPanel(
+          width = 8,
+          tabsetPanel(
+            id = "summaryTabs",
+            tabPanel(
+              "Plot",
+              value = "plotTab",
+              selectInput(
+                "summaryType",
+                "Type",
+                choices = c("Individual", "Combined", "Category"),
+                selected = "Individual"
+              ),
+              conditionalPanel(
+                condition = "input.summaryType == 'Category'",
+                radioButtons(
+                  "meanType",
+                  label = "Type of category distribution",
+                  choices = c(
+                    "Mean distribution" = "1",
+                    "Total variance distribution" = "2"
+                  )
+                )
+              ),
+              selectInput(
+                "summaryPlotType",
+                "Plot Type",
+                choices = c("KernelDensity", "Histogram", "Boxplot"),
+                selected = "KernelDensity"
+              ),
+              conditionalPanel(
+                condition = "input.summaryPlotType == 'Histogram'",
+                sliderInput(
+                  "nBins",
+                  label = "Number of histogram bins",
+                  min = 3,
+                  max = 500,
+                  value = 50,
+                  step = 1
+                )
+              ),
+              
+              plotOutput("plot") %>% withSpinner(color =
+                                                   "#20c997"),
+              actionButton("exportPlot", "Export Plot"),
+              actionButton("exportData", "Export Data")
+            ),
+            tabPanel(
+              "Summary Statistics",
+              value = "summaryTab",
+              numericInput(
+                "summaryProb",
+                label = "probability:",
+                value = 0.95,
+                min = 0,
+                max = 1,
+                step = 0.05
+              ),
+              selectInput(
+                "summaryRefType",
+                "Reference Type:",
+                choices = c("none", "dist", "sample", "freqTable")
+              ),
+              conditionalPanel(
+                condition = "input.summaryRefType == 'dist'",
+                selectInput(
+                  "summaryRefDist",
+                  "Reference Distribution:",
+                  choices = c(
+                    "Normal" = "norm",
+                    "Gamma" = "gamma",
+                    "Log-Normal" = "lnorm"
+                  )
+                ),
+                textInput("summaryRefParams", "Reference Parameters:", value = "50, 3")
+              ),
+              
+              conditionalPanel(
+                condition = "input.summaryRefType == 'sample'",
+                radioButtons(
+                  "refSampleSource",
+                  label = NULL,
+                  choices = c("Enter Data", "Upload Data")
+                ),
+                conditionalPanel(
+                  condition = "input.refSampleSource == 'Enter Data'",
+                  textInput("summaryRefSample", "Reference Sample:", value = "60, 52, 75, 48, 50, 56")
+                ),
+                conditionalPanel(
+                  condition = "input.refSampleSource == 'Upload Data'",
+                  selectInput(
+                    "filetypeRefSample",
+                    "File Type",
+                    choices = c("xlsx", "csv"),
+                    selected = "xlsx"
+                  ),
+                  conditionalPanel(
+                    condition = "input.filetypeRefSample == 'csv'",
+                    div(
+                      style = "display: inline-block;horizontal-align:top; width: 80px;",
+                      textInput("colseparatorRefSample", "column separator:", value = ",")
                     ),
-                    tabPanel(
-                      "Summary Statistics",
-                      value = "summaryTab",
-                      numericInput(
-                        "summaryProb",
-                        label = "probability:",
-                        value = 0.95,
-                        min = 0,
-                        max = 1,
-                        step = 0.05
-                      ),
-                      selectInput(
-                        "summaryRefType",
-                        "Reference Type:",
-                        choices = c("none", "dist", "sample", "freqTable")
-                      ),
-                      conditionalPanel(
-                        condition = "input.summaryRefType == 'dist'",
-                        selectInput(
-                          "summaryRefDist",
-                          "Reference Distribution:",
-                          choices = c(
-                            "Normal" = "norm",
-                            "Gamma" = "gamma",
-                            "Log-Normal" = "lnorm"
-                          )
-                        ),
-                        textInput("summaryRefParams", "Reference Parameters:", value = "50, 3")
-                      ),
-                      
-                      conditionalPanel(
-                        condition = "input.summaryRefType == 'sample'",
-                        radioButtons(
-                          "refSampleSource",
-                          label = NULL,
-                          choices = c("Enter Data", "Upload Data")
-                        ),
-                        conditionalPanel(
-                          condition = "input.refSampleSource == 'Enter Data'",
-                          textInput("summaryRefSample", "Reference Sample:", value = "60, 52, 75, 48, 50, 56")
-                        ),
-                        conditionalPanel(
-                          condition = "input.refSampleSource == 'Upload Data'",
-                          selectInput(
-                            "filetypeRefSample",
-                            "File Type",
-                            choices = c("xlsx", "csv"),
-                            selected = "xlsx"
-                          ),
-                          conditionalPanel(
-                            condition = "input.filetypeRefSample == 'csv'",
-                            div(
-                              style = "display: inline-block;horizontal-align:top; width: 80px;",
-                              textInput("colseparatorRefSample", "column separator:", value = ",")
-                            ),
-                            div(
-                              style = "display: inline-block;horizontal-align:top; width: 80px;",
-                              textInput("decseparatorRefSample", "decimal separator:", value = ".")
-                            )
-                          ),
-                          fileInput("DataRefSample", "")
-                        )
-                      ),
-                      conditionalPanel(
-                        condition = "input.summaryRefType == 'freqTable'",
-                        radioButtons(
-                          "refFreqTable",
-                          label = NULL,
-                          choices = c("Enter Data", "Upload Data")
-                        ),
-                        conditionalPanel(
-                          condition = "input.refFreqTable == 'Enter Data'",
-                          textInput("summaryFreqTable", "Reference Values:", value = "60, 52, 75, 48, 50, 56"),
-                          textInput("summaryFreqTable2", "Reference Frequencies:", value = "1, 3, 6, 5, 4, 2")
-                        ),
-                        conditionalPanel(
-                          condition = "input.refFreqTable == 'Upload Data'",
-                          selectInput(
-                            "filetypeRefSample",
-                            "File Type",
-                            choices = c("xlsx", "csv"),
-                            selected = "xlsx"
-                          ),
-                          conditionalPanel(
-                            condition = "input.filetypeRefSample == 'csv'",
-                            div(
-                              style = "display: inline-block;horizontal-align:top; width: 80px;",
-                              textInput("colseparatorRefSample", "column separator:", value = ",")
-                            ),
-                            div(
-                              style = "display: inline-block;horizontal-align:top; width: 80px;",
-                              textInput("decseparatorRefSample", "decimal separator:", value = ".")
-                            )
-                          ),
-                          fileInput("DataRefFreqTable", "")
-                        )
-                      ),
-                      actionButton("estimateSummary", "Compute Summary Statistics"),
-                      verbatimTextOutput("summaryEstimates") %>% withSpinner(color =
-                                                                               "#20c997"),
-                      actionButton("exportSummary", "Export Mean Tables")
-                      
+                    div(
+                      style = "display: inline-block;horizontal-align:top; width: 80px;",
+                      textInput("decseparatorRefSample", "decimal separator:", value = ".")
                     )
-                  ))
+                  ),
+                  fileInput("DataRefSample", "")
+                )
+              ),
+              conditionalPanel(
+                condition = "input.summaryRefType == 'freqTable'",
+                radioButtons(
+                  "refFreqTable",
+                  label = NULL,
+                  choices = c("Enter Data", "Upload Data")
+                ),
+                conditionalPanel(
+                  condition = "input.refFreqTable == 'Enter Data'",
+                  textInput("summaryFreqTable", "Reference Values:", value = "60, 52, 75, 48, 50, 56"),
+                  textInput("summaryFreqTable2", "Reference Frequencies:", value = "1, 3, 6, 5, 4, 2")
+                ),
+                conditionalPanel(
+                  condition = "input.refFreqTable == 'Upload Data'",
+                  selectInput(
+                    "filetypeRefSample",
+                    "File Type",
+                    choices = c("xlsx", "csv"),
+                    selected = "xlsx"
+                  ),
+                  conditionalPanel(
+                    condition = "input.filetypeRefSample == 'csv'",
+                    div(
+                      style = "display: inline-block;horizontal-align:top; width: 80px;",
+                      textInput("colseparatorRefSample", "column separator:", value = ",")
+                    ),
+                    div(
+                      style = "display: inline-block;horizontal-align:top; width: 80px;",
+                      textInput("decseparatorRefSample", "decimal separator:", value = ".")
+                    )
+                  ),
+                  fileInput("DataRefFreqTable", "")
+                )
+              ),
+              actionButton("estimateSummary", "Compute Summary Statistics"),
+              verbatimTextOutput("summaryEstimates") %>% withSpinner(color =
+                                                                       "#20c997"),
+              actionButton("exportSummary", "Export Mean Tables")
+              
+            )
+          )),
+        sidebarPanel(
+          width = 2,
+          downloadModelUI("modelDownload", "Download Model"),
+          uploadModelUI("modelUpload", "Upload Model")
+        )
       ),
       tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
@@ -474,29 +527,27 @@ tagList(
     id = "header-right",
     div(
       id = "logo-mpi",
-      tags$a(href = "https://www.mpg.de/en",
-             img(src = "MPIlogo.png", alt = "Supported by the Max Planck society"),
-             target = "_blank"
-             )
-    ),
-    div(
-      id = "logo-isomemo",
-      tags$a(href = "https://isomemo.com/",
-             img(src = "IsoMemoLogo.png", alt = "IsoMemo"),
-             target = "_blank"
-             )
-    ),
-    div(
-      id = "further-help",
-      tags$button(
-        onclick = "window.open('https://isomemo.com','_blank');",
-        class = "btn btn-default",
-        "Further Help"
+      tags$a(
+        href = "https://www.mpg.de/en",
+        img(src = "MPIlogo.png", alt = "Supported by the Max Planck society"),
+        target = "_blank"
       )
     ),
     div(
-      id = "help",
-      actionButton("getHelp", "?")
-    )
+      id = "logo-isomemo",
+      tags$a(
+        href = "https://isomemo.com/",
+        img(src = "IsoMemoLogo.png", alt = "IsoMemo"),
+        target = "_blank"
+      )
+    ),
+    div(
+      id = "further-help",
+      tags$button(onclick = "window.open('https://isomemo.com','_blank');",
+                  class = "btn btn-default",
+                  "Further Help")
+    ),
+    div(id = "help",
+        actionButton("getHelp", "?"))
   )
 )
