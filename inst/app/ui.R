@@ -127,7 +127,7 @@ tagList(
             condition = "input.selectFType == 'custom'",
             textInput(
               "formCustom",
-              "Custom formula (variables in brackets, parameters in curly braces):",
+              "Custom formula (variables in square brackets and parameters in curly braces):",
               "{a} * [x] + {b}"
             ),
             selectizeInput(
