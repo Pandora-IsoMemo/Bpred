@@ -141,6 +141,15 @@ tagList(
               label = "x unc variables (optional, same order as x variables)",
               choices = character(0),
               multiple = TRUE
+            ),
+            checkboxInput("dirichlet", "Restrict (some) parameters to sum up to 1 (and larger than 0)"),
+            conditionalPanel(
+              condition = "input.dirichlet == true",
+            textInput(
+              "parRestricted",
+              "To be restricted parameters names seperated by comma:",
+              "a,b"
+            )
             )
           ),
           # pickerInput(
