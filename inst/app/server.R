@@ -585,6 +585,7 @@ if(is.null(input$regfunctions)){
   })
 
   observeEvent(inputFields(), priority = -100, {
+    req(inputFields())
     updateTextInput(session, "relationship", value = inputFields()$relationship)
     updatePickerInput(session, "regfunctions", selected = inputFields()$regfunctions)
     updateSelectizeInput(session, "indVars", choices = inputFields()$indVars)

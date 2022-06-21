@@ -1,7 +1,7 @@
 context("Plot estimates")
 
 test_that("plots creation", {
-  load("testdata/test_plots.RData")
+  load(testthat::test_path("testdata/test_plots.RData"))
   
   g <- plotDensities(yEstimates, type = "Category", plotType = "KernelDensity")
   
