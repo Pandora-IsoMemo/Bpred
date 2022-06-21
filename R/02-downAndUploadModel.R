@@ -124,7 +124,7 @@ uploadModel <- function(input, output, session, yEstimates, formulas, data,
   observeEvent(pathToModel(), {
     res <- try({
       zip::unzip(pathToModel())
-      load("model.Rdata")
+      load("model.Rdata") # should contain: model, formulasObj, dataObj, inputObj
       uploadedNotes(readLines("README.txt"))
     })
     
@@ -133,7 +133,7 @@ uploadModel <- function(input, output, session, yEstimates, formulas, data,
       return()
     }
     
-    if (!exists("model") || !exists("formulasObj") || !exists("dataObj")) {
+    if (!exists("model") || !exists("formulasObj") || !exists("dataObj") || !exists("inputObj")) {
       shinyjs::alert("File format not valid. Model object not found.")
       return()
     }
