@@ -4,6 +4,8 @@
 \name{exportPopUpUI}
 \alias{exportPopUpUI}
 \alias{exportPopUpServer}
+\alias{exportPlotPopUpUI}
+\alias{exportPlotPopUpServer}
 \alias{shinyModule}
 \alias{textExportButton}
 \alias{textExport}
@@ -11,7 +13,11 @@
 \usage{
 exportPopUpUI(id)
 
-exportPopUpServer(id, exportData)
+exportPopUpServer(id, exportData, filename)
+
+exportPlotPopUpUI(id)
+
+exportPlotPopUpServer(id, exportPlot, filename)
 
 textExportButton(id, title = "Download")
 
@@ -22,6 +28,10 @@ textExport(input, output, session, printFun, filename = "output")
 
 \item{exportData}{data to be exported}
 
+\item{filename}{(character) file name}
+
+\item{exportPlot}{plot to be exported}
+
 \item{title}{title of tab in tabset panel}
 
 \item{input}{shiny input object}
@@ -31,8 +41,6 @@ textExport(input, output, session, printFun, filename = "output")
 \item{session}{shiny session}
 
 \item{printFun}{print function}
-
-\item{filename}{(character) file name}
 }
 \description{
 Server and UI Functions for Shiny Module

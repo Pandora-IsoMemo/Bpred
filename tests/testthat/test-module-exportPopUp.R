@@ -8,10 +8,10 @@ test_that("Test module exportPopUp", {
                  exportType = "xlsx",
                  colseparator = ",",
                  decseparator = ".",
-                 exportExecuteSummary = TRUE
+                 exportExecute = TRUE
                )
                
-               expect_error(output$exportExecuteSummary)
+               testthat::expect_error(output$exportExecute)
              })
   
   testData <-
@@ -32,7 +32,8 @@ test_that("Test module exportPopUp", {
                     "4", "5")
     ))
   
-  testServer(exportPopUpServer, args = list(exportData = reactive(testData)),
+  testServer(exportPopUpServer, args = list(exportData = reactive(testData),
+                                            filename = "Summary"),
              {
                # Arrange
                print("test export popUp")
@@ -41,9 +42,49 @@ test_that("Test module exportPopUp", {
                  exportType = "xlsx",
                  colseparator = ",",
                  decseparator = ".",
-                 exportExecuteSummary = TRUE
+                 exportExecute = TRUE
                )
                
-               expect_true(grepl("Summary.xlsx", output$exportExecuteSummary))
+               testthat::expect_true(grepl("Summary.xlsx", output$exportExecute))
+             })
+})
+
+
+test_that("Test module exportPlotPopUp", {
+  testServer(exportPlotPopUpServer, args = NULL,
+             {
+               # Arrange
+               print("test empty plot input")
+               # Act
+               session$setInputs(
+                 exportType = "png",
+                 width = 1280,
+                 height = 800,
+                 exportExecute = TRUE
+               )
+               testthat::expect_error(output$exportExecute)
+             })
+  
+  testPlot <- readRDS(testthat::test_path("plot-module-exportPopUp.rds"))
+  
+  testServer(exportPlotPopUpServer, args = list(exportPlot = reactive(testPlot),
+                                            filename = "plotEstimates"),
+             {
+               # Arrange
+               print("test export popUp")
+               # Act
+               session$setInputs(
+                 exportType = "png",
+                 width = 1280,
+                 height = 800,
+                 exportExecute = TRUE
+               )
+               
+               testthat::expect_length(output$preview, 5)
+               testthat::expect_equal(names(output$preview), 
+                                      c("src", "width", "height", "alt", "coordmap"))
+               testthat::expect_equal(names(output$preview$width), 600)
+               testthat::expect_equal(names(output$preview$height), 400)
+               testthat::expect_true(grepl("plotEstimates.png", output$exportExecute))
              })
 })

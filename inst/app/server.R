@@ -438,8 +438,9 @@ if(is.null(input$regfunctions)){
     plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType)
   })
   
-  exportPopUpServer("summaryExport", exportData = reactive(data$results[1]))
+  
   observeEvent(input$exportSummary, {
+    req(data$results[1])
     showModal(modalDialog(
       "Export Data",
       easyClose = TRUE,
@@ -447,91 +448,46 @@ if(is.null(input$regfunctions)){
       exportPopUpUI("summaryExport")
     ))
   })
-    
+  exportPopUpServer("summaryExport",
+                    exportData = reactive(data$results[1]), 
+                    filename = paste(gsub("-", "", Sys.Date()), "Summary", sep = "_"))
+  
+  
   observeEvent(input$exportPlot, {
-    
-    plotOutputElement <- renderPlot({ plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType) })
-    exportTypeChoices <- c("png", "pdf", "svg", "tiff")
-    
+    req(yEstimates())
     showModal(modalDialog(
       title = "Export Graphic",
       footer = modalButton("OK"),
-      plotOutputElement,
-      selectInput(
-        "exportType", "Filetype",
-        choices = exportTypeChoices
-      ),
-      numericInput("width", "Width (px)", value = 1280),
-      numericInput("height", "Height (px)", value = 800),
-      downloadButton("exportExecute", "Export"),
+      exportPlotPopUpUI("plotExport"),
       easyClose = TRUE
     ))
   })
-    
-  output$exportExecute <- downloadHandler(
-    filename = function(){
-      paste0(gsub("-", "", Sys.Date()), "_", "plotEstimates", ".", input$exportType)
-    },
-    content = function(file){
-      switch(
-        input$exportType,
-        png = png(file, width = input$width, height = input$height),
-        pdf = pdf(file, width = input$width / 72, height = input$height / 72),
-        tiff = tiff(file, width = input$width, height = input$height),
-        svg = svg(file, width = input$width / 72, height = input$height / 72)
-      )
-      print( plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType) )
-      
-      dev.off()
-    }
+  exportPlotPopUpServer("plotExport", 
+                        exportPlot = reactive(
+                          plotDensities(yEstimates(),
+                                        type = input$summaryType, 
+                                        plotType = input$summaryPlotType, 
+                                        nBins = input$nBins,
+                                        meanType = input$meanType)
+                        ), 
+                        filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_")
   )
 
   
   observeEvent(input$exportData, {
+    req(data$exportData)
     showModal(modalDialog(
       "Export Data",
       easyClose = TRUE,
       footer = modalButton("OK"),
-      selectInput(
-        "exportType",
-        "File type",
-        choices = c("csv", "xlsx", "json"),
-        selected = "xlsx"
-      ),
-      conditionalPanel(
-        condition = "input['exportType'] == 'csv'",
-        div(style = "display: inline-block;horizontal-align:top; width: 80px;",
-            textInput("colseparator", "column separator:", value = ",")),
-        div(style = "display: inline-block;horizontal-align:top; width: 80px;",
-            textInput("decseparator", "decimal separator:", value = "."))
-      ),
-      downloadButton("exportExecuteData", "Export")
+      exportPopUpUI("dataExport")
     ))
   })
+  exportPopUpServer("dataExport",
+                    exportData = reactive(data$exportData), 
+                    filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
   
-  colseparator <- reactive({
-    input$colseparator
-  })
-  decseparator <- reactive({
-    input$decseparator
-  })
   
-  output$exportExecuteData <- downloadHandler(
-    filename = function(){
-      paste(gsub("-","", Sys.Date()), "_yEstimatesData", input$exportType, sep = ".")
-    },
-    content = function(file){
-      exportData <- data$exportData
-      switch(
-        input$exportType,
-        csv = exportCSV(file, exportData, colseparator(), decseparator()),
-        xlsx = exportXLSX(file, exportData),
-        json = exportJSON(file, exportData)
-      )
-    }
-  )
-
-
   uploadedNotes <- reactiveVal()
   callModule(downloadModel, "modelDownload", 
              yEstimates = yEstimates, formulas = formulas, data = data, 
