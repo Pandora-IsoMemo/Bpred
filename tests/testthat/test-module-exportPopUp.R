@@ -32,8 +32,9 @@ test_that("Test module exportPopUp", {
                     "4", "5")
     ))
   
-  testServer(exportPopUpServer, args = list(exportData = reactive(testData),
-                                            filename = "Summary"),
+  testServer(exportPopUpServer,
+             args = list(exportData = reactive(testData),
+                         filename = "Summary"),
              {
                # Arrange
                print("test export popUp")
@@ -65,10 +66,12 @@ test_that("Test module exportPlotPopUp", {
                testthat::expect_error(output$exportExecute)
              })
   
-  testPlot <- readRDS(testthat::test_path("plot-module-exportPopUp.rds"))
+  testPlot <-
+    readRDS(testthat::test_path("plot-module-exportPopUp.rds"))
   
-  testServer(exportPlotPopUpServer, args = list(exportPlot = reactive(testPlot),
-                                            filename = "plotEstimates"),
+  testServer(exportPlotPopUpServer,
+             args = list(exportPlot = reactive(testPlot),
+                         filename = "plotEstimates"),
              {
                # Arrange
                print("test export popUp")
@@ -81,7 +84,7 @@ test_that("Test module exportPlotPopUp", {
                )
                
                testthat::expect_length(output$preview, 5)
-               testthat::expect_equal(names(output$preview), 
+               testthat::expect_equal(names(output$preview),
                                       c("src", "width", "height", "alt", "coordmap"))
                testthat::expect_equal(names(output$preview$width), 600)
                testthat::expect_equal(names(output$preview$height), 400)

@@ -35,33 +35,39 @@ downloadModelUI <- function(id, label) {
 #' @param uploadedNotes (reactive) variable that stores content of README.txt
 #'
 #' @export
-downloadModel <- function(input, output, session, yEstimates, formulas, data, uploadedNotes){
-  
-  observe({
-    updateTextAreaInput(session, "notes", value = uploadedNotes())
-  })
-  
-  output$downloadModel <- downloadHandler(
-    filename = function() {
-      gsub("[ ]", "_", paste0(Sys.time(), "_bpred.zip"))
-    },
-    content = function(file) {
-      zipdir <- tempdir()
-      modelfile <- file.path(zipdir, "model.Rdata")
-      notesfile <- file.path(zipdir, "README.txt")
-      helpfile <- file.path(zipdir, "help.html")
-      
-      model <- yEstimates()
-      formulasObj <- reactiveValuesToList(formulas)
-      dataObj <- reactiveValuesToList(data)
-      inputObj <- reactiveValuesToList(input)
-      save(model, formulasObj, dataObj, inputObj, file = modelfile)
-      writeLines(input$notes, notesfile)
-      save_html(getHelp(input$tab), helpfile)
-      zip::zipr(file, c(modelfile, notesfile, helpfile))
-    }
-  )
-}
+downloadModel <-
+  function(input,
+           output,
+           session,
+           yEstimates,
+           formulas,
+           data,
+           uploadedNotes) {
+    observe({
+      updateTextAreaInput(session, "notes", value = uploadedNotes())
+    })
+    
+    output$downloadModel <- downloadHandler(
+      filename = function() {
+        gsub("[ ]", "_", paste0(Sys.time(), "_bpred.zip"))
+      },
+      content = function(file) {
+        zipdir <- tempdir()
+        modelfile <- file.path(zipdir, "model.Rdata")
+        notesfile <- file.path(zipdir, "README.txt")
+        helpfile <- file.path(zipdir, "help.html")
+        
+        model <- yEstimates()
+        formulasObj <- reactiveValuesToList(formulas)
+        dataObj <- reactiveValuesToList(data)
+        inputObj <- reactiveValuesToList(input)
+        save(model, formulasObj, dataObj, inputObj, file = modelfile)
+        writeLines(input$notes, notesfile)
+        save_html(getHelp(input$tab), helpfile)
+        zip::zipr(file, c(modelfile, notesfile, helpfile))
+      }
+    )
+  }
 
 
 #' Upload model module
@@ -109,44 +115,59 @@ uploadModelUI <- function(id, label) {
 #' @param inputFields (reactive) inputFields
 #'
 #' @export
-uploadModel <- function(input, output, session, yEstimates, formulas, data, 
-                        uploadedNotes, inputFields){
-  pathToModel <- reactiveVal(NULL)
-  
-  observeEvent(input$uploadModel, {
-    pathToModel(input$uploadModel$datapath)
-  })
-  
-  observeEvent(input$loadRemoteModel, {
-    pathToModel(file.path(settings$pathToSavedModels, paste0(input$remoteModel, ".zip")))
-  })
-  
-  observeEvent(pathToModel(), {
-    res <- try({
-      zip::unzip(pathToModel())
-      load("model.Rdata") # should contain: model, formulasObj, dataObj, inputObj
-      uploadedNotes(readLines("README.txt"))
+uploadModel <-
+  function(input,
+           output,
+           session,
+           yEstimates,
+           formulas,
+           data,
+           uploadedNotes,
+           inputFields) {
+    pathToModel <- reactiveVal(NULL)
+    
+    observeEvent(input$uploadModel, {
+      pathToModel(input$uploadModel$datapath)
     })
     
-    if (inherits(res, "try-error")) {
-      shinyjs::alert("Could not load file.")
-      return()
-    }
+    observeEvent(input$loadRemoteModel, {
+      pathToModel(file.path(
+        settings$pathToSavedModels,
+        paste0(input$remoteModel, ".zip")
+      ))
+    })
     
-    if (!exists("model") || !exists("formulasObj") || !exists("dataObj") || !exists("inputObj")) {
-      shinyjs::alert("File format not valid. Model object not found.")
-      return()
-    }
-    
-    yEstimates(model)
-    
-    if (!is.null(model$data)) updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
-    
-    for (n in names(dataObj)) data[[n]] <- dataObj[[n]]
-    for (n in names(formulasObj)) formulas[[n]] <- formulasObj[[n]]
-    
-    inputFields(inputObj)
-    
-    alert("Model loaded")
-  })
-}
+    observeEvent(pathToModel(), {
+      res <- try({
+        zip::unzip(pathToModel())
+        load("model.Rdata") # should contain: model, formulasObj, dataObj, inputObj
+        uploadedNotes(readLines("README.txt"))
+      })
+      
+      if (inherits(res, "try-error")) {
+        shinyjs::alert("Could not load file.")
+        return()
+      }
+      
+      if (!exists("model") ||
+          !exists("formulasObj") ||
+          !exists("dataObj") || !exists("inputObj")) {
+        shinyjs::alert("File format not valid. Model object not found.")
+        return()
+      }
+      
+      yEstimates(model)
+      
+      if (!is.null(model$data))
+        updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
+      
+      for (n in names(dataObj))
+        data[[n]] <- dataObj[[n]]
+      for (n in names(formulasObj))
+        formulas[[n]] <- formulasObj[[n]]
+      
+      inputFields(inputObj)
+      
+      alert("Model loaded")
+    })
+  }

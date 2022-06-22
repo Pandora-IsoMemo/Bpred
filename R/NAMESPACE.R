@@ -1,7 +1,7 @@
 #' The 'mpiBpred' package.
-#' 
+#'
 #' @description A DESCRIPTION OF THE PACKAGE
-#' 
+#'
 #' @docType package
 #' @name mpiBpred
 #' @aliases mpiBpred
@@ -21,7 +21,7 @@
 #' @importFrom utils capture.output combn write.table
 #' @importFrom shinyjs alert
 #' @importFrom xlsx write.xlsx
-#' 
+#'
 globalVariables(".")
 NULL
 
