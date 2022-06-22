@@ -1,7 +1,7 @@
 context("estimate posterior")
 
 test_that("posterior estimation simple", {
-  load("testdata/test_post.RData")
+  load(testthat::test_path("testdata/test_post.RData"))
   set.seed(1000)
   data <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
                      X1 = c(1, 0.9, 1.2, 4, 5),
@@ -35,7 +35,7 @@ test_that("posterior estimation simple", {
 })
 
 test_that("posterior estimation complex", {
-  load("testdata/test_post.RData")
+  load(testthat::test_path("testdata/test_post.RData"))
   set.seed(1000)
   data <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
                      X1 = c(1, 0.9, 1.2, 4, 5),
@@ -58,7 +58,7 @@ test_that("posterior estimation complex", {
 })
 
 test_that("posterior estimation no uncertainty", {
-  load("testdata/test_post.RData")
+  load(testthat::test_path("testdata/test_post.RData"))
   set.seed(1000)
   data <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
                      X1 = c(1, 0.9, 1.2, 4, 5),

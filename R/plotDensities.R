@@ -276,6 +276,13 @@ summariseEstimates <- function(yEstimates, type = "Individual",
   return(list(Means = sumdata))
 }
 
+#' Plot functions
+#' 
+#' @param data data
+#' @param xVar independent variable
+#' @param yVar dependent variable
+#' @param object object
+#' 
 #' @export
 plotFunctions <- function(data, xVar, yVar, object){
   xLim <- c(min(data[,xVar], na.rm = TRUE),max(data[,xVar], na.rm = TRUE))

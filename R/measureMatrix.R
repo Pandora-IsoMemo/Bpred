@@ -1,3 +1,6 @@
+#' Measure to DF
+#' 
+#' @param m matrix
 #' @export
 measureMatrixToDf <- function(m) {
   m[] <- ifelse(trimws(m) == "", NA, m)

@@ -29,6 +29,20 @@ linkToForm <- function(link) {
   type
 }
 
+#' Fit Model
+#' 
+#' @param y Measurements of the dependent variable.
+#' @param X Measurements of the independent variable.
+#' @param yUnc A numeric vector. y uncertainties 
+#' @param xUnc A numeric vector. x uncertainties
+#' @param parNames names of parameter
+#' @param iter An integer. Number of iterations for MCMC model
+#' @param chains An integer. Number of chains for MCMC model
+#' @param burnin An integer. Number of burnin iterations for MCMC model
+#' @param varNames A character. Name of x variable
+#' @param form form
+#' @param startPar numeric vector of length of parNames
+#' @param thinning thinning
 #' @export
 fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(0, length(parNames)),
                      iter = 1000, chains = 8, burnin = 0.4*iter, thinning = 5){

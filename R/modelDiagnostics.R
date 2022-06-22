@@ -1,3 +1,8 @@
+#' Convergence Diagnostics
+#' 
+#' @param parameters parameters
+#' @param nChains number of chains
+#'
 #' @export
 convergenceDiagnostics <- function(parameters, nChains){
   splitChains <- factor(rep(1:nChains, each = nrow(parameters) / nChains))
@@ -23,13 +28,21 @@ convergenceDiagnostics <- function(parameters, nChains){
   return(list(raftery = raftery, gelman = gelman, geweke = geweke, heidel = heidel))
 }
 
+#' Text Export Button UI
+#' 
 #' @export
+#' @rdname shinyModule
 textExportButton <- function(id, title = "Download") {
   ns <- NS(id)
   downloadButton(ns("download"), title)
 }
 
+#' Text Export Server
+#' 
 #' @export
+#' @rdname shinyModule
+#' @param printFun print function
+#' @param filename (character) file name
 textExport <- function(input, output, session, printFun, filename = "output") {
   content <- reactive({
     capture.output(printFun()())
