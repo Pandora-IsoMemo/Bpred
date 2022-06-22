@@ -49,7 +49,7 @@ downloadModel <-
     
     output$downloadModel <- downloadHandler(
       filename = function() {
-        gsub("[ ]", "_", paste0(Sys.time(), "_bpred.zip"))
+        paste(gsub("\ ", "_", Sys.time()), "bpred.zip", sep = "_")
       },
       content = function(file) {
         zipdir <- tempdir()
