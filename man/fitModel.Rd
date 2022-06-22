@@ -16,7 +16,8 @@ fitModel(
   iter = 1000,
   chains = 8,
   burnin = 0.4 * iter,
-  thinning = 5
+  thinning = 5,
+  parNamesDir = NULL
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ fitModel(
 \item{burnin}{An integer. Number of burnin iterations for MCMC model}
 
 \item{thinning}{thinning}
+
+\item{parNamesDir}{parNamesDir}
 }
 \description{
 Fit Model

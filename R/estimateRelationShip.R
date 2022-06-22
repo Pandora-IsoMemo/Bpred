@@ -43,6 +43,7 @@ linkToForm <- function(link) {
 #' @param form form
 #' @param startPar numeric vector of length of parNames
 #' @param thinning thinning
+#' @param parNamesDir parNamesDir
 #' @export
 fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(0, length(parNames)),
                      iter = 1000, chains = 8, burnin = 0.4*iter, thinning = 5, parNamesDir = NULL){
