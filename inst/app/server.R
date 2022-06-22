@@ -428,60 +428,26 @@ if(is.null(input$regfunctions)){
   })
   
 
-  output$summaryEstimates <- renderPrint(data$results)  
+  output$summaryEstimates <- renderPrint({
+    req(data$results)
+    data$results
+    })  
   
   output$plot <- renderPlot({
     req(yEstimates())
     plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType)
   })
   
+  exportPopUpServer("summaryExport", exportData = reactive(data$results[1]))
   observeEvent(input$exportSummary, {
     showModal(modalDialog(
       "Export Data",
       easyClose = TRUE,
       footer = modalButton("OK"),
-      selectInput(
-        "exportType",
-        "File type",
-        choices = c("csv", "xlsx", "json"),
-        selected = "xlsx"
-      ),
-      conditionalPanel(
-        condition = "input['exportType'] == 'csv'",
-        div(style = "display: inline-block;horizontal-align:top; width: 80px;",
-            textInput("colseparator", "column separator:", value = ",")),
-        div(style = "display: inline-block;horizontal-align:top; width: 80px;",
-            textInput("decseparator", "decimal separator:", value = "."))
-      ),
-      downloadButton("exportExecuteSummary", "Export")
+      exportPopUpUI("summaryExport")
     ))
   })
     
-  colseparator <- reactive({
-    input$colseparator
-  })
-  decseparator <- reactive({
-    input$decseparator
-  })
-  
-  output$exportExecuteSummary <- downloadHandler(
-    filename = function(){
-      paste("Summary", input$exportType, sep = ".")
-    },
-    content = function(file){
-      data <- data$results
-      exportData <- data[1]
-      switch(
-        input$exportType,
-        csv = exportCSV(file, exportData, colseparator(), decseparator()),
-        xlsx = exportXLSX(file, exportData),
-        json = exportJSON(file, exportData)
-      )
-    }
-  )
-
-    
-  
   observeEvent(input$exportPlot, {
     
     plotOutputElement <- renderPlot({ plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType) })
