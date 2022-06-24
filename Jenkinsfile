@@ -8,6 +8,15 @@ pipeline {
         GH_TOKEN = credentials("github-isomemo")
     }
     stages {
+        stage('Testing') {
+            steps {
+                sh '''
+                docker build --pull -t tmp-$CUR_PROJ-$TMP_SUFFIX .
+                docker run --rm --network host tmp-$CUR_PROJ-$TMP_SUFFIX check
+                docker rmi tmp-$CUR_PROJ-$TMP_SUFFIX
+                '''
+            }
+        }
         stage('Deploy R-package') {
             when { branch 'main' }
             steps {
@@ -17,11 +26,7 @@ pipeline {
                 # CUR_PROJ
                 # TMP_SUFFIX
                 # GH_TOKEN_PSW -- a GitHub personal access token with write access to the drat repo
-                mv Dockerfile Dockerfile.bak
-                mv Dockerfile.Testing Dockerfile
                 bash deploy.sh
-                mv Dockerfile Dockerfile.Testing
-                mv Dockerfile.bak Dockerfile
                 '''
             }
         }

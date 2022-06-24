@@ -1,4 +1,4 @@
-test_that("Test module exportPopUp", {
+testthat::test_that("Test module exportPopUp", {
   testServer(exportPopUpServer, args = NULL,
              {
                # Arrange
@@ -51,7 +51,7 @@ test_that("Test module exportPopUp", {
 })
 
 
-test_that("Test module exportPlotPopUp", {
+testthat::test_that("Test module exportPlotPopUp", {
   testServer(exportPlotPopUpServer, args = NULL,
              {
                # Arrange
@@ -82,12 +82,12 @@ test_that("Test module exportPlotPopUp", {
                  height = 800,
                  exportExecute = TRUE
                )
-               
+
                testthat::expect_length(output$preview, 5)
                testthat::expect_equal(names(output$preview),
                                       c("src", "width", "height", "alt", "coordmap"))
-               testthat::expect_equal(names(output$preview$width), 600)
-               testthat::expect_equal(names(output$preview$height), 400)
+               testthat::expect_equal(output$preview$width, 600)
+               testthat::expect_equal(output$preview$height, 400)
                testthat::expect_true(grepl("plotEstimates.png", output$exportExecute))
              })
 })

@@ -1,13 +1,13 @@
 Package: mpiBpred
 Title: What the Package Does (one line, title case)
-Version: 22.06.2
+Version: 22.06.4
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
     )
 Maintainer: INWT Statistics <marcus.gross@inwt-statistics.de>
 Description: What the package does (one paragraph).
-Depends: R (>= 3.4.0), Rcpp (>= 0.12.0)
+Depends: R (>= 4.0.0), Rcpp (>= 0.12.0)
 Imports:
   coda,
   dplyr,
@@ -32,4 +32,3 @@ LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
 RoxygenNote: 7.1.2
-Remotes: INWTlab/rsync
