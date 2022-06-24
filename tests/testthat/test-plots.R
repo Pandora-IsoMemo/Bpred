@@ -1,5 +1,3 @@
-context("Plot estimates")
-
 testthat::test_that("plots creation", {
   load(testthat::test_path("testdata/test_plots.RData"))
   

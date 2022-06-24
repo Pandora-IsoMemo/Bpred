@@ -1,5 +1,3 @@
-context("Summarise estimates")
-
 testthat::test_that("Summarise estimates table", {
   load(testthat::test_path("testdata/test_plots.RData"))
   
