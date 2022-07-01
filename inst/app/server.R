@@ -119,6 +119,7 @@ shinyServer(function(input, output, session) {
         }
         parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
         varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
+        parNamesDir <- NULL
       } else {
       X <- data$dat[, input$custom_x, drop = FALSE]
       xUnc <- data$dat[, input$custom_x_unc, drop = FALSE]
