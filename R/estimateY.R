@@ -72,7 +72,7 @@ estimateY <- function(relationship, regfunctions,
                       distribution = "normal",
                       rangeRestrict = FALSE,
                       rangeY = c(-Inf, +Inf)){
-  if((length(indVarsUnc) != length(indVars)) | indVarsUnc[1] == "" | any(is.null(indVarsUnc))){
+  if((length(indVarsUnc) != length(indVars)) | any(indVarsUnc == "") | any(is.null(indVarsUnc))){
     indVarsUnc <- paste0(indVars, "_unc")
     data[,indVarsUnc] <- 0
   }
@@ -174,14 +174,14 @@ estimateY <- function(relationship, regfunctions,
   
   Y_Samples_Individual <- lapply(1:nrow(data), function(i){
     values <- data[rep(i, n_samples), indVars]
-    if ((indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) > 0){
+    if ((any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) > 0){
       # vars <- (unlist(lapply(regfunctions, function(x) x$sdX)) ^ 2)
       # means <- (unlist(lapply(regfunctions, function(x) x$meanX)) /
       #             (unlist(lapply(regfunctions, function(x) x$sdX))) ^ 2)
       vars <- rep(0, length(indVars))
       means <- unlist(data[i, indVars])
     } 
-    if(!(indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) > 0) {
+    if(!(any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) > 0) {
       # vars <- (1 / (1 / unlist(data[i, indVarsUnc]) ^ 2 + 1 /
       #                 (unlist(lapply(regfunctions, function(x) x$sdX)) ^ 2)))
       # means <- unlist(vars * data[i, indVars] / data[i, indVarsUnc] ^ 2 +
@@ -190,11 +190,11 @@ estimateY <- function(relationship, regfunctions,
       vars <- unlist(data[i, indVarsUnc]) ^ 2
       means <- unlist(data[i, indVars])
     }
-    if (!(indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
+    if (!(any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
       vars <- unlist(data[i, indVarsUnc]) ^ 2
       means <- unlist(data[i, indVars])
     }
-    if ((indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
+    if ((any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
       vars <- rep(0, length(indVars))
       means <- unlist(data[i, indVars])
     }
