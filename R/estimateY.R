@@ -72,7 +72,7 @@ estimateY <- function(relationship, regfunctions,
                       distribution = "normal",
                       rangeRestrict = FALSE,
                       rangeY = c(-Inf, +Inf)){
-  if((length(indVarsUnc) != length(indVars)) | indVarsUnc[1] == "" | is.null(indVarsUnc)){
+  if((length(indVarsUnc) != length(indVars)) | indVarsUnc[1] == "" | any(is.null(indVarsUnc))){
     indVarsUnc <- paste0(indVars, "_unc")
     data[,indVarsUnc] <- 0
   }
@@ -174,7 +174,7 @@ estimateY <- function(relationship, regfunctions,
   
   Y_Samples_Individual <- lapply(1:nrow(data), function(i){
     values <- data[rep(i, n_samples), indVars]
-    if ((indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) > 0){
+    if ((indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) > 0){
       # vars <- (unlist(lapply(regfunctions, function(x) x$sdX)) ^ 2)
       # means <- (unlist(lapply(regfunctions, function(x) x$meanX)) /
       #             (unlist(lapply(regfunctions, function(x) x$sdX))) ^ 2)
