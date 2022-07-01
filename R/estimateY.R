@@ -31,8 +31,10 @@
 #' form <- paste0("{slope} * [x] + {intercept}")
 #' 
 #' #estimate formulas
-#' f1 <- fitModel(y = yobs,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
-#' f2 <- fitModel(y = yobs2,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
+#' f1 <- fitModel(y = yobs,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),
+#' form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
+#' f2 <- fitModel(y = yobs2,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),
+#' form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
 #' 
 #' data <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
 #' X1 = c(1, 0.9, 1.2, 4, 5),
@@ -179,7 +181,7 @@ estimateY <- function(relationship, regfunctions,
       vars <- rep(0, length(indVars))
       means <- unlist(data[i, indVars])
     } 
-    if(!(indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) > 0) {
+    if(!(indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) > 0) {
       # vars <- (1 / (1 / unlist(data[i, indVarsUnc]) ^ 2 + 1 /
       #                 (unlist(lapply(regfunctions, function(x) x$sdX)) ^ 2)))
       # means <- unlist(vars * data[i, indVars] / data[i, indVarsUnc] ^ 2 +
@@ -188,11 +190,11 @@ estimateY <- function(relationship, regfunctions,
       vars <- unlist(data[i, indVarsUnc]) ^ 2
       means <- unlist(data[i, indVars])
     }
-    if (!(indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) == 0){
+    if (!(indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
       vars <- unlist(data[i, indVarsUnc]) ^ 2
       means <- unlist(data[i, indVars])
     }
-    if ((indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) == 0){
+    if ((indVarsUnc == "" || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
       vars <- rep(0, length(indVars))
       means <- unlist(data[i, indVars])
     }
