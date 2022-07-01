@@ -40,7 +40,7 @@
 #' X2 = c(1.5, 1.8, 1.1, 2.25, 2.3),
 #' SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
 #'
-#' yEstimates <- estimateY(relationship = "Y ~ 3 + 4.5 * f1([X1]) * f2([X2]) - f2(f1([X1]))",
+#' yEstimates <- estimateY(relationship = "Y ~ 3 + 4.5 * f1([X1]) * f2([X2]) - f1([X1])",
 #'                         regfunctions = list(f1 = f1, f2 = f2),
 #'                         indVars = c("X1", "X2"),
 #'                         data = data,
@@ -86,7 +86,7 @@ estimateY <- function(relationship, regfunctions,
     relationship <- paste0(gsub(paste0(i,"\\("), paste0("f_funcs", "$", i, "(regfunctions$", i, ")(c("), relationship))
   }
   relationship <- gsub(paste0("\\]\\)"), paste0("\\]\\)\\)"), relationship)
-  
+
   
   if (!includeRegUnc) {
     f_funcs <- lapply(regfunctions, function(f) {
