@@ -47,6 +47,8 @@ fitModel(
 \item{thinning}{thinning}
 
 \item{parNamesDir}{parNamesDir}
+
+\item{shinyUse}{set to TRUE for shiny use and FALSE for non-shiny use}
 }
 \description{
 Fit Model

@@ -64,8 +64,10 @@ yobs2 <- y + (rnorm(n, sd = yunc))
 form <- paste0("{slope} * [x] + {intercept}")
 
 #estimate formulas
-f1 <- fitModel(y = yobs,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
-f2 <- fitModel(y = yobs2,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
+f1 <- fitModel(y = yobs,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),
+form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
+f2 <- fitModel(y = yobs2,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),
+form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
 
 data <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
 X1 = c(1, 0.9, 1.2, 4, 5),
@@ -73,7 +75,7 @@ SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
 X2 = c(1.5, 1.8, 1.1, 2.25, 2.3),
 SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
 
-yEstimates <- estimateY(relationship = "Y ~ 3 + 4.5 * f1([X1]) * f2([X2]) - f2(f1([X1]))",
+yEstimates <- estimateY(relationship = "Y ~ 3 + 4.5 * f1([X1]) * f2([X2]) - f1([X1])",
                         regfunctions = list(f1 = f1, f2 = f2),
                         indVars = c("X1", "X2"),
                         data = data,

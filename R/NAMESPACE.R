@@ -13,6 +13,7 @@
 #' @importFrom jsonlite toJSON
 #' @importFrom htmltools save_html
 #' @importFrom magrittr %>%
+#' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom modules module
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset runjs useShinyjs
