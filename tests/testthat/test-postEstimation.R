@@ -12,7 +12,7 @@ testthat::test_that("posterior estimation simple", {
   
   yEstimates <-
     mpiBpred::estimateY(
-      relationship = "Y ~ 3 + 1 * one(X1) + two(X2) / 2",
+      relationship = "Y ~ 3 + 1 * one([X1]) + two([X2]) / 2",
       regfunctions = list(one = f1, two = f2),
       indVars = c("X1", "X2"),
       data = data,
@@ -22,23 +22,23 @@ testthat::test_that("posterior estimation simple", {
       includeRegUnc = TRUE
     )
   testthat::expect_type(yEstimates, "list")
-  testthat::expect_length(yEstimates, 3)
+  testthat::expect_length(yEstimates, 13)
   testthat::expect_length(yEstimates$Y_Samples_Individual, 5)
   testthat::expect_length(yEstimates$Y_Samples_Category, 2)
-  testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), 7.265, tolerance = 0.01)
+  testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), 10.8, tolerance = 0.01)
   testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), mean(unlist(yEstimates$Y_Samples_Individual)))
   testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), mean(unlist(yEstimates$Y_Samples_Category)))
   
-  testthat::expect_error(
+  testthat::expect_type(
     mpiBpred::estimateY(
-      relationship = "Y ~ 3 + 1 * f3(X2 * f1(X1))",
+      relationship = "Y ~ 3 + 1 * f3([X2] * f1([X1]))",
       regfunctions = list(f1 = f1, f2 = f2),
       indVars = c("X1", "X2"),
       data = data,
       indVarsUnc = c("SD_X1", "SD_X2"),
       n_samples = 1000,
       includeRegUnc = TRUE
-    )
+    ), "character"
   )
 })
 
@@ -56,7 +56,7 @@ testthat::test_that("posterior estimation complex", {
   
   yEstimates <-
     mpiBpred::estimateY(
-      relationship = "Y ~ 3 + 1 * two(X2 * one(X1))",
+      relationship = "Y ~ 3 + 1 * two([X2]) * one([X1])",
       regfunctions = list(one = f1, two = f2),
       indVars = c("X1", "X2"),
       data = data,
@@ -65,9 +65,9 @@ testthat::test_that("posterior estimation complex", {
       includeRegUnc = TRUE
     )
   testthat::expect_type(yEstimates, "list")
-  testthat::expect_length(yEstimates, 2)
+  testthat::expect_length(yEstimates, 11)
   testthat::expect_length(yEstimates$Y_Samples_Individual, 5)
-  testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), 6.097, tolerance = 0.01)
+  testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), 20.5, tolerance = 0.01)
   testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), mean(unlist(yEstimates$Y_Samples_Individual)))
 })
 
@@ -85,16 +85,16 @@ testthat::test_that("posterior estimation no uncertainty", {
   
   yEstimates <-
     mpiBpred::estimateY(
-      relationship = "Y ~ 3 + 1 * two(X2 * one(X1))",
+      relationship = "Y ~ 3 + 1 * two([X2]) * one([X1])",
       regfunctions = list(one = f1, two = f2),
       indVars = c("X1", "X2"),
       data = data,
       n_samples = 1000,
-      includeRegUnc = TRUE
+      includeRegUnc = FALSE
     )
   testthat::expect_type(yEstimates, "list")
-  testthat::expect_length(yEstimates, 2)
+  testthat::expect_length(yEstimates, 11)
   testthat::expect_length(yEstimates$Y_Samples_Individual, 5)
-  testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), 6.18, tolerance = 0.01)
+  testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), 20.5, tolerance = 0.01)
   testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), mean(unlist(yEstimates$Y_Samples_Individual)))
 })

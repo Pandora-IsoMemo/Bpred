@@ -17,7 +17,8 @@ fitModel(
   chains = 8,
   burnin = 0.4 * iter,
   thinning = 5,
-  parNamesDir = NULL
+  parNamesDir = NULL,
+  shinyUse = TRUE
 )
 }
 \arguments{

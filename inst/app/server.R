@@ -359,7 +359,6 @@ if(is.null(input$regfunctions)){
     req(data$refSample)
     req(data$values)
     req(data$freq)
-
     data$results <- withProgress({summariseEstimates(yEstimates(),
                        type = input$summaryType,
                        probability = as.numeric(gsub(",", ".", input$summaryProb)),

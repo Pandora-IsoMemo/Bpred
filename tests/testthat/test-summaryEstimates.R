@@ -20,7 +20,7 @@ testthat::test_that("Summarise estimates table", {
     mpiBpred::summariseEstimates(yEstimates, type = "Individual", probability = 0.95)
   
   testthat::expect_type(result, "list")
-  testthat::expect_length(result, 1)
+  testthat::expect_length(result, 2)
   testthat::expect_equal(nrow(result$Means), 5)
   
   result <-
@@ -34,7 +34,7 @@ testthat::test_that("Summarise estimates table", {
     mpiBpred::summariseEstimates(yEstimates, type = "Category", probability = 0.95)
   
   testthat::expect_type(result, "list")
-  testthat::expect_length(result, 1)
+  testthat::expect_length(result, 2)
   testthat::expect_equal(nrow(result$Means), 2)
   
   result <-
@@ -49,7 +49,7 @@ testthat::test_that("Summarise estimates table", {
     )
   
   testthat::expect_type(result, "list")
-  testthat::expect_length(result, 1)
+  testthat::expect_length(result, 2)
   
   result <-
     mpiBpred::summariseEstimates(

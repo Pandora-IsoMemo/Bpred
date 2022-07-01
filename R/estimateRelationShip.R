@@ -46,7 +46,7 @@ linkToForm <- function(link) {
 #' @param parNamesDir parNamesDir
 #' @export
 fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(0, length(parNames)),
-                     iter = 1000, chains = 8, burnin = 0.4*iter, thinning = 5, parNamesDir = NULL){
+                     iter = 1000, chains = 8, burnin = 0.4*iter, thinning = 5, parNamesDir = NULL, shinyUse = TRUE){
   n <- length(y)
   formOrig <- form
   XOrig <- X
@@ -254,12 +254,16 @@ fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(
   for ( k in 1:chains) {
     sigma <- 1
     MHPar <- rep(0.1, length(pars))
+    if(shinyUse){
     showMessage(
       MCMC_PlotR,
       msg = paste0("Calculating Custom Formula Model, Chain: ",k),
       value = k / chains)(
         start = (k-1) * iter + 1, iter = k * iter
       )
+    } else {
+      MCMC_PlotR(start = (k-1) * iter + 1, iter = k * iter)
+    }
   }
   
   #burnin <- round(burnInProp * iter / chains +  seq(0, iter, iter / chains))
