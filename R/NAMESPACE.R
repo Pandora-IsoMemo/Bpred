@@ -23,7 +23,7 @@
 #' @importFrom shinyjs alert
 #' @importFrom xlsx write.xlsx
 #'
-globalVariables(".")
+globalVariables(c("model", "dataObj", "formulasObj", "inputObj"))
 NULL
 
 #' Server and UI Functions for Shiny Module
