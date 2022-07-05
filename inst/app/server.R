@@ -119,6 +119,7 @@ shinyServer(function(input, output, session) {
         }
         parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
         varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
+        parNamesDir <- NULL
       } else {
       X <- data$dat[, input$custom_x, drop = FALSE]
       xUnc <- data$dat[, input$custom_x_unc, drop = FALSE]
@@ -139,6 +140,16 @@ shinyServer(function(input, output, session) {
         shinyjs::alert("Formula must have parameters in curly brackets.")
         return(NULL)
       }
+      if(input$dirichlet == TRUE){
+        parNamesDir <- strsplit(input$parRestricted, ",")[[1]]
+        if(length(parNamesDir) == 0){
+          shinyjs::alert("Formula must have parameters in curly brackets.")
+          return(NULL)
+        }
+        
+      } else {
+        parNamesDir <- NULL
+      }
       varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
       if(!any(varNames %in% colnames(X))){
         shinyjs::alert("Variables in formula must be in data.")
@@ -151,7 +162,8 @@ shinyServer(function(input, output, session) {
                                         iter = input$iter,
                                         burnin = input$burnin,
                                         chains = input$chains,
-                                        thinning = input$thinning)
+                                        thinning = input$thinning,
+                                        parNamesDir = parNamesDir)
        
       if(class(res) == "character"){
         shinyjs::alert(res)
@@ -347,7 +359,6 @@ if(is.null(input$regfunctions)){
     req(data$refSample)
     req(data$values)
     req(data$freq)
-
     data$results <- withProgress({summariseEstimates(yEstimates(),
                        type = input$summaryType,
                        probability = as.numeric(gsub(",", ".", input$summaryProb)),

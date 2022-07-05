@@ -9,34 +9,47 @@ testthat::test_that("computeResults simple example", {
   yunc <- rep(0.25, length(y))
   xobs <- x + (rnorm(n, sd = xunc))
   yobs <- y + (rnorm(n, sd = yunc))
+  form <- paste0("{slope} * [x] + {intercept}")
+  parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
+  varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
+  parNamesDir <- NULL
+  
   
   f1 <-
-    mpiBpred::estimateRelationship(
+    mpiBpred::fitModel(
       y = yobs,
-      x = xobs,
-      yunc = yunc,
-      xunc = xunc,
-      link = "linIntcp",
-      chains = 2
+      X = data.frame(x= xobs),
+      yUnc = yunc,
+      xUnc = data.frame(xunc= xunc),
+      form = form,
+      chains = 2,
+      parNames = parNames, varNames = varNames,
+      parNamesDir = parNamesDir,
+      shinyUse = FALSE
     )
   
   testthat::expect_type(f1, "list")
-  testthat::expect_length(f1, 5)
-  testthat::expect_equal(f1$type, 1)
-  testthat::expect_equal(mean(f1$slope), 1.51, tolerance = 0.01)
+  testthat::expect_length(f1, 11)
+  testthat::expect_equal(mean(f1$beta[,2]), 1.51, tolerance = 0.01)
+  
+  form <- paste0("{slope} * [x]")
+  parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
+  varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
   
   f2 <-
-    mpiBpred::estimateRelationship(
+    suppressWarnings({mpiBpred::fitModel(
       y = yobs,
-      x = xobs,
-      yunc = yunc,
-      xunc = xunc,
-      link = "linNoIntcp",
-      chains = 2
-    )
+      X = data.frame(x= xobs),
+      yUnc = yunc,
+      xUnc = data.frame(xunc= xunc),
+      form = form,
+      chains = 2,
+      parNames = parNames, varNames = varNames,
+      parNamesDir = parNamesDir,
+      shinyUse = FALSE
+    )})
   testthat::expect_type(f2, "list")
-  testthat::expect_length(f2, 5)
-  testthat::expect_equal(f2$type, 2)
+  testthat::expect_length(f2, 11)
 })
 
 testthat::test_that("computeResults simple example wrong link negative data", {
@@ -49,56 +62,78 @@ testthat::test_that("computeResults simple example wrong link negative data", {
   yunc <- rep(0.25, length(y))
   xobs <- x + (rnorm(n, sd = xunc))
   yobs <- y + (rnorm(n, sd = yunc))
-  testthat::expect_error(
-    mpiBpred::estimateRelationship(
+  form <- paste0("{slope} * sqrt([x]) + {intercept}")
+  parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
+  varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
+  parNamesDir <- NULL
+  
+  f3 <- 
+    suppressWarnings({mpiBpred::fitModel(
       y = yobs,
-      x = xobs,
-      yunc = yunc,
-      xunc = xunc,
-      link = "sqrt",
-      chains = 2
-    )
-  )
+      X = data.frame(x= xobs),
+      yUnc = yunc,
+      xUnc = data.frame(xunc= xunc),
+      form = form,
+      chains = 2,
+      parNames = parNames, varNames = varNames,
+      parNamesDir = parNamesDir,
+      shinyUse = FALSE
+    )})
+  testthat::expect_type(f3, "character")
 })
 
 testthat::test_that("test positive data example", {
   #create simulated data set
   set.seed(100)
-  n <- 100
+  n <- 1000
   y <- rnorm(n)
-  x <- exp(rnorm(n))
-  y <- exp(-0.5 + 0.2 * x + rnorm(n, sd = 0.25))
+  x <- exp(runif(n)*2+1)
+  y <- -0.5 + 0.2 * log(x) + rnorm(n, sd = 0.25)
   xunc <- rep(0.1, length(x))
   yunc <- rep(0.1, length(y))
-  xobs <- exp(log(x) + (rnorm(n, sd = xunc)))
-  yobs <- exp(log(y) + (rnorm(n, sd = yunc)))
+  xobs <- (x + (rnorm(n, sd = xunc)))
+  yobs <- (y + (rnorm(n, sd = yunc)))
+  form <- paste0("{slope} * log([x]) + {intercept}")
+  parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
+  varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
+  parNamesDir <- NULL
+  
   f1 <-
-    mpiBpred::estimateRelationship(
+    mpiBpred::fitModel(
       y = yobs,
-      x = xobs,
-      yunc = yunc,
-      xunc = xunc,
-      link = "log",
-      chains = 2
+      X = data.frame(x= xobs),
+      yUnc = yunc,
+      xUnc = data.frame(xunc= xunc),
+      form = form,
+      chains = 2,
+      parNames = parNames, varNames = varNames,
+      parNamesDir = parNamesDir,
+      shinyUse = FALSE
     )
   
   testthat::expect_type(f1, "list")
-  testthat::expect_length(f1, 5)
-  testthat::expect_equal(f1$type, 4)
-  testthat::expect_equal(mean(f1$slope), 0.1175, tolerance = 0.01)
+  testthat::expect_length(f1, 11)
+  testthat::expect_equal(mean(f1$beta[,1]), 0.2, tolerance = 0.03)
+  ##
+  form <- paste0("{slope} * sqrt([x]) + {intercept}")
+  parNames <- gsub("[\\{\\}]", "", regmatches(form, gregexpr("\\{.*?\\}", form))[[1]])
+  varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
+  parNamesDir <- NULL
   
   f2 <-
-    mpiBpred::estimateRelationship(
+    mpiBpred::fitModel(
       y = yobs,
-      x = xobs,
-      yunc = yunc,
-      xunc = xunc,
-      link = "sqrt",
-      chains = 2
+      X = data.frame(x= xobs),
+      yUnc = yunc,
+      xUnc = data.frame(xunc= xunc),
+      form = form,
+      chains = 2,
+      parNames = parNames, varNames = varNames,
+      parNamesDir = parNamesDir,
+      shinyUse = FALSE
     )
   
   testthat::expect_type(f2, "list")
-  testthat::expect_length(f2, 5)
-  testthat::expect_equal(f2$type, 3)
-  testthat::expect_equal(mean(f2$slope), 1.388541e-05, tolerance = 5E-04)
+  testthat::expect_length(f2, 11)
+  testthat::expect_equal(mean(f2$beta[,2]), -0.45, tolerance = 0.05)
 })

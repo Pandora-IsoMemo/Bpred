@@ -43,16 +43,17 @@ linkToForm <- function(link) {
 #' @param form form
 #' @param startPar numeric vector of length of parNames
 #' @param thinning thinning
+#' @param parNamesDir parNamesDir
+#' @param shinyUse set to TRUE for shiny use and FALSE for non-shiny use
 #' @export
 fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(0, length(parNames)),
-                     iter = 1000, chains = 8, burnin = 0.4*iter, thinning = 5){
+                     iter = 1000, chains = 8, burnin = 0.4*iter, thinning = 5, parNamesDir = NULL, shinyUse = TRUE){
   n <- length(y)
   formOrig <- form
   XOrig <- X
   #form <- gsub("\\[|\\]", "", form)
   burnInProp <- 0.4
   thinning <- thinning
-  
   for(l in 1:length(varNames)){
     form <- gsub(paste0("\\[", varNames[l], "\\]"), paste0("X[, '", varNames[l], "']"), form)
   }
@@ -72,7 +73,16 @@ fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(
     return("Formula does not work on data. Possibly wrong transformations on negative values.")
   }
 
+  
   startPar <- optim(startPar, f, method = c("Nelder-Mead"))$par
+  
+  #for restricted parameters
+  if(!is.null(parNamesDir)){
+    dirMatch <- match(parNamesDir, parNames)
+    dirNoMatch <- which(!(dirMatch %in% 1:length(parNames)))
+    startPar[dirMatch] <- 1 / length(dirMatch)
+  }
+  
   
   pars <- startPar
   
@@ -137,7 +147,14 @@ fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(
         ##
         yPredOld = eval(parse(text = formOld))
         parsNew <- pars
-        parsNew[j] <- parsNew[j] + rnorm(1, sd = MHPar[j])
+        if(!is.null(parNamesDir) && (j %in% dirMatch)){
+          parsNew[dirMatch] <- parsNew[dirMatch] * rgamma(2, shape = MHPar[dirMatch]^-2, rate = MHPar[dirMatch]^-2)
+          parsNew[dirMatch] <- parsNew[dirMatch] / sum(parsNew[dirMatch])
+        } else {
+          parsNew[j] <- parsNew[j] + rnorm(1, sd = MHPar[j])
+        }
+        
+        
         
         formNew <- form
         for(i in 1:length(parNames)){
@@ -158,7 +175,11 @@ fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(
           accept <- FALSE
         }
         if(accept){
-          pars[j] <- parsNew[j]
+          if(!is.null(parNamesDir) && (j %in% dirMatch)){
+            pars[dirMatch] <- parsNew[dirMatch]
+          } else {
+            pars[j] <- parsNew[j]
+          }
         }
         acceptMC[m, j] <<- accept
       }
@@ -232,15 +253,18 @@ fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(
     return(betamc)
   }
   for ( k in 1:chains) {
-    pars <- startPar
     sigma <- 1
     MHPar <- rep(0.1, length(pars))
+    if(shinyUse){
     showMessage(
       MCMC_PlotR,
       msg = paste0("Calculating Custom Formula Model, Chain: ",k),
       value = k / chains)(
         start = (k-1) * iter + 1, iter = k * iter
       )
+    } else {
+      MCMC_PlotR(start = (k-1) * iter + 1, iter = k * iter)
+    }
   }
   
   #burnin <- round(burnInProp * iter / chains +  seq(0, iter, iter / chains))

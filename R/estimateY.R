@@ -1,7 +1,7 @@
 #' Compute the distribution of the y_i, by defining a functional form
 #' 
 #' @param relationship A formula. The formula should contain the x-values defined in the indVars-parameter and the regression functions defined in the regfunctions parameter.
-#' @param regfunctions A list. This named list should contain the regression function objects fitted by \code{\link{estimateRelationship}} used in the relationship formula.
+#' @param regfunctions A list. This named list should contain the regression function objects fitted by \code{\link{fitModel}} used in the relationship formula.
 #' @param indVars A character vector. Contains the column names of the independent variables.
 #' @param indVarsUnc A character vector. Contains the column names of the uncertainties (in sd) of the independent variables (Optional).
 #' @param data A data.frame. Should contain the independent variables and optionally their uncertainties as well as a category variable.
@@ -28,10 +28,13 @@
 #' #second formula
 #' y <- 2.5 - 0.2 * x + rnorm(n)
 #' yobs2 <- y + (rnorm(n, sd = yunc))
+#' form <- paste0("{slope} * [x] + {intercept}")
 #' 
 #' #estimate formulas
-#' f1 <- estimateRelationship(y = yobs, x = xobs, yunc = yunc, xunc = xunc, link = "linIntcp")
-#' f2 <- estimateRelationship(y = yobs2, x = xobs, yunc = yunc, xunc = xunc, link = "linIntcp")
+#' f1 <- fitModel(y = yobs,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),
+#' form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
+#' f2 <- fitModel(y = yobs2,X = data.frame(x= xobs),yUnc = yunc,xUnc = data.frame(xunc= xunc),
+#' form = form,chains = 2,parNames = c("slope", "intercept"), varNames = "x", shinyUse = FALSE)
 #' 
 #' data <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
 #' X1 = c(1, 0.9, 1.2, 4, 5),
@@ -39,7 +42,7 @@
 #' X2 = c(1.5, 1.8, 1.1, 2.25, 2.3),
 #' SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
 #'
-#' yEstimates <- estimateY(relationship = "Y ~ 3 + 4.5 * f1(X1) * f2(X2) - f2(f1(X1))",
+#' yEstimates <- estimateY(relationship = "Y ~ 3 + 4.5 * f1([X1]) * f2([X2]) - f1([X1])",
 #'                         regfunctions = list(f1 = f1, f2 = f2),
 #'                         indVars = c("X1", "X2"),
 #'                         data = data,
@@ -69,7 +72,7 @@ estimateY <- function(relationship, regfunctions,
                       distribution = "normal",
                       rangeRestrict = FALSE,
                       rangeY = c(-Inf, +Inf)){
-  if((length(indVarsUnc) != length(indVars)) | indVarsUnc[1] == "" | is.null(indVarsUnc)){
+  if((length(indVarsUnc) != length(indVars)) | any(indVarsUnc == "") | any(is.null(indVarsUnc))){
     indVarsUnc <- paste0(indVars, "_unc")
     data[,indVarsUnc] <- 0
   }
@@ -82,8 +85,10 @@ estimateY <- function(relationship, regfunctions,
   }
   
   for (i in names(regfunctions)){
-    relationship <- paste0(gsub(i, paste0("f_funcs", "$", i, "(regfunctions$", i, ")(c"), relationship), ")")
+    relationship <- paste0(gsub(paste0(i,"\\("), paste0("f_funcs", "$", i, "(regfunctions$", i, ")(c("), relationship))
   }
+  relationship <- gsub(paste0("\\]\\)"), paste0("\\]\\)\\)"), relationship)
+
   
   if (!includeRegUnc) {
     f_funcs <- lapply(regfunctions, function(f) {
@@ -169,14 +174,14 @@ estimateY <- function(relationship, regfunctions,
   
   Y_Samples_Individual <- lapply(1:nrow(data), function(i){
     values <- data[rep(i, n_samples), indVars]
-    if ((indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) > 0){
+    if ((any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) > 0){
       # vars <- (unlist(lapply(regfunctions, function(x) x$sdX)) ^ 2)
       # means <- (unlist(lapply(regfunctions, function(x) x$meanX)) /
       #             (unlist(lapply(regfunctions, function(x) x$sdX))) ^ 2)
       vars <- rep(0, length(indVars))
       means <- unlist(data[i, indVars])
     } 
-    if(!(indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) > 0) {
+    if(!(any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) > 0) {
       # vars <- (1 / (1 / unlist(data[i, indVarsUnc]) ^ 2 + 1 /
       #                 (unlist(lapply(regfunctions, function(x) x$sdX)) ^ 2)))
       # means <- unlist(vars * data[i, indVars] / data[i, indVarsUnc] ^ 2 +
@@ -185,11 +190,11 @@ estimateY <- function(relationship, regfunctions,
       vars <- unlist(data[i, indVarsUnc]) ^ 2
       means <- unlist(data[i, indVars])
     }
-    if (!(indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) == 0){
+    if (!(any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
       vars <- unlist(data[i, indVarsUnc]) ^ 2
       means <- unlist(data[i, indVars])
     }
-    if ((indVarsUnc == "" || is.null(indVarsUnc)) && length(regfunctions) == 0){
+    if ((any(indVarsUnc == "") || any(is.null(indVarsUnc))) && length(regfunctions) == 0){
       vars <- rep(0, length(indVars))
       means <- unlist(data[i, indVars])
     }
