@@ -28,7 +28,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
                           whiskerMultiplier = 0.95,
                           boxQuantile = 0.68){
   # fix R CMD check warnings
-  Individual <- Value <- Category <- yPred <- NULL
+  Sample <- Value <- Category <- yPred <- Individual <- NULL
   if(class(yEstimates) != "list" && length(yEstimates) != 2){
     stop("Please define inputs and click on \"estimate Y \" first")
   }
@@ -344,6 +344,7 @@ plotFunctions <- function(data, xVar, yVar, object,
                           xAxisSize = 18, yAxisSize = 18,
                           PointSize= 1, LineWidth = 1
 ){
+  yPred <- xPred <- NULL
   xLim <- c(min(data[,xVar], na.rm = TRUE),max(data[,xVar], na.rm = TRUE))
   #predict
   form <- object$form
