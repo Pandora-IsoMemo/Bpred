@@ -4,7 +4,7 @@ testthat::test_that("Summarise estimates table", {
   result <-
     mpiBpred::summariseEstimates(
       yEstimates,
-      type = "Individual",
+      type = "Sample",
       probability = 0.95,
       checkDifferencesReference = TRUE,
       referenceType = "dist",
@@ -17,7 +17,7 @@ testthat::test_that("Summarise estimates table", {
   testthat::expect_equal(nrow(result$Means), 6)
   
   result <-
-    mpiBpred::summariseEstimates(yEstimates, type = "Individual", probability = 0.95)
+    mpiBpred::summariseEstimates(yEstimates, type = "Sample", probability = 0.95)
   
   testthat::expect_type(result, "list")
   testthat::expect_length(result, 2)
@@ -40,7 +40,7 @@ testthat::test_that("Summarise estimates table", {
   result <-
     mpiBpred::summariseEstimates(
       yEstimates,
-      type = "Individual",
+      type = "Sample",
       probability = 0.95,
       checkDifferencesReference = TRUE,
       referenceType = "dist",
@@ -54,7 +54,7 @@ testthat::test_that("Summarise estimates table", {
   result <-
     mpiBpred::summariseEstimates(
       yEstimates,
-      type = "Individual",
+      type = "Sample",
       probability = 0.95,
       checkDifferencesReference = TRUE,
       referenceType = "sample",

@@ -6,7 +6,7 @@
 \usage{
 summariseEstimates(
   yEstimates,
-  type = "Individual",
+  type = "Sample",
   checkDifferences = TRUE,
   probability = 0.95,
   checkDifferencesReference = FALSE,
