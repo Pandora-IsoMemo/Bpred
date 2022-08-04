@@ -28,7 +28,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
                           whiskerMultiplier = 0.95,
                           boxQuantile = 0.68){
   # fix R CMD check warnings
-  Sample <- Value <- Category <- NULL
+  Individual <- Value <- Category <- yPred <- NULL
   if(class(yEstimates) != "list" && length(yEstimates) != 2){
     stop("Please define inputs and click on \"estimate Y \" first")
   }
