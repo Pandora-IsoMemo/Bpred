@@ -271,7 +271,7 @@ fitModel <- function(X, y, yUnc, xUnc, parNames, varNames, form, startPar = rep(
 
   #Vektor der tatsaechlich benutzten Beobachtungen
 
-  return(list(beta = betamc[usedsamples, ], sigma = smc[usedsamples, ],
+  return(list(beta = betamc[usedsamples, , drop = FALSE], sigma = smc[usedsamples, ],
               mRe = mRe, sRe = sRe, yPredmc = yPredmc[usedsamples, ],
               acceptMC = acceptMC, form = formOrig,
               parNames = parNames, varNames = varNames, nChains = chains,
