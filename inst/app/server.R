@@ -585,28 +585,63 @@ if(is.null(input$regfunctions)){
                     filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
   
   
+  # MODEL DOWN- / UPLOAD ----
+  
   uploadedNotes <- reactiveVal()
   callModule(downloadModel, "modelDownload", 
              allParentInput = reactive(reactiveValuesToList(input)),
              yEstimates = yEstimates, formulas = formulas, data = data, 
              uploadedNotes = uploadedNotes)
 
-  inputFields <- callModule(uploadModel, "modelUpload", 
-                            yEstimates = yEstimates, formulas = formulas, data = data, 
-                            uploadedNotes = uploadedNotes)
+  uploadedData <- callModule(uploadModel, "modelUpload")
   
-  observeEvent(inputFields(), priority = -100, {
-    req(inputFields())
-    updateTextInput(session, "relationship", value = inputFields()$relationship)
-    updatePickerInput(session, "regfunctions", selected = inputFields()$regfunctions)
-    updateSelectizeInput(session, "indVars", selected = inputFields()$indVars)
-    updateSelectizeInput(session, "indVarsUnc", selected = inputFields()$indVarsUnc)
-    updateSelectInput(session, "yDist", selected = inputFields()$yDist)
-    updatePickerInput(session, "category", selected = inputFields()$category)
-    updateTextInput(session, "n_samples", value = inputFields()$n_samples)
-    updateCheckboxInput(session, "includeRegUnc", value = inputFields()$includeRegUnc)
+  observeEvent(uploadedData$data, {
+    # update data in tab "Data" and tab "Measures" ----
+    for (name in names(data))
+      if (!is.null(uploadedData$data[[name]])) {
+        data[[name]] <- uploadedData$data[[name]]
+      } else if (name %in% c("dat", "exportedData")) {
+        data[[name]] <- data.frame()
+      } else {
+        data[[name]] <- NULL
+      }
+  })
+
+  observeEvent(uploadedData$formulas, {
+    # update data in "Defined Formulas" in tab "Formulas" ----
+    for (name in names(formulas))
+      if (!is.null(uploadedData$formulas[[name]])) {
+        formulas[[name]] <- uploadedData$formulas[[name]]
+      } else if (name == "f") {
+        formulas$f <- data.frame()
+      } else {
+        formulas[[name]] <- list()
+      }
   })
   
+  observeEvent(uploadedData$model, {
+    # update model and notes in tab "Estimates" ----
+    yEstimates(uploadedData$model)
+  })
+  
+  observeEvent(uploadedData$notes, {
+    # update model and notes in tab "Estimates" ----
+    uploadedNotes(uploadedData$notes)
+  })
+  
+  observeEvent(uploadedData$inputFields, priority = -100, {
+    inputFields <- uploadedData$inputFields
+    # update inputs in tab "Estimates" ----
+    updateTextInput(session, "relationship", value = inputFields$relationship)
+    updatePickerInput(session, "regfunctions", selected = inputFields$regfunctions)
+    updateSelectizeInput(session, "indVars", selected = inputFields$indVars)
+    updateSelectizeInput(session, "indVarsUnc", selected = inputFields$indVarsUnc)
+    updatePickerInput(session, "category", selected = inputFields$category)
+    updateSelectInput(session, "yDist", selected = inputFields$yDist)
+    updateTextInput(session, "n_samples", value = inputFields$n_samples)
+    updateCheckboxInput(session, "includeRegUnc", value = inputFields$includeRegUnc)
+  })
+    
   observeEvent(input$getHelp, {
     showModal(modalDialog(
       title = "Help",

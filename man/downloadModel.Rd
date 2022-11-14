@@ -29,6 +29,8 @@ downloadModel(
 
 \item{session}{shiny session}
 
+\item{allParentInput}{(reactive) list of inputs from parent module}
+
 \item{yEstimates}{(reactive) An object created by \code{\link{estimateY}}.
 Distributions of the dependent variable.}
 

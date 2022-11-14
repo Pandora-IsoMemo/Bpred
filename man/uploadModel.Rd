@@ -7,7 +7,7 @@
 \usage{
 uploadModelUI(id, label)
 
-uploadModel(input, output, session, yEstimates, formulas, data, uploadedNotes)
+uploadModel(input, output, session)
 }
 \arguments{
 \item{id}{id of module}
@@ -19,15 +19,6 @@ uploadModel(input, output, session, yEstimates, formulas, data, uploadedNotes)
 \item{output}{shiny output}
 
 \item{session}{shiny session}
-
-\item{yEstimates}{(reactive) An object created by \code{\link{estimateY}}.
-Distributions of the dependent variable.}
-
-\item{formulas}{(reactive) formulas}
-
-\item{data}{(reactive) data}
-
-\item{uploadedNotes}{(reactive) variable that stores content of README.txt}
 }
 \description{
 UI function to upload a zip file with notes and a list of models
