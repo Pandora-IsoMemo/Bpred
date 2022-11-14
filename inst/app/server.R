@@ -631,6 +631,27 @@ if(is.null(input$regfunctions)){
   
   observeEvent(uploadedData$inputFields, priority = -100, {
     inputFields <- uploadedData$inputFields
+    # update inputs in tab "DATA" ----
+    updateNumericInput(session, "n", value = inputFields[["n"]])
+    
+    # update inputs in tab "FORMULAS" ----
+    updateTextInput(session, "formName", value = inputFields[["formName"]])
+    updatePickerInput(session, "f_y", selected = inputFields[["f_y"]])
+    updateSelectInput(session, "f_yunc", selected = inputFields[["f_yunc"]])
+    updateRadioButtons(session, "selectFType", selected = inputFields[["selectFType"]])
+    updatePickerInput(session, "f_x", selected = inputFields[["f_x"]])
+    updateSelectInput(session, "f_xunc", selected = inputFields[["f_xunc"]])
+    updateSelectInput(session, "f_link", selected = inputFields[["f_link"]])
+    updateTextInput(session, "formCustom", value = inputFields[["formCustom"]])
+    updateSelectizeInput(session, "custom_x", selected = inputFields[["custom_x"]])
+    updateSelectizeInput(session, "custom_x_unc", selected = inputFields[["custom_x_unc"]])
+    updateCheckboxInput(session, "dirichlet", value = inputFields[["dirichlet"]])
+    updateTextInput(session, "parRestricted", value = inputFields[["parRestricted"]])
+    updateSliderInput(session, "iter", value = inputFields[["iter"]])
+    updateSliderInput(session, "burnin", value = inputFields[["burnin"]])
+    updateSliderInput(session, "chains", value = inputFields[["chains"]])
+    updateSliderInput(session, "thinning", value = inputFields[["thinning"]])
+    
     # update inputs in tab "Estimates" ----
     updateTextInput(session, "relationship", value = inputFields$relationship)
     updatePickerInput(session, "regfunctions", selected = inputFields$regfunctions)
@@ -638,6 +659,9 @@ if(is.null(input$regfunctions)){
     updateSelectizeInput(session, "indVarsUnc", selected = inputFields$indVarsUnc)
     updatePickerInput(session, "category", selected = inputFields$category)
     updateSelectInput(session, "yDist", selected = inputFields$yDist)
+    updateCheckboxInput(session, "rangeRestrict", value = inputFields[["rangeRestrict"]])
+    updateNumericInput(session, "minRange", value = inputFields[["minRange"]])
+    updateNumericInput(session, "maxRange", value = inputFields[["maxRange"]])
     updateTextInput(session, "n_samples", value = inputFields$n_samples)
     updateCheckboxInput(session, "includeRegUnc", value = inputFields$includeRegUnc)
   })
