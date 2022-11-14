@@ -11,6 +11,7 @@ downloadModel(
   input,
   output,
   session,
+  allParentInput,
   yEstimates,
   formulas,
   data,

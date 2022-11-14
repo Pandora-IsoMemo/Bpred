@@ -39,6 +39,7 @@ downloadModel <-
   function(input,
            output,
            session,
+           allParentInput,
            yEstimates,
            formulas,
            data,
@@ -60,7 +61,7 @@ downloadModel <-
         model <- yEstimates()
         formulasObj <- reactiveValuesToList(formulas)
         dataObj <- reactiveValuesToList(data)
-        inputObj <- reactiveValuesToList(input)
+        inputObj <- allParentInput()
         save(model, formulasObj, dataObj, inputObj, file = modelfile)
         writeLines(input$notes, notesfile)
         save_html(getHelp(input$tab), helpfile)
@@ -112,7 +113,6 @@ uploadModelUI <- function(id, label) {
 #' @param formulas (reactive) formulas
 #' @param data (reactive) data
 #' @param uploadedNotes (reactive) variable that stores content of README.txt
-#' @param inputFields (reactive) inputFields
 #'
 #' @export
 uploadModel <-
@@ -122,9 +122,9 @@ uploadModel <-
            yEstimates,
            formulas,
            data,
-           uploadedNotes,
-           inputFields) {
+           uploadedNotes) {
     pathToModel <- reactiveVal(NULL)
+    inputFields <- reactiveVal()
     
     observeEvent(input$uploadModel, {
       pathToModel(input$uploadModel$datapath)
@@ -156,18 +156,24 @@ uploadModel <-
         return()
       }
       
-      yEstimates(model)
       
-      if (!is.null(model$data))
-        updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
       
+      # update tab "Data" and tab "Measures" ----
       for (n in names(dataObj))
         data[[n]] <- dataObj[[n]]
+      
+      # update "Defined Formulas" in tab "Formulas" ----
       for (n in names(formulasObj))
         formulas[[n]] <- formulasObj[[n]]
       
+      # update model in tab "Estimates" ----
+      yEstimates(model)
+      
+      # update inputs ----
       inputFields(inputObj)
       
       alert("Model loaded")
     })
+    
+    return(inputFields)
   }

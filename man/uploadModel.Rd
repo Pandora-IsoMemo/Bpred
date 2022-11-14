@@ -7,16 +7,7 @@
 \usage{
 uploadModelUI(id, label)
 
-uploadModel(
-  input,
-  output,
-  session,
-  yEstimates,
-  formulas,
-  data,
-  uploadedNotes,
-  inputFields
-)
+uploadModel(input, output, session, yEstimates, formulas, data, uploadedNotes)
 }
 \arguments{
 \item{id}{id of module}
@@ -37,8 +28,6 @@ Distributions of the dependent variable.}
 \item{data}{(reactive) data}
 
 \item{uploadedNotes}{(reactive) variable that stores content of README.txt}
-
-\item{inputFields}{(reactive) inputFields}
 }
 \description{
 UI function to upload a zip file with notes and a list of models

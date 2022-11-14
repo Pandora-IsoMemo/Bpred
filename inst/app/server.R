@@ -305,8 +305,6 @@ shinyServer(function(input, output, session) {
                             SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
                             X2 = c(1.5, 1.8, 1.1, 2.25, 2.3),
                             SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3)) 
-    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix() )
-
   })
   
   observeEvent(input$MeasuresFile, {
@@ -326,7 +324,11 @@ shinyServer(function(input, output, session) {
       return()
     }
     data$measures <- content
-    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix() )
+  })
+  
+  observeEvent(data$measures, {
+    req(data$measures)
+    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix())
   })
   
   observe({
@@ -585,31 +587,31 @@ if(is.null(input$regfunctions)){
   
   uploadedNotes <- reactiveVal()
   callModule(downloadModel, "modelDownload", 
+             allParentInput = reactive(reactiveValuesToList(input)),
              yEstimates = yEstimates, formulas = formulas, data = data, 
              uploadedNotes = uploadedNotes)
 
-  inputFields <- reactiveVal()
-  callModule(uploadModel, "modelUpload", 
-             yEstimates = yEstimates, formulas = formulas, data = data, 
-             uploadedNotes = uploadedNotes, inputFields = inputFields)
-
+  inputFields <- callModule(uploadModel, "modelUpload", 
+                            yEstimates = yEstimates, formulas = formulas, data = data, 
+                            uploadedNotes = uploadedNotes)
+  
+  observeEvent(inputFields(), priority = -100, {
+    req(inputFields())
+    updateTextInput(session, "relationship", value = inputFields()$relationship)
+    updatePickerInput(session, "regfunctions", selected = inputFields()$regfunctions)
+    updateSelectizeInput(session, "indVars", selected = inputFields()$indVars)
+    updateSelectizeInput(session, "indVarsUnc", selected = inputFields()$indVarsUnc)
+    updateSelectInput(session, "yDist", selected = inputFields()$yDist)
+    updatePickerInput(session, "category", selected = inputFields()$category)
+    updateTextInput(session, "n_samples", value = inputFields()$n_samples)
+    updateCheckboxInput(session, "includeRegUnc", value = inputFields()$includeRegUnc)
+  })
+  
   observeEvent(input$getHelp, {
     showModal(modalDialog(
       title = "Help",
       easyClose = TRUE,
       getHelp(input$tab)
     ))
-  })
-
-  observeEvent(inputFields(), priority = -100, {
-    req(inputFields())
-    updateTextInput(session, "relationship", value = inputFields()$relationship)
-    updatePickerInput(session, "regfunctions", selected = inputFields()$regfunctions)
-    updateSelectizeInput(session, "indVars", choices = inputFields()$indVars)
-    updateSelectizeInput(session, "indVarsUnc", choices = inputFields()$indVarsUnc)
-    updateSelectInput(session, "yDist", selected = inputFields()$yDist)
-    updatePickerInput(session, "category", selected = inputFields()$category)
-    updateTextInput(session, "n_samples", value = inputFields()$n_samples)
-    updateCheckboxInput(session, "includeRegUnc", value = inputFields()$includeRegUnc)
   })
 })
