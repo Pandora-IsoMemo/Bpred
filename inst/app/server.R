@@ -305,8 +305,6 @@ shinyServer(function(input, output, session) {
                             SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
                             X2 = c(1.5, 1.8, 1.1, 2.25, 2.3),
                             SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3)) 
-    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix() )
-
   })
   
   observeEvent(input$MeasuresFile, {
@@ -326,7 +324,11 @@ shinyServer(function(input, output, session) {
       return()
     }
     data$measures <- content
-    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix() )
+  })
+  
+  observeEvent(data$measures, {
+    req(data$measures)
+    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix())
   })
   
   observe({
@@ -583,33 +585,130 @@ if(is.null(input$regfunctions)){
                     filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
   
   
+  # MODEL DOWN- / UPLOAD ----
+  
   uploadedNotes <- reactiveVal()
   callModule(downloadModel, "modelDownload", 
+             allParentInput = reactive(reactiveValuesToList(input)),
              yEstimates = yEstimates, formulas = formulas, data = data, 
              uploadedNotes = uploadedNotes)
 
-  inputFields <- reactiveVal()
-  callModule(uploadModel, "modelUpload", 
-             yEstimates = yEstimates, formulas = formulas, data = data, 
-             uploadedNotes = uploadedNotes, inputFields = inputFields)
+  uploadedData <- callModule(uploadModel, "modelUpload")
+  
+  observeEvent(uploadedData$data, {
+    # update data in tab "Data" and tab "Measures" ----
+    for (name in names(data))
+      if (!is.null(uploadedData$data[[name]])) {
+        data[[name]] <- uploadedData$data[[name]]
+      } else if (name %in% c("dat", "exportedData")) {
+        data[[name]] <- data.frame()
+      } else {
+        data[[name]] <- NULL
+      }
+  })
 
+  observeEvent(uploadedData$formulas, {
+    # update data in "Defined Formulas" in tab "Formulas" ----
+    for (name in names(formulas))
+      if (!is.null(uploadedData$formulas[[name]])) {
+        formulas[[name]] <- uploadedData$formulas[[name]]
+      } else if (name == "f") {
+        formulas$f <- data.frame()
+      } else {
+        formulas[[name]] <- list()
+      }
+  })
+  
+  observeEvent(uploadedData$notes, {
+    # update model and notes in tab "Estimates" ----
+    uploadedNotes(uploadedData$notes)
+  })
+  
+  observeEvent(uploadedData$model, priority = -100, {
+    # update model and notes in tab "Estimates" ----
+    yEstimates(uploadedData$model)
+    
+    ## update these inputs from model output ----
+    #(this is also available for formally saved model objects, before version 22.11.1)
+    updateSelectizeInput(session, "indVars", selected = uploadedData$model$indVars)
+    updateSelectizeInput(session, "indVarsUnc", selected = uploadedData$model$indVarsUnc)
+    updatePickerInput(session, "category", selected = uploadedData$model$category)
+    updateSelectInput(session, "yDist", selected = uploadedData$model$distribution)
+    updateTextInput(session, "n_samples", value = uploadedData$model$n_samples)
+    updateCheckboxInput(session, "includeRegUnc", value = uploadedData$model$includeRegUnc)
+  })
+  
+  observeEvent(uploadedData$inputFields, priority = -100, {
+    inputFields <- uploadedData$inputFields
+    # update inputs in tab "DATA" ----
+    updateNumericInput(session, "n", value = inputFields[["n"]])
+    
+    # update inputs in tab "FORMULAS" and "Estimates" ----
+    ## updateTextInput
+    for (i in c("formName", "formCustom", "parRestricted", "relationship")) {
+      if (!is.null(i)) {
+        updateTextInput(session, i, value = inputFields[[i]])
+      } else {
+        updateTextInput(session, i, value = "")
+      }
+    }
+    ## updatePickerInput
+    for (i in c("f_y", "f_x", "f_xunc", "regfunctions")) {
+      if (!is.null(i)) {
+        updatePickerInput(session, i, selected = inputFields[[i]])
+      } else {
+        updatePickerInput(session, i, selected = list())
+      }
+    }
+    ## updateSelectInput
+    for (i in c("f_yunc", "f_xunc", "f_link")) {
+      if (!is.null(i)) {
+        updateSelectInput(session, i, selected = inputFields[[i]])
+      } else {
+        updateSelectInput(session, i, selected = list())
+      }
+    }
+    
+    ## updateRadioButtons
+    if (!is.null(inputFields[["selectFType"]])) {
+      updateRadioButtons(session, "selectFType", selected = inputFields[["selectFType"]])
+    } else {
+      updateRadioButtons(session, "selectFType", selected = character(0))
+    }
+    
+    ## updateSelectizeInput
+    for (i in c("custom_x", "custom_x_unc")) {
+      if (!is.null(i)) {
+        updateSelectizeInput(session, i, selected = inputFields[[i]])
+      } else {
+        updateSelectizeInput(session, i, selected = list())
+      }
+    }
+    
+    ## updateCheckboxInput
+    for (i in c("dirichlet", "rangeRestrict")) {
+      if (!is.null(i)) {
+        updateCheckboxInput(session, i, value = inputFields[[i]])
+      } else {
+        updateCheckboxInput(session, i, value = FALSE)
+      }
+    }
+    
+    ## updateSliderInput, updateNumericInput
+    # if is.null, than no update (is.null is ignored by default):
+    updateSliderInput(session, "iter", value = inputFields[["iter"]])
+    updateSliderInput(session, "burnin", value = inputFields[["burnin"]])
+    updateSliderInput(session, "chains", value = inputFields[["chains"]])
+    updateSliderInput(session, "thinning", value = inputFields[["thinning"]])
+    updateNumericInput(session, "minRange", value = inputFields[["minRange"]])
+    updateNumericInput(session, "maxRange", value = inputFields[["maxRange"]])
+  })
+    
   observeEvent(input$getHelp, {
     showModal(modalDialog(
       title = "Help",
       easyClose = TRUE,
       getHelp(input$tab)
     ))
-  })
-
-  observeEvent(inputFields(), priority = -100, {
-    req(inputFields())
-    updateTextInput(session, "relationship", value = inputFields()$relationship)
-    updatePickerInput(session, "regfunctions", selected = inputFields()$regfunctions)
-    updateSelectizeInput(session, "indVars", choices = inputFields()$indVars)
-    updateSelectizeInput(session, "indVarsUnc", choices = inputFields()$indVarsUnc)
-    updateSelectInput(session, "yDist", selected = inputFields()$yDist)
-    updatePickerInput(session, "category", selected = inputFields()$category)
-    updateTextInput(session, "n_samples", value = inputFields()$n_samples)
-    updateCheckboxInput(session, "includeRegUnc", value = inputFields()$includeRegUnc)
   })
 })

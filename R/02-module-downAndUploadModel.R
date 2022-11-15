@@ -28,6 +28,7 @@ downloadModelUI <- function(id, label) {
 #' @param input shiny input
 #' @param output shiny output
 #' @param session shiny session
+#' @param allParentInput (reactive) list of inputs from parent module
 #' @param yEstimates (reactive) An object created by \code{\link{estimateY}}.
 #'  Distributions of the dependent variable.
 #' @param formulas (reactive) formulas
@@ -39,6 +40,7 @@ downloadModel <-
   function(input,
            output,
            session,
+           allParentInput,
            yEstimates,
            formulas,
            data,
@@ -60,7 +62,7 @@ downloadModel <-
         model <- yEstimates()
         formulasObj <- reactiveValuesToList(formulas)
         dataObj <- reactiveValuesToList(data)
-        inputObj <- reactiveValuesToList(input)
+        inputObj <- allParentInput()
         save(model, formulasObj, dataObj, inputObj, file = modelfile)
         writeLines(input$notes, notesfile)
         save_html(getHelp(input$tab), helpfile)
@@ -107,24 +109,21 @@ uploadModelUI <- function(id, label) {
 #' @param input shiny input
 #' @param output shiny output
 #' @param session shiny session
-#' @param yEstimates (reactive) An object created by \code{\link{estimateY}}.
-#'  Distributions of the dependent variable.
-#' @param formulas (reactive) formulas
-#' @param data (reactive) data
-#' @param uploadedNotes (reactive) variable that stores content of README.txt
-#' @param inputFields (reactive) inputFields
 #'
 #' @export
 uploadModel <-
   function(input,
            output,
-           session,
-           yEstimates,
-           formulas,
-           data,
-           uploadedNotes,
-           inputFields) {
+           session) {
     pathToModel <- reactiveVal(NULL)
+    
+    uploadedData <- reactiveValues(
+      inputFields = NULL,
+      data = NULL,
+      formulas = NULL,
+      model = NULL,
+      notes = NULL
+    )
     
     observeEvent(input$uploadModel, {
       pathToModel(input$uploadModel$datapath)
@@ -141,7 +140,7 @@ uploadModel <-
       res <- try({
         zip::unzip(pathToModel())
         load("model.Rdata") # should contain: model, formulasObj, dataObj, inputObj
-        uploadedNotes(readLines("README.txt"))
+        uploadedData$notes <- readLines("README.txt")
       })
       
       if (inherits(res, "try-error")) {
@@ -156,18 +155,13 @@ uploadModel <-
         return()
       }
       
-      yEstimates(model)
-      
-      if (!is.null(model$data))
-        updateMatrixInput(session, "measuresMatrix", value = as.matrix(model$data))
-      
-      for (n in names(dataObj))
-        data[[n]] <- dataObj[[n]]
-      for (n in names(formulasObj))
-        formulas[[n]] <- formulasObj[[n]]
-      
-      inputFields(inputObj)
+      uploadedData$data <- dataObj
+      uploadedData$formulas <- formulasObj
+      uploadedData$model <- model
+      uploadedData$inputFields <- inputObj
       
       alert("Model loaded")
     })
+    
+    return(uploadedData)
   }
