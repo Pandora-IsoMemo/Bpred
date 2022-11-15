@@ -619,14 +619,23 @@ if(is.null(input$regfunctions)){
       }
   })
   
-  observeEvent(uploadedData$model, {
-    # update model and notes in tab "Estimates" ----
-    yEstimates(uploadedData$model)
-  })
-  
   observeEvent(uploadedData$notes, {
     # update model and notes in tab "Estimates" ----
     uploadedNotes(uploadedData$notes)
+  })
+  
+  observeEvent(uploadedData$model, priority = -100, {
+    # update model and notes in tab "Estimates" ----
+    yEstimates(uploadedData$model)
+    
+    ## update these inputs from model output ----
+    #(this is also available for formally saved model objects, before version 22.11.1)
+    updateSelectizeInput(session, "indVars", selected = uploadedData$model$indVars)
+    updateSelectizeInput(session, "indVarsUnc", selected = uploadedData$model$indVarsUnc)
+    updatePickerInput(session, "category", selected = uploadedData$model$category)
+    updateSelectInput(session, "yDist", selected = uploadedData$model$distribution)
+    updateTextInput(session, "n_samples", value = uploadedData$model$n_samples)
+    updateCheckboxInput(session, "includeRegUnc", value = uploadedData$model$includeRegUnc)
   })
   
   observeEvent(uploadedData$inputFields, priority = -100, {
@@ -634,36 +643,65 @@ if(is.null(input$regfunctions)){
     # update inputs in tab "DATA" ----
     updateNumericInput(session, "n", value = inputFields[["n"]])
     
-    # update inputs in tab "FORMULAS" ----
-    updateTextInput(session, "formName", value = inputFields[["formName"]])
-    updatePickerInput(session, "f_y", selected = inputFields[["f_y"]])
-    updateSelectInput(session, "f_yunc", selected = inputFields[["f_yunc"]])
-    updateRadioButtons(session, "selectFType", selected = inputFields[["selectFType"]])
-    updatePickerInput(session, "f_x", selected = inputFields[["f_x"]])
-    updateSelectInput(session, "f_xunc", selected = inputFields[["f_xunc"]])
-    updateSelectInput(session, "f_link", selected = inputFields[["f_link"]])
-    updateTextInput(session, "formCustom", value = inputFields[["formCustom"]])
-    updateSelectizeInput(session, "custom_x", selected = inputFields[["custom_x"]])
-    updateSelectizeInput(session, "custom_x_unc", selected = inputFields[["custom_x_unc"]])
-    updateCheckboxInput(session, "dirichlet", value = inputFields[["dirichlet"]])
-    updateTextInput(session, "parRestricted", value = inputFields[["parRestricted"]])
+    # update inputs in tab "FORMULAS" and "Estimates" ----
+    ## updateTextInput
+    for (i in c("formName", "formCustom", "parRestricted", "relationship")) {
+      if (!is.null(i)) {
+        updateTextInput(session, i, value = inputFields[[i]])
+      } else {
+        updateTextInput(session, i, value = "")
+      }
+    }
+    ## updatePickerInput
+    for (i in c("f_y", "f_x", "f_xunc", "regfunctions")) {
+      if (!is.null(i)) {
+        updatePickerInput(session, i, selected = inputFields[[i]])
+      } else {
+        updatePickerInput(session, i, selected = list())
+      }
+    }
+    ## updateSelectInput
+    for (i in c("f_yunc", "f_xunc", "f_link")) {
+      if (!is.null(i)) {
+        updateSelectInput(session, i, selected = inputFields[[i]])
+      } else {
+        updateSelectInput(session, i, selected = list())
+      }
+    }
+    
+    ## updateRadioButtons
+    if (!is.null(inputFields[["selectFType"]])) {
+      updateRadioButtons(session, "selectFType", selected = inputFields[["selectFType"]])
+    } else {
+      updateRadioButtons(session, "selectFType", selected = character(0))
+    }
+    
+    ## updateSelectizeInput
+    for (i in c("custom_x", "custom_x_unc")) {
+      if (!is.null(i)) {
+        updateSelectizeInput(session, i, selected = inputFields[[i]])
+      } else {
+        updateSelectizeInput(session, i, selected = list())
+      }
+    }
+    
+    ## updateCheckboxInput
+    for (i in c("dirichlet", "rangeRestrict")) {
+      if (!is.null(i)) {
+        updateCheckboxInput(session, i, value = inputFields[[i]])
+      } else {
+        updateCheckboxInput(session, i, value = FALSE)
+      }
+    }
+    
+    ## updateSliderInput, updateNumericInput
+    # if is.null, than no update:
     updateSliderInput(session, "iter", value = inputFields[["iter"]])
     updateSliderInput(session, "burnin", value = inputFields[["burnin"]])
     updateSliderInput(session, "chains", value = inputFields[["chains"]])
     updateSliderInput(session, "thinning", value = inputFields[["thinning"]])
-    
-    # update inputs in tab "Estimates" ----
-    updateTextInput(session, "relationship", value = inputFields$relationship)
-    updatePickerInput(session, "regfunctions", selected = inputFields$regfunctions)
-    updateSelectizeInput(session, "indVars", selected = inputFields$indVars)
-    updateSelectizeInput(session, "indVarsUnc", selected = inputFields$indVarsUnc)
-    updatePickerInput(session, "category", selected = inputFields$category)
-    updateSelectInput(session, "yDist", selected = inputFields$yDist)
-    updateCheckboxInput(session, "rangeRestrict", value = inputFields[["rangeRestrict"]])
     updateNumericInput(session, "minRange", value = inputFields[["minRange"]])
     updateNumericInput(session, "maxRange", value = inputFields[["maxRange"]])
-    updateTextInput(session, "n_samples", value = inputFields$n_samples)
-    updateCheckboxInput(session, "includeRegUnc", value = inputFields$includeRegUnc)
   })
     
   observeEvent(input$getHelp, {
