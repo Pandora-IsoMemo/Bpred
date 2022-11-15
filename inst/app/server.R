@@ -695,7 +695,7 @@ if(is.null(input$regfunctions)){
     }
     
     ## updateSliderInput, updateNumericInput
-    # if is.null, than no update:
+    # if is.null, than no update (is.null is ignored by default):
     updateSliderInput(session, "iter", value = inputFields[["iter"]])
     updateSliderInput(session, "burnin", value = inputFields[["burnin"]])
     updateSliderInput(session, "chains", value = inputFields[["chains"]])
