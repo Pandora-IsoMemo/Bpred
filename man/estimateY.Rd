@@ -15,7 +15,8 @@ estimateY(
   includeRegUnc = TRUE,
   distribution = "normal",
   rangeRestrict = FALSE,
-  rangeY = c(-Inf, +Inf)
+  rangeY = c(-Inf, +Inf),
+  imputeMissing = TRUE
 )
 }
 \arguments{

@@ -172,7 +172,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
       
     } else {
       IndividualData <- IndividualData %>% group_by(Category) %>% summarise(meanEst = mean(Value), upper = quantile(Value, 0.975), lower = quantile(Value, 0.025))
-      g <- ggplot(IndividualData, aes(x = Category, y = meanEst, group = 1)) + ggtitle("Mean and 95\\% unertainty by category") + 
+      g <- ggplot(IndividualData, aes(x = Category, y = meanEst, group = 1)) + ggtitle("Mean and 95\\% uncertainty by category") + 
         geom_line() + geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2)
     }
     
