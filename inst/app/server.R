@@ -687,7 +687,7 @@ if(is.null(input$regfunctions)){
     }
     
     ## updateCheckboxInput
-    for (i in c("dirichlet", "rangeRestrict")) {
+    for (i in c("dirichlet", "imputeMissing", "rangeRestrict")) {
       if (!is.null(i)) {
         updateCheckboxInput(session, i, value = inputFields[[i]])
       } else {
