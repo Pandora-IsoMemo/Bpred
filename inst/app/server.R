@@ -365,13 +365,13 @@ shinyServer(function(input, output, session) {
     #     shinyjs::alert("For 'regfunctions', 'indVars' and 'indVarsUnc' always the same amount of variables has to be selected.")
     #     return()
     # }
-    lInd <- length(paste0("c(", paste0("'", input$indVars, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval)
+    lInd <- length(which((paste0("c(", paste0("'", input$indVars, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     if(is.null(input$indVarsUnc)){
       lUnc <- 0
     } else {
-      lUnc <- length(paste0("c(", paste0("'", input$indVarsUnc, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval)
+      lUnc <- length(which((paste0("c(", paste0("'", input$indVarsUnc, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     }
-    lregFunc <- length(paste0("c(", paste0("'", input$regfunctions, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval )
+    lregFunc <- length(which((paste0("c(", paste0("'", input$regfunctions, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     
     if(length(gregexpr("\\[", input$relationship)[[1]]) < lInd | length(gregexpr("\\]", input$relationship)[[1]]) < lInd){
       shinyjs::alert("Reminder: Variable names in relationship formula must be surrounded by brackets.")
@@ -382,7 +382,7 @@ shinyServer(function(input, output, session) {
     }
     
     if(lInd == 0){
-      shinyjs::alert("Please specify indpendent variables")
+      shinyjs::alert("Please specify independent variables")
       return()
     }
     

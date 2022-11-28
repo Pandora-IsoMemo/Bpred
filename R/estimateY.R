@@ -11,7 +11,8 @@
 #' @param distribution An character. Distribution of the independent variables. Must be one of "normal", "lognormal" or "gamma"
 #' @param rangeRestrict A boolean. Should the Y distribution be truncated to the rangeY parameter values?
 #' @param rangeY An numeric Vector of two numeric values that determine optional range of values
-
+#' @param imputeMissing impute missings in measure matrix by pmm-method of mice package or delete rows with missings?
+#' 
 #' @return A list of distributions (posterior samples) for each single y_i, all y_i combined and (optionally) each category
 #' @examples 
 #' \dontrun{
