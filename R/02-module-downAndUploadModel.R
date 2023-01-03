@@ -137,6 +137,8 @@ uploadModel <-
       #   paste0(input$remoteModel, ".zip")
       # ))
       
+      # add new function getRemoteModelsFromGH() to fill choices of remote models
+      
       tmp <- tempfile()
       res <- try(download.file(
         "https://github.com/Pandora-IsoMemo/bpred/raw/main/inst/app/predefinedModels/2020-04-15_18_59_33_bpred.zip",
