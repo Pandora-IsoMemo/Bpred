@@ -130,6 +130,8 @@ uploadModel <-
     })
     
     observeEvent(input$loadRemoteModel, {
+      
+      # USE THIS AS FALL BACK IF NO INTERNET CONNECTION
       # pathToModel(file.path(
       #   settings$pathToSavedModels,
       #   paste0(input$remoteModel, ".zip")
