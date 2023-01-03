@@ -130,10 +130,17 @@ uploadModel <-
     })
     
     observeEvent(input$loadRemoteModel, {
-      pathToModel(file.path(
-        settings$pathToSavedModels,
-        paste0(input$remoteModel, ".zip")
-      ))
+      # pathToModel(file.path(
+      #   settings$pathToSavedModels,
+      #   paste0(input$remoteModel, ".zip")
+      # ))
+      
+      tmp <- tempfile()
+      res <- try(download.file(
+        "https://github.com/Pandora-IsoMemo/bpred/raw/main/inst/app/predefinedModels/2020-04-15_18_59_33_bpred.zip",
+        destfile = tmp))
+
+      pathToModel(tmp)
     })
     
     observeEvent(pathToModel(), {
