@@ -172,3 +172,20 @@ uploadModel <-
     
     return(uploadedData)
   }
+
+#' Get Remote Models From GH
+#' 
+#' Get remote models from github directory
+getRemoteModelsFromGH <- function() {
+  # api.github.com/repos/Pandora-IsoMemo/bpred/contents/inst/app/predefinedModels
+  repo <- "bpred"
+  tmp <- httr::GET(paste0(
+    "api.github.com/repos/Pandora-IsoMemo/", repo, "/contents/inst/app/predefinedModels"
+    ))
+  apiOut <- httr::content(tmp)
+  
+  modelNames <- lapply(apiOut, function(el) el$name) %>%
+    unlist()
+  
+  return(modelNames)
+}
