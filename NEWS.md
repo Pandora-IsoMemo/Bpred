@@ -4,7 +4,7 @@
 
 ### Updates
 - remote models are loaded from the github folder `inst/app/predefinedModels` of the respective 
-repository
+repository (#1)
   - if there is no internet connection remote models are taken from the models that were saved with
   the last deployed app version
 
