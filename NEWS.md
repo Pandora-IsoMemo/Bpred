@@ -1,5 +1,13 @@
 # MpiBpred app development version
 
+## MpiBpred 23.01.1
+
+### Updates
+- remote models are loaded from the github folder `inst/app/predefinedModels` of the respective 
+repository
+  - if there is no internet connection remote models are taken from the models that were saved with
+  the last deployed app version
+
 ## MpiBpred 22.11.2
 
 ### New Features
