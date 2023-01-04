@@ -96,8 +96,7 @@ uploadModelUI <- function(id, label) {
         sub(pattern = '\\.zip$', replacement = ''),
       selected = NULL
     ),
-    actionButton(ns("loadRemoteModel"), "Load Remote Model")#,
-    #helpText("Remote models are only available on on https://isomemoapp.com")
+    remoteModelsUI(ns("remoteModels"))
   )
 }
 
@@ -128,25 +127,13 @@ uploadModel <-
     observeEvent(input$uploadModel, {
       pathToModel(input$uploadModel$datapath)
     })
-    
-    observeEvent(input$loadRemoteModel, {
-      
-      # USE THIS AS FALL BACK IF NO INTERNET CONNECTION
-      # pathToModel(file.path(
-      #   settings$pathToSavedModels,
-      #   paste0(input$remoteModel, ".zip")
-      # ))
-      
-      # add new function getRemoteModelsFromGH() to fill choices of remote models
-      
-      tmp <- tempfile()
-      res <- try(download.file(
-        "https://github.com/Pandora-IsoMemo/bpred/raw/main/inst/app/predefinedModels/2020-04-15_18_59_33_bpred.zip",
-        destfile = tmp))
 
-      pathToModel(tmp)
-    })
+    pathToRemote <- remoteModelsServer("remoteModels")
     
+    observeEvent(pathToRemote(), {
+      pathToModel(pathToRemote())
+    })
+      
     observeEvent(pathToModel(), {
       res <- try({
         zip::unzip(pathToModel())
@@ -177,19 +164,3 @@ uploadModel <-
     return(uploadedData)
   }
 
-#' Get Remote Models From GH
-#' 
-#' Get remote models from github directory
-getRemoteModelsFromGH <- function() {
-  # api.github.com/repos/Pandora-IsoMemo/bpred/contents/inst/app/predefinedModels
-  repo <- "bpred"
-  tmp <- httr::GET(paste0(
-    "api.github.com/repos/Pandora-IsoMemo/", repo, "/contents/inst/app/predefinedModels"
-    ))
-  apiOut <- httr::content(tmp)
-  
-  modelNames <- lapply(apiOut, function(el) el$name) %>%
-    unlist()
-  
-  return(modelNames)
-}
