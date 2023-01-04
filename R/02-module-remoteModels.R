@@ -96,7 +96,7 @@ getRemoteModelsFromGithub <- function(githubRepo) {
     thisPackage <- packageName(environment(getRemoteModelsFromGithub))
     shinyjs::alert(paste(
       "No connection to the remote github folder. The 'remote models'",
-      "are taken from the models that where saved with version",
+      "are taken from the models that were locally saved with version",
       packageVersion(thisPackage), "of", thisPackage
     ))
     NULL
