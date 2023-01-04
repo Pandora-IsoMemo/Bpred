@@ -15,6 +15,7 @@
 #' @importFrom httr GET content
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
+#' @importFrom mice mice complete
 #' @importFrom modules module
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset runjs useShinyjs
