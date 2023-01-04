@@ -152,6 +152,11 @@ uploadModel <-
       uploadedData$inputFields <- inputObj
       
       alert("Model loaded")
+      
+      # clean up
+      if (file.exists("model.Rdata")) file.remove("model.Rdata")
+      if (file.exists("README.txt")) file.remove("README.txt")
+      if (file.exists("help.html")) file.remove("help.html")
     })
     
     return(uploadedData)
