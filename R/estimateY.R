@@ -11,7 +11,8 @@
 #' @param distribution An character. Distribution of the independent variables. Must be one of "normal", "lognormal" or "gamma"
 #' @param rangeRestrict A boolean. Should the Y distribution be truncated to the rangeY parameter values?
 #' @param rangeY An numeric Vector of two numeric values that determine optional range of values
-
+#' @param imputeMissing impute missings in measure matrix by pmm-method of mice package or delete rows with missings?
+#' 
 #' @return A list of distributions (posterior samples) for each single y_i, all y_i combined and (optionally) each category
 #' @examples 
 #' \dontrun{
@@ -71,12 +72,49 @@ estimateY <- function(relationship, regfunctions,
                       includeRegUnc = TRUE,
                       distribution = "normal",
                       rangeRestrict = FALSE,
-                      rangeY = c(-Inf, +Inf)){
+                      rangeY = c(-Inf, +Inf),
+                      imputeMissing = TRUE){
   if((length(indVarsUnc) != length(indVars)) | any(indVarsUnc == "") | any(is.null(indVarsUnc))){
     indVarsUnc <- paste0(indVars, "_unc")
     data[,indVarsUnc] <- 0
   }
+
+  if(imputeMissing & any(is.na(data))){
+    if(category != ""){
+      if(class(data[, category]) == "character"){
+        data[, category] <- factor(data[, category])
+      }
+    }
+    imputed_Data <- mice(data, m=10, maxit = 50, seed = 500, printFlag = FALSE)
+    completed <- complete(imputed_Data, "all")
+    new_data <- data
+    new_data[, indVarsUnc][is.na(new_data[, indVarsUnc])] <- 0
+    for (i in 1:length(indVars)){
+      new_data[, indVars[i]] = rowMeans(sapply(1:length(completed), function(x) completed[[x]][,indVars[i]]))
+      if(any(indVarsUnc != "")){
+      new_data[, indVarsUnc[i]] = new_data[, indVarsUnc[i]] + apply(sapply(1:length(completed), function(x) completed[[x]][,indVars[i]]),1,sd)
+      }
+    }
+    if(category != ""){
+      if(class(data[, category]) == "factor"){
+      new_data[, category] <- apply(sapply(1:length(completed), function(x) completed[[x]][,category]), 1, getMode)
+    }
+    }
+    data <- new_data
+  } else {
+    relevantVars <- indVars
+    if(category != ""){
+      relevantVars <- c(relevantVars, category)
+    }
+    if(any(indVarsUnc != "")){
+      relevantVars <- c(relevantVars, indVarsUnc)
+    }
+    data <- na.omit(data[,c(relevantVars)])
+  }
+
   data[,indVarsUnc] <- data[,indVarsUnc] + 1E-6
+  
+  
   if(is.null(rangeY[1]) | is.na(rangeY[1])) rangeY[1] <- -Inf
   if(is.null(rangeY[2]) | is.na(rangeY[2])) rangeY[2] <- Inf
         

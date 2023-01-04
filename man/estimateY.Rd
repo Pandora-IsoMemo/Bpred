@@ -15,7 +15,8 @@ estimateY(
   includeRegUnc = TRUE,
   distribution = "normal",
   rangeRestrict = FALSE,
-  rangeY = c(-Inf, +Inf)
+  rangeY = c(-Inf, +Inf),
+  imputeMissing = TRUE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ estimateY(
 \item{rangeRestrict}{A boolean. Should the Y distribution be truncated to the rangeY parameter values?}
 
 \item{rangeY}{An numeric Vector of two numeric values that determine optional range of values}
+
+\item{imputeMissing}{impute missings in measure matrix by pmm-method of mice package or delete rows with missings?}
 }
 \value{
 A list of distributions (posterior samples) for each single y_i, all y_i combined and (optionally) each category

@@ -399,6 +399,9 @@ tagList(
             choices = c("normal", "lognormal", "gamma"),
             selected = "normal"
           ),
+          checkboxInput("imputeMissing",
+                        "Impute missings in measurements (Multiple imputation)",
+                        value = TRUE),
           checkboxInput("rangeRestrict",
                         "Restrict range of dependent variable:",
                         value = FALSE),

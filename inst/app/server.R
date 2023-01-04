@@ -300,11 +300,11 @@ shinyServer(function(input, output, session) {
   #output$measures <- renderDataTable(data$measures)
   
   observeEvent(input$simulateMeasures, {
-    data$measures <- data.frame(Category = c("Site1", "Site1", "Site1", "Site2", "Site2"),
+    data$measures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
                             X1 = c(1, 0.9, 1.2, 4, 5),
                             SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
-                            X2 = c(1.5, 1.8, 1.1, 2.25, 2.3),
-                            SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3)) 
+                            X2 = c(1.5, 1.8, 1.1, 2.25, NA),
+                            SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
   })
   
   observeEvent(input$MeasuresFile, {
@@ -365,13 +365,13 @@ shinyServer(function(input, output, session) {
     #     shinyjs::alert("For 'regfunctions', 'indVars' and 'indVarsUnc' always the same amount of variables has to be selected.")
     #     return()
     # }
-    lInd <- length(paste0("c(", paste0("'", input$indVars, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval)
+    lInd <- length(which((paste0("c(", paste0("'", input$indVars, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     if(is.null(input$indVarsUnc)){
       lUnc <- 0
     } else {
-      lUnc <- length(paste0("c(", paste0("'", input$indVarsUnc, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval)
+      lUnc <- length(which((paste0("c(", paste0("'", input$indVarsUnc, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     }
-    lregFunc <- length(paste0("c(", paste0("'", input$regfunctions, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval )
+    lregFunc <- length(which((paste0("c(", paste0("'", input$regfunctions, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     
     if(length(gregexpr("\\[", input$relationship)[[1]]) < lInd | length(gregexpr("\\]", input$relationship)[[1]]) < lInd){
       shinyjs::alert("Reminder: Variable names in relationship formula must be surrounded by brackets.")
@@ -382,7 +382,7 @@ shinyServer(function(input, output, session) {
     }
     
     if(lInd == 0){
-      shinyjs::alert("Please specify indpendent variables")
+      shinyjs::alert("Please specify independent variables")
       return()
     }
     
@@ -409,7 +409,8 @@ if(is.null(input$regfunctions)){
            "includeRegUnc = ", input$includeRegUnc, ", ",
            "rangeRestrict = ", input$rangeRestrict, ", ",
            "rangeY = c(", input$minRange,",", input$maxRange,") ", ", ",
-           "distribution = '", input$yDist, "')") %>% 
+           "distribution = '", input$yDist, "', ",
+           "imputeMissing = ", input$imputeMissing,")") %>% 
       parse(text = .) %>%
       eval},
       message = "computing new y estimates", value = 0.3)
@@ -686,7 +687,7 @@ if(is.null(input$regfunctions)){
     }
     
     ## updateCheckboxInput
-    for (i in c("dirichlet", "rangeRestrict")) {
+    for (i in c("dirichlet", "imputeMissing", "rangeRestrict")) {
       if (!is.null(i)) {
         updateCheckboxInput(session, i, value = inputFields[[i]])
       } else {

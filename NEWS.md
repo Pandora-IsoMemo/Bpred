@@ -1,5 +1,10 @@
 # MpiBpred app development version
 
+## MpiBpred 22.11.2
+
+### New Features
+- _Impute missings_ as option in "Estimates" tab.
+
 ## MpiBpred 22.11.1
 
 ### New Features
