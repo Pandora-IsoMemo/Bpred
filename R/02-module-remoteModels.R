@@ -38,14 +38,13 @@ remoteModelsServer <- function(id, githubRepo = "bpred") {
                  })
                  
                  observeEvent(remoteChoices(), {
-                   if (!is.null(remoteChoices)) {
+                   if (!is.null(remoteChoices())) {
                      useLocalModels(FALSE)
                      choices <- remoteChoices()
                    } else {
                      useLocalModels(TRUE)
                      choices <- localChoices()
                    }
-                   choices <- if_else(!is.null(remoteChoices()), remoteChoices(), localChoices())
                    
                    updateSelectInput(session = session, "remoteModelChoice", 
                                      choices = choices)
