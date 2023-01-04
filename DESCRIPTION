@@ -13,6 +13,7 @@ Imports:
   dplyr,
   ggplot2 (>= 2.2.1),
   htmltools,
+  httr,
   jsonlite,
   magrittr,
   modules,

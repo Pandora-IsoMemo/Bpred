@@ -89,13 +89,6 @@ uploadModelUI <- function(id, label) {
     HTML("<br>"),
     tags$h5(label),
     fileInput(ns("uploadModel"), label = "Upload local model"),
-    selectInput(
-      ns("remoteModel"),
-      label = "Select remote model",
-      choices = dir(file.path(settings$pathToSavedModels)) %>%
-        sub(pattern = '\\.zip$', replacement = ''),
-      selected = NULL
-    ),
     remoteModelsUI(ns("remoteModels"))
   )
 }

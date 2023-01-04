@@ -23,7 +23,7 @@ exportPlotPopUpServer(id, exportPlot, filename)
 
 remoteModelsUI(id)
 
-remoteModelsServer(id)
+remoteModelsServer(id, githubRepo = "bpred")
 
 textExportButton(id, title = "Download")
 
@@ -37,6 +37,8 @@ textExport(input, output, session, printFun, filename = "output")
 \item{filename}{(character) file name}
 
 \item{exportPlot}{plot to be exported}
+
+\item{githubRepo}{(character) name of used github repository}
 
 \item{title}{title of tab in tabset panel}
 
