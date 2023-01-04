@@ -1,6 +1,6 @@
 Package: mpiBpred
 Title: What the Package Does (one line, title case)
-Version: 22.11.2
+Version: 23.01.01
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
@@ -13,6 +13,7 @@ Imports:
   dplyr,
   ggplot2 (>= 2.2.1),
   htmltools,
+  httr,
   jsonlite,
   magrittr,
   mice,

@@ -89,15 +89,7 @@ uploadModelUI <- function(id, label) {
     HTML("<br>"),
     tags$h5(label),
     fileInput(ns("uploadModel"), label = "Upload local model"),
-    selectInput(
-      ns("remoteModel"),
-      label = "Select remote model",
-      choices = dir(file.path(settings$pathToSavedModels)) %>%
-        sub(pattern = '\\.zip$', replacement = ''),
-      selected = NULL
-    ),
-    actionButton(ns("loadRemoteModel"), "Load Remote Model")#,
-    #helpText("Remote models are only available on on https://isomemoapp.com")
+    remoteModelsUI(ns("remoteModels"))
   )
 }
 
@@ -128,14 +120,13 @@ uploadModel <-
     observeEvent(input$uploadModel, {
       pathToModel(input$uploadModel$datapath)
     })
+
+    pathToRemote <- remoteModelsServer("remoteModels")
     
-    observeEvent(input$loadRemoteModel, {
-      pathToModel(file.path(
-        settings$pathToSavedModels,
-        paste0(input$remoteModel, ".zip")
-      ))
+    observeEvent(pathToRemote(), {
+      pathToModel(pathToRemote())
     })
-    
+      
     observeEvent(pathToModel(), {
       res <- try({
         zip::unzip(pathToModel())
@@ -161,7 +152,13 @@ uploadModel <-
       uploadedData$inputFields <- inputObj
       
       alert("Model loaded")
+      
+      # clean up
+      if (file.exists("model.Rdata")) file.remove("model.Rdata")
+      if (file.exists("README.txt")) file.remove("README.txt")
+      if (file.exists("help.html")) file.remove("help.html")
     })
     
     return(uploadedData)
   }
+
