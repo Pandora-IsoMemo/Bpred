@@ -1,5 +1,10 @@
 # MpiBpred app development version
 
+## MpiBpred 23.01.2
+
+### New Features
+- fixed sidebars with auto scroll in all tabs
+
 ## MpiBpred 23.01.1
 
 ### Updates
