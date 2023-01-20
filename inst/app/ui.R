@@ -23,6 +23,7 @@ tagList(
       sidebarLayout(
         sidebarPanel(
           width = 2,
+          style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Upload Data"),
           selectInput(
             "filetypeData",
@@ -66,6 +67,7 @@ tagList(
       sidebarLayout(
         sidebarPanel(
           width = 2,
+          style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Define Formulas"),
           textInput("formName", "Name:", "formula_1"),
           pickerInput(
@@ -298,6 +300,7 @@ tagList(
       sidebarLayout(
         sidebarPanel(
           width = 2,
+          style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           radioButtons(
             "measuresSource",
             label = NULL,
@@ -364,6 +367,7 @@ tagList(
       fluidRow(
         sidebarPanel(
           width = 2,
+          style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           textInput("relationship", "relationship:", value = "Y ~ 3 + 4.5 * formula_1([X1])"),
           pickerInput(
             inputId = "regfunctions",
@@ -647,6 +651,7 @@ tagList(
           )),
         sidebarPanel(
           width = 2,
+          style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           downloadModelUI("modelDownload", "Download Model"),
           uploadModelUI("modelUpload", "Upload Model")
         )

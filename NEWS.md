@@ -1,5 +1,13 @@
 # MpiBpred app development version
 
+## MpiBpred 23.01.2
+
+### New Features
+- fixed sidebars with auto scroll in all tabs
+
+### Updates
+- path to remote models was added to the ReadMe 
+
 ## MpiBpred 23.01.1
 
 ### Updates
