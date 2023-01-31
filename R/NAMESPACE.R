@@ -22,7 +22,7 @@
 #' @importFrom shinyjs alert reset runjs useShinyjs
 #' @importFrom shinyMatrix matrixInput updateMatrixInput
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif
-#' @importFrom utils capture.output combn write.table
+#' @importFrom utils capture.output combn download.file packageName packageVersion write.table
 #' @importFrom shinyjs alert
 #' @importFrom xlsx write.xlsx
 #'
