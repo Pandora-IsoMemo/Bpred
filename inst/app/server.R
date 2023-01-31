@@ -302,23 +302,14 @@ shinyServer(function(input, output, session) {
                             SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
   })
   
-  observeEvent(input$MeasuresFile, {
-    
-    inFile <- input$MeasuresFile
-    if (is.null(input$MeasuresFile)) return(NULL)
-    file <- inFile$datapath
-    content <- try({
-      if(grepl(".csv$", file)){
-        read.csv(file, sep = input$colseparatorMeasures, dec = input$decseparatorMeasures)
-      } else if(grepl(".xlsx$", file)){
-        read.xlsx(file, sheetIndex = 1)
-      }
-    })
-    if (inherits(content, "try-error")) {
-      alert("could not read in file")
-      return()
-    }
-    data$measures <- content
+  importedMeasures <- importDataServer(
+    "MeasuresFile",
+    defaultSource = "file")
+    #customErrorChecks = list(reactive(checkAnyNonNumericColumns)))
+  
+  observeEvent(importedMeasures(), {
+    req(length(importedMeasures()) > 0)
+    data$measures <- importedMeasures()[[1]]
   })
   
   observeEvent(data$measures, {

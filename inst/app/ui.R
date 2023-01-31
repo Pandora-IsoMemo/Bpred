@@ -285,40 +285,11 @@ tagList(
         sidebarPanel(
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
-          radioButtons(
-            "measuresSource",
-            label = NULL,
-            choices = c("Enter Data", "Upload Data")
-          ),
-          HTML("<hr>"),
-          conditionalPanel(
-            condition = ("input.measuresSource == 'Enter Data'"),
-            actionButton("simulateMeasures", "Load Example Data")
-          ),
-          conditionalPanel(
-            condition = ("input.measuresSource == 'Upload Data'"),
-            h3("Upload Data"),
-            selectInput(
-              "filetypeMeasures",
-              "File Type",
-              choices = c("xlsx", "csv"),
-              selected = "xlsx"
-            ),
-            conditionalPanel(
-              condition = "input.filetypeMeasures == 'csv'",
-              div(
-                style = "display: inline-block;horizontal-align:top; width: 80px;",
-                textInput("colseparatorMeasures", "column separator:", value = ",")
-              ),
-              div(
-                style = "display: inline-block;horizontal-align:top; width: 80px;",
-                textInput("decseparatorMeasures", "decimal separator:", value = ".")
-              )
-            ),
-            helpText("The first row in your file needs to contain variable names."),
-            
-            fileInput("MeasuresFile", "")
-          )
+          h3("Enter Data"),
+          tags$br(),
+          importDataUI("MeasuresFile", "Import Data"),
+          tags$br(), tags$br(),
+          actionButton("simulateMeasures", "Load Example Data")
         ),
         mainPanel(
           matrixInput(
