@@ -428,28 +428,14 @@ if(is.null(input$regfunctions)){
                                                  eval(data$freq)), nrow = 2),
                        meanType = input$meanType)},
                        message = "computing summary estimates", value = 0.7)
-})
+  })
   
   
-  observeEvent(input$DataRefSample, {
-    
-    inFile <- input$DataRefSample
-    if (is.null(input$DataRefSample)) return(NULL)
-    file <- inFile$datapath
-
-    ref <- try({
-      if(grepl(".csv$", file)){
-        read.csv(file, sep = input$colseparatorData, dec = input$decseparatorData)
-      } else if(grepl(".xlsx$", file)){
-        read.xlsx(file, sheetIndex = 1)
-      }
-    })
-    if (inherits(ref, "try-error")) {
-      alert("Could not read in file")
-      return()
-    }
-    
-    data$refSample <- ref
+  importedRefSample <- importDataServer("DataRefSample", defaultSource = "file")
+  
+  observeEvent(importedRefSample(), {
+    req(length(importedRefSample()) > 0)
+    data$refSample <- importedRefSample()[[1]]
   })
   
   observeEvent(input$summaryRefSample, {

@@ -539,28 +539,13 @@ tagList(
                 ),
                 conditionalPanel(
                   condition = "input.refSampleSource == 'Enter Data'",
-                  textInput("summaryRefSample", "Reference Sample:", value = "60, 52, 75, 48, 50, 56")
+                  textInput("summaryRefSample", "Reference Sample:", value = "60, 52, 75, 48, 50, 56"),
+                  tags$br(),
                 ),
                 conditionalPanel(
                   condition = "input.refSampleSource == 'Upload Data'",
-                  selectInput(
-                    "filetypeRefSample",
-                    "File Type",
-                    choices = c("xlsx", "csv"),
-                    selected = "xlsx"
-                  ),
-                  conditionalPanel(
-                    condition = "input.filetypeRefSample == 'csv'",
-                    div(
-                      style = "display: inline-block;horizontal-align:top; width: 80px;",
-                      textInput("colseparatorRefSample", "column separator:", value = ",")
-                    ),
-                    div(
-                      style = "display: inline-block;horizontal-align:top; width: 80px;",
-                      textInput("decseparatorRefSample", "decimal separator:", value = ".")
-                    )
-                  ),
-                  fileInput("DataRefSample", "")
+                  importDataUI("DataRefSample", "Import Data"),
+                  tags$br(), tags$br(),
                 )
               ),
               conditionalPanel(
