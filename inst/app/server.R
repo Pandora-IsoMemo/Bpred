@@ -430,23 +430,38 @@ if(is.null(input$regfunctions)){
                        message = "computing summary estimates", value = 0.7)
   })
   
-  
-  importedRefSample <- importDataServer("DataRefSample", defaultSource = "file")
-  
-  observeEvent(importedRefSample(), {
-    req(length(importedRefSample()) > 0)
-    data$refSample <- importedRefSample()[[1]]
-  })
-  
+  ## Enter refSample ----
   observeEvent(input$summaryRefSample, {
     data$refSample <- paste0("c(", input$summaryRefSample, ")") %>% parse(text = .)
   })
+  
+  importedRefSample <- importDataServer("DataRefSample", defaultSource = "file")
+  observeEvent(importedRefSample(), {
+    req(length(importedRefSample()) > 0)
+    data$refSample <- importedRefSample()[[1]]
+    alert("Reference Sample updated.")
+  })
 
+  ## Enter values & freq ----
   observeEvent(input$summaryFreqTable, {
     data$values <- paste0("c(", input$summaryFreqTable, ")") %>% parse(text = .)
   })
   observeEvent(input$summaryFreqTable2, {
     data$freq <- paste0("c(", input$summaryFreqTable2, ")") %>% parse(text = .)
+  })
+  
+  importedRefFreqTable <- importDataServer("DataRefFreqTable", defaultSource = "file")
+  observeEvent(importedRefFreqTable(), {
+    req(length(importedRefFreqTable()) > 0)
+    data$values <- importedRefFreqTable()[[1]]
+    alert("Reference Values updated.")
+  })
+  
+  importedRefFreqTable2 <- importDataServer("DataRefFreqTable2", defaultSource = "file")
+  observeEvent(importedRefFreqTable2(), {
+    req(length(importedRefFreqTable2()) > 0)
+    data$freq <- importedRefFreqTable2()[[1]]
+    alert("Reference frequencies updated.")
   })
   
   observe({

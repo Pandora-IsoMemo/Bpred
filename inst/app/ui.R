@@ -540,7 +540,7 @@ tagList(
                 conditionalPanel(
                   condition = "input.refSampleSource == 'Enter Data'",
                   textInput("summaryRefSample", "Reference Sample:", value = "60, 52, 75, 48, 50, 56"),
-                  tags$br(),
+                  tags$br()
                 ),
                 conditionalPanel(
                   condition = "input.refSampleSource == 'Upload Data'",
@@ -558,31 +558,19 @@ tagList(
                 conditionalPanel(
                   condition = "input.refFreqTable == 'Enter Data'",
                   textInput("summaryFreqTable", "Reference Values:", value = "60, 52, 75, 48, 50, 56"),
-                  textInput("summaryFreqTable2", "Reference Frequencies:", value = "1, 3, 6, 5, 4, 2")
+                  textInput("summaryFreqTable2", "Reference Frequencies:", value = "1, 3, 6, 5, 4, 2"),
+                  tags$br()
                 ),
                 conditionalPanel(
                   condition = "input.refFreqTable == 'Upload Data'",
-                  selectInput(
-                    "filetypeRefSample",
-                    "File Type",
-                    choices = c("xlsx", "csv"),
-                    selected = "xlsx"
-                  ),
-                  conditionalPanel(
-                    condition = "input.filetypeRefSample == 'csv'",
-                    div(
-                      style = "display: inline-block;horizontal-align:top; width: 80px;",
-                      textInput("colseparatorRefSample", "column separator:", value = ",")
-                    ),
-                    div(
-                      style = "display: inline-block;horizontal-align:top; width: 80px;",
-                      textInput("decseparatorRefSample", "decimal separator:", value = ".")
-                    )
-                  ),
-                  fileInput("DataRefFreqTable", "")
+                  importDataUI("DataRefFreqTable", "Import Reference Values"),
+                  tags$br(), tags$br(),
+                  importDataUI("DataRefFreqTable2", "Import Reference Frequencies"),
+                  tags$br(), tags$br(),
                 )
               ),
               actionButton("estimateSummary", "Compute Summary Statistics"),
+              tags$br(), tags$br(),
               verbatimTextOutput("summaryEstimates") %>% withSpinner(color =
                                                                        "#20c997"),
               actionButton("exportSummary", "Export Mean Tables")
