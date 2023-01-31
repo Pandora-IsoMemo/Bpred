@@ -1,9 +1,19 @@
 # MpiBpred app development version
 
+# BMSCApp app 
+
+## Version 23.01.1
+
+### New Features
+- the _Import Data_ module is now imported from the new package DataTools 
+  - additionally to file import, now import from _URL_ or from _Pandora Platform_ is possible
+  - all redundant code was removed
+  - using "file" as default source in _Import Data_
+
 ## MpiBpred 23.01.2
 
 ### New Features
-- fixed sidebars with auto scroll in all tabs
+- fixed sidebars with auto scroll in all tabs (iso-app #4)
 
 ### Updates
 - path to remote models was added to the ReadMe 

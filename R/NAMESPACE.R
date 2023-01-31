@@ -13,7 +13,7 @@
 #' @importFrom jsonlite toJSON
 #' @importFrom htmltools save_html
 #' @importFrom httr GET content
-#' @importFrom DataTools importDataUI importDataServer
+#' @importFrom DataTools checkAnyNonNumericColumns importDataUI importDataServer
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom mice mice complete

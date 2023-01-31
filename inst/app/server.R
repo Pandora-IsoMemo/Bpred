@@ -37,29 +37,14 @@ shinyServer(function(input, output, session) {
   ### UPLOAD DATA 
   importedData <- importDataServer(
     "DataFile",
-    defaultSource = "file"
+    defaultSource = "file",
+    customErrorChecks = list(reactive(checkAnyNonNumericColumns))
   )
   
   observeEvent(importedData(), {
     req(length(importedData()) > 0)
     data$dat <- importedData()[[1]]
   })
-  
-  # observeEvent(input$DataFile, {
-  #   
-  #   inFile <- input$DataFile
-  #   if (is.null(input$DataFile)) return(NULL)
-  #   file <- inFile$datapath
-  #   if(grepl(".csv$", file)){
-  #     name <- read.csv(file, sep = input$colseparatorData, dec = input$decseparatorData)
-  #   } else if(grepl(".xlsx$", file)){
-  #     name <- read.xlsx(file, sheetIndex = 1)
-  #   }
-  #   
-  #   if(any(sapply(as.matrix(name), is.character))) { shinyjs::alert("Please provide a dataset with all numeric variables.") }
-  #   
-  #   data$dat <- name 
-  # })
   
   observe({
     updatePickerInput(session, "f_y", choices = data$dat %>% colnames(), selected = (data$dat %>% colnames())[2])
