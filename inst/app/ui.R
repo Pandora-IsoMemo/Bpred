@@ -25,33 +25,17 @@ tagList(
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Upload Data"),
-          selectInput(
-            "filetypeData",
-            "File Type",
-            choices = c("xlsx", "csv"),
-            selected = "xlsx"
-          ),
-          conditionalPanel(
-            condition = "input.filetypeData == 'csv'",
-            div(
-              style = "display: inline-block;horizontal-align:top; width: 80px;",
-              textInput("colseparatorData", "column separator:", value = ",")
-            ),
-            div(
-              style = "display: inline-block;horizontal-align:top; width: 80px;",
-              textInput("decseparatorData", "decimal separator:", value = ".")
-            )
-          ),
-          helpText("The first row in your file needs to contain variable names."),
-          h4("Example Data"),
-          fileInput("DataFile", ""),
-          HTML("<hr>"),
+          tags$br(),
+          importDataUI("DataFile", "Import Data"),
+          tags$br(), tags$br(),
           actionButton("simulateData", "Simulate Example Data"),
+          tags$br(), tags$br(),
           numericInput(
             "n",
-            label = "Observations:",
+            label = "no. of Observations:",
             value = 100,
-            min = 1
+            min = 1,
+            width = "75%"
           )
           
         ),
