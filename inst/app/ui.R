@@ -32,7 +32,7 @@ tagList(
           tags$br(), tags$br(),
           numericInput(
             "n",
-            label = "no. of Observations:",
+            label = "No. of Observations:",
             value = 100,
             min = 1,
             width = "75%"
