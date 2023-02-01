@@ -22,6 +22,7 @@ tagList(
       value = "Data",
       sidebarLayout(
         sidebarPanel(
+          ## left sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Upload Data"),
@@ -37,9 +38,11 @@ tagList(
             min = 1,
             width = "75%"
           )
-          
         ),
-        mainPanel(dataTableOutput('data')),
+        mainPanel(
+          ## main panel ----
+          dataTableOutput('data')
+          ),
       )
     ),
     # FORMULAS -----------------------------------------------------------------------------------
@@ -47,9 +50,9 @@ tagList(
       title = "Formulas",
       id = "Formulas",
       value = "Formulas",
-      
       sidebarLayout(
         sidebarPanel(
+          ## left sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Define Formulas"),
@@ -197,7 +200,9 @@ tagList(
           ),
           actionButton("saveFormula", "Define Formula")
         ),
-        mainPanel(tabsetPanel(
+        mainPanel(
+          ## main panel ----
+          tabsetPanel(
           id = "formTabs",
           tabPanel(
             "Defined Formulas",
@@ -283,6 +288,7 @@ tagList(
       value = "Measures",
       sidebarLayout(
         sidebarPanel(
+          ## left sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Enter Data"),
@@ -292,6 +298,7 @@ tagList(
           actionButton("simulateMeasures", "Load Example Data")
         ),
         mainPanel(
+          ## main panel ----
           matrixInput(
             inputId = "measuresMatrix",
             class = "character",
@@ -321,6 +328,7 @@ tagList(
       value = "Estimates",
       fluidRow(
         sidebarPanel(
+          ## left sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           textInput("relationship", "relationship:", value = "Y ~ 3 + 4.5 * formula_1([X1])"),
@@ -381,6 +389,7 @@ tagList(
           # uploadModelUI("modelUpload", "Upload Model")
         ),
         mainPanel(
+          ## main panel ----
           width = 8,
           selectInput(
             "summaryType",
@@ -391,6 +400,7 @@ tagList(
           tabsetPanel(
             id = "summaryTabs",
             tabPanel(
+              ### Plot ----
               "Plot",
               value = "plotTab",
               conditionalPanel(
@@ -501,83 +511,128 @@ tagList(
               actionButton("exportData", "Export Data")
             ),
             tabPanel(
+              ### Summary Statistics ----
               "Summary Statistics",
               value = "summaryTab",
-              numericInput(
-                "summaryProb",
-                label = "probability:",
-                value = 0.95,
-                min = 0,
-                max = 1,
-                step = 0.05
-              ),
-              selectInput(
-                "summaryRefType",
-                "Reference Type:",
-                choices = c("none", "dist", "sample", "freqTable")
-              ),
-              conditionalPanel(
-                condition = "input.summaryRefType == 'dist'",
-                selectInput(
-                  "summaryRefDist",
-                  "Reference Distribution:",
-                  choices = c(
-                    "Normal" = "norm",
-                    "Gamma" = "gamma",
-                    "Log-Normal" = "lnorm"
+              tags$br(),
+              fluidRow(
+                column(
+                  3,
+                  numericInput(
+                    "summaryProb",
+                    label = "probability:",
+                    value = 0.95,
+                    min = 0,
+                    max = 1,
+                    step = 0.05
+                  ),
+                  tags$br(),
+                  selectInput(
+                    "summaryRefType",
+                    "Reference Type:",
+                    choices = c("none", "dist", "sample", "freqTable")
                   )
                 ),
-                textInput("summaryRefParams", "Reference Parameters:", value = "50, 3")
-              ),
-              
-              conditionalPanel(
-                condition = "input.summaryRefType == 'sample'",
-                radioButtons(
-                  "refSampleSource",
-                  label = NULL,
-                  choices = c("Enter Data", "Upload Data")
-                ),
-                conditionalPanel(
-                  condition = "input.refSampleSource == 'Enter Data'",
-                  textInput("summaryRefSample", "Reference Sample:", value = "60, 52, 75, 48, 50, 56"),
-                  tags$br()
-                ),
-                conditionalPanel(
-                  condition = "input.refSampleSource == 'Upload Data'",
-                  importDataUI("DataRefSample", "Import Data"),
-                  tags$br(), tags$br(),
+                column(
+                  9,
+                  conditionalPanel(condition = "input.summaryRefType == 'dist'",
+                                   fluidRow(
+                                     column(
+                                       4,
+                                       style = "margin-top: 6em;",
+                                       selectInput(
+                                         "summaryRefDist",
+                                         "Reference Distribution:",
+                                         choices = c(
+                                           "Normal" = "norm",
+                                           "Gamma" = "gamma",
+                                           "Log-Normal" = "lnorm"
+                                         )
+                                       )
+                                     ),
+                                     column(
+                                       4,
+                                       style = "margin-top: 6em;",
+                                       textInput("summaryRefParams",
+                                                 "Reference Parameters:",
+                                                 value = "50, 3")
+                                     )
+                                   )),
+                  conditionalPanel(condition = "input.summaryRefType == 'sample'",
+                                   fluidRow(
+                                     column(
+                                       4,
+                                       style = "margin-top: 2em;",
+                                       radioButtons(
+                                         "refSampleSource",
+                                         label = NULL,
+                                         choices = c("Enter Data", "Upload Data")
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.refSampleSource == 'Enter Data'",
+                                         textInput("summaryRefSample",
+                                                   "Reference Sample:",
+                                                   value = "60, 52, 75, 48, 50, 56")
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.refSampleSource == 'Upload Data'",
+                                         tags$br(),
+                                         importDataUI("DataRefSample", "Import Reference Sample")
+                                       )
+                                     )
+                                   )),
+                  conditionalPanel(condition = "input.summaryRefType == 'freqTable'",
+                                   fluidRow(
+                                     column(
+                                       4,
+                                       style = "margin-top: 2em;",
+                                       radioButtons(
+                                         "refFreqTable",
+                                         label = NULL,
+                                         choices = c("Enter Data", "Upload Data")
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.refFreqTable == 'Enter Data'",
+                                         textInput("summaryFreqTable",
+                                                   "Reference Values:",
+                                                   value = "60, 52, 75, 48, 50, 56")
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.refFreqTable == 'Upload Data'",
+                                         tags$br(),
+                                         importDataUI("DataRefFreqTable", "Import Reference Values")
+                                       )
+                                     ),
+                                     column(
+                                       4,
+                                       style = "margin-top: 6em;",
+                                       conditionalPanel(
+                                         condition = "input.refFreqTable == 'Enter Data'",
+                                         textInput("summaryFreqTable2",
+                                                   "Reference Frequencies:",
+                                                   value = "1, 3, 6, 5, 4, 2")
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.refFreqTable == 'Upload Data'",
+                                         tags$br(),
+                                         importDataUI("DataRefFreqTable2", "Import Reference Frequencies")
+                                       )
+                                     )
+                                   ))
                 )
+                
               ),
-              conditionalPanel(
-                condition = "input.summaryRefType == 'freqTable'",
-                radioButtons(
-                  "refFreqTable",
-                  label = NULL,
-                  choices = c("Enter Data", "Upload Data")
-                ),
-                conditionalPanel(
-                  condition = "input.refFreqTable == 'Enter Data'",
-                  textInput("summaryFreqTable", "Reference Values:", value = "60, 52, 75, 48, 50, 56"),
-                  textInput("summaryFreqTable2", "Reference Frequencies:", value = "1, 3, 6, 5, 4, 2"),
-                  tags$br()
-                ),
-                conditionalPanel(
-                  condition = "input.refFreqTable == 'Upload Data'",
-                  importDataUI("DataRefFreqTable", "Import Reference Values"),
-                  tags$br(), tags$br(),
-                  importDataUI("DataRefFreqTable2", "Import Reference Frequencies"),
-                  tags$br(), tags$br(),
-                )
-              ),
+              tags$hr(),
               actionButton("estimateSummary", "Compute Summary Statistics"),
-              tags$br(), tags$br(),
-              verbatimTextOutput("summaryEstimates") %>% withSpinner(color =
-                                                                       "#20c997"),
+              tags$br(),
+              tags$br(),
+              verbatimTextOutput("summaryEstimates") %>%
+                withSpinner(color = "#20c997"),
               actionButton("exportSummary", "Export Mean Tables")
-              
             )
           )),
         sidebarPanel(
+          ## right sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           downloadModelUI("modelDownload", "Download Model"),
