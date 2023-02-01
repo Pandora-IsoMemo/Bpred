@@ -35,20 +35,15 @@ shinyServer(function(input, output, session) {
   })
   
   ### UPLOAD DATA 
-  observeEvent(input$DataFile, {
-    
-    inFile <- input$DataFile
-    if (is.null(input$DataFile)) return(NULL)
-    file <- inFile$datapath
-    if(grepl(".csv$", file)){
-      name <- read.csv(file, sep = input$colseparatorData, dec = input$decseparatorData)
-    } else if(grepl(".xlsx$", file)){
-      name <- read.xlsx(file, sheetIndex = 1)
-    }
-    
-    if(any(sapply(as.matrix(name), is.character))) { shinyjs::alert("Please provide a dataset with all numeric variables.") }
-    
-    data$dat <- name 
+  importedData <- importDataServer(
+    "DataFile",
+    defaultSource = "file",
+    customErrorChecks = list(reactive(checkAnyNonNumericColumns))
+  )
+  
+  observeEvent(importedData(), {
+    req(length(importedData()) > 0)
+    data$dat <- importedData()[[1]]
   })
   
   observe({
@@ -307,23 +302,14 @@ shinyServer(function(input, output, session) {
                             SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
   })
   
-  observeEvent(input$MeasuresFile, {
-    
-    inFile <- input$MeasuresFile
-    if (is.null(input$MeasuresFile)) return(NULL)
-    file <- inFile$datapath
-    content <- try({
-      if(grepl(".csv$", file)){
-        read.csv(file, sep = input$colseparatorMeasures, dec = input$decseparatorMeasures)
-      } else if(grepl(".xlsx$", file)){
-        read.xlsx(file, sheetIndex = 1)
-      }
-    })
-    if (inherits(content, "try-error")) {
-      alert("could not read in file")
-      return()
-    }
-    data$measures <- content
+  importedMeasures <- importDataServer(
+    "MeasuresFile",
+    defaultSource = "file")
+    #customErrorChecks = list(reactive(checkAnyNonNumericColumns)))
+  
+  observeEvent(importedMeasures(), {
+    req(length(importedMeasures()) > 0)
+    data$measures <- importedMeasures()[[1]]
   })
   
   observeEvent(data$measures, {
@@ -442,39 +428,40 @@ if(is.null(input$regfunctions)){
                                                  eval(data$freq)), nrow = 2),
                        meanType = input$meanType)},
                        message = "computing summary estimates", value = 0.7)
-})
-  
-  
-  observeEvent(input$DataRefSample, {
-    
-    inFile <- input$DataRefSample
-    if (is.null(input$DataRefSample)) return(NULL)
-    file <- inFile$datapath
-
-    ref <- try({
-      if(grepl(".csv$", file)){
-        read.csv(file, sep = input$colseparatorData, dec = input$decseparatorData)
-      } else if(grepl(".xlsx$", file)){
-        read.xlsx(file, sheetIndex = 1)
-      }
-    })
-    if (inherits(ref, "try-error")) {
-      alert("Could not read in file")
-      return()
-    }
-    
-    data$refSample <- ref
   })
   
+  ## Enter refSample ----
   observeEvent(input$summaryRefSample, {
     data$refSample <- paste0("c(", input$summaryRefSample, ")") %>% parse(text = .)
   })
+  
+  importedRefSample <- importDataServer("DataRefSample", defaultSource = "file")
+  observeEvent(importedRefSample(), {
+    req(length(importedRefSample()) > 0)
+    data$refSample <- importedRefSample()[[1]]
+    alert("Reference Sample updated.")
+  })
 
+  ## Enter values & freq ----
   observeEvent(input$summaryFreqTable, {
     data$values <- paste0("c(", input$summaryFreqTable, ")") %>% parse(text = .)
   })
   observeEvent(input$summaryFreqTable2, {
     data$freq <- paste0("c(", input$summaryFreqTable2, ")") %>% parse(text = .)
+  })
+  
+  importedRefFreqTable <- importDataServer("DataRefFreqTable", defaultSource = "file")
+  observeEvent(importedRefFreqTable(), {
+    req(length(importedRefFreqTable()) > 0)
+    data$values <- importedRefFreqTable()[[1]]
+    alert("Reference Values updated.")
+  })
+  
+  importedRefFreqTable2 <- importDataServer("DataRefFreqTable2", defaultSource = "file")
+  observeEvent(importedRefFreqTable2(), {
+    req(length(importedRefFreqTable2()) > 0)
+    data$freq <- importedRefFreqTable2()[[1]]
+    alert("Reference frequencies updated.")
   })
   
   observe({

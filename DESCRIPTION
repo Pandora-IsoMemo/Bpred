@@ -1,6 +1,6 @@
 Package: mpiBpred
 Title: What the Package Does (one line, title case)
-Version: 23.01.02
+Version: 23.02.1
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
@@ -12,6 +12,7 @@ Imports:
   coda,
   dplyr,
   ggplot2 (>= 2.2.1),
+  DataTools (>= 23.1.7),
   htmltools,
   httr,
   jsonlite,
@@ -33,4 +34,4 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
-RoxygenNote: 7.2.0
+RoxygenNote: 7.1.2
