@@ -38,7 +38,7 @@ shinyServer(function(input, output, session) {
   importedData <- DataTools::importDataServer(
     "DataFile",
     defaultSource = "file",
-    customErrorChecks = list(reactive(checkAnyNonNumericColumns))
+    customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
   
   observeEvent(importedData(), {
@@ -305,7 +305,7 @@ shinyServer(function(input, output, session) {
   importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
     defaultSource = "file")
-    #customErrorChecks = list(reactive(checkAnyNonNumericColumns)))
+    #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns)))
   
   observeEvent(importedMeasures(), {
     req(length(importedMeasures()) > 0)
