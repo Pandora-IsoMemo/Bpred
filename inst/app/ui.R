@@ -27,7 +27,7 @@ tagList(
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Upload Data"),
           tags$br(),
-          importDataUI("DataFile", "Import Data"),
+          DataTools::importDataUI("DataFile", "Import Data"),
           tags$br(), tags$br(),
           actionButton("simulateData", "Simulate Example Data"),
           tags$br(), tags$br(),
@@ -293,7 +293,7 @@ tagList(
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
           h3("Enter Data"),
           tags$br(),
-          importDataUI("MeasuresFile", "Import Data"),
+          DataTools::importDataUI("MeasuresFile", "Import Data"),
           tags$br(), tags$br(),
           actionButton("simulateMeasures", "Load Example Data")
         ),
@@ -577,7 +577,7 @@ tagList(
                                        conditionalPanel(
                                          condition = "input.refSampleSource == 'Upload Data'",
                                          tags$br(),
-                                         importDataUI("DataRefSample", "Import Reference Sample")
+                                         DataTools::importDataUI("DataRefSample", "Import Reference Sample")
                                        )
                                      )
                                    )),
@@ -600,7 +600,7 @@ tagList(
                                        conditionalPanel(
                                          condition = "input.refFreqTable == 'Upload Data'",
                                          tags$br(),
-                                         importDataUI("DataRefFreqTable", "Import Reference Values")
+                                         DataTools::importDataUI("DataRefFreqTable", "Import Reference Values")
                                        )
                                      ),
                                      column(
@@ -615,7 +615,7 @@ tagList(
                                        conditionalPanel(
                                          condition = "input.refFreqTable == 'Upload Data'",
                                          tags$br(),
-                                         importDataUI("DataRefFreqTable2", "Import Reference Frequencies")
+                                         DataTools::importDataUI("DataRefFreqTable2", "Import Reference Frequencies")
                                        )
                                      )
                                    ))

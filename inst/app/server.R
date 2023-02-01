@@ -35,7 +35,7 @@ shinyServer(function(input, output, session) {
   })
   
   ### UPLOAD DATA 
-  importedData <- importDataServer(
+  importedData <- DataTools::importDataServer(
     "DataFile",
     defaultSource = "file",
     customErrorChecks = list(reactive(checkAnyNonNumericColumns))
@@ -302,7 +302,7 @@ shinyServer(function(input, output, session) {
                             SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
   })
   
-  importedMeasures <- importDataServer(
+  importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
     defaultSource = "file")
     #customErrorChecks = list(reactive(checkAnyNonNumericColumns)))
@@ -435,7 +435,7 @@ if(is.null(input$regfunctions)){
     data$refSample <- paste0("c(", input$summaryRefSample, ")") %>% parse(text = .)
   })
   
-  importedRefSample <- importDataServer("DataRefSample", defaultSource = "file")
+  importedRefSample <- DataTools::importDataServer("DataRefSample", defaultSource = "file")
   observeEvent(importedRefSample(), {
     req(length(importedRefSample()) > 0)
     data$refSample <- importedRefSample()[[1]]
@@ -450,14 +450,14 @@ if(is.null(input$regfunctions)){
     data$freq <- paste0("c(", input$summaryFreqTable2, ")") %>% parse(text = .)
   })
   
-  importedRefFreqTable <- importDataServer("DataRefFreqTable", defaultSource = "file")
+  importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", defaultSource = "file")
   observeEvent(importedRefFreqTable(), {
     req(length(importedRefFreqTable()) > 0)
     data$values <- importedRefFreqTable()[[1]]
     alert("Reference Values updated.")
   })
   
-  importedRefFreqTable2 <- importDataServer("DataRefFreqTable2", defaultSource = "file")
+  importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", defaultSource = "file")
   observeEvent(importedRefFreqTable2(), {
     req(length(importedRefFreqTable2()) > 0)
     data$freq <- importedRefFreqTable2()[[1]]
