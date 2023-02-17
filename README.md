@@ -7,7 +7,7 @@
 - https://github.com/Pandora-IsoMemo/bpred/wiki
 
 ### Release Notes:
-- https://github.com/Pandora-IsoMemo/bpred/blob/main/NEWS.md
+- see `NEWS.md`
 
 ### Folder for remote models
 - for the MAIN version: https://github.com/Pandora-IsoMemo/bpred/tree/main/inst/app/predefinedModels
