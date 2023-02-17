@@ -3,10 +3,10 @@
 ### Access to online version:
 - MAIN version: https://isomemoapp.com/app/bpred
 
-### Help and installation Instructions:
+### Help and installation instructions:
 - https://github.com/Pandora-IsoMemo/bpred/wiki
 
-### Release Notes:
+### Release notes:
 - see `NEWS.md`
 
 ### Folder for remote models
