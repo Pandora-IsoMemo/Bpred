@@ -158,7 +158,8 @@ shinyServer(function(input, output, session) {
                                         burnin = input$burnin,
                                         chains = input$chains,
                                         thinning = input$thinning,
-                                        parNamesDir = parNamesDir)
+                                        parNamesDir = parNamesDir) %>%
+         DataTools::tryCatchWithWarningsAndErrors()
        
       if(class(res) == "character"){
         shinyjs::alert(res)
@@ -398,7 +399,8 @@ if(is.null(input$regfunctions)){
            "distribution = '", input$yDist, "', ",
            "imputeMissing = ", input$imputeMissing,")") %>% 
       parse(text = .) %>%
-      eval},
+      eval() %>%
+        DataTools::tryCatchWithWarningsAndErrors()},
       message = "computing new y estimates", value = 0.3)
     if(class(model) == "character"){
       shinyjs::alert(model) 

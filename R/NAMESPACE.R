@@ -8,12 +8,14 @@
 #' @import shiny
 #' @importFrom coda raftery.diag gelman.diag geweke.diag heidel.diag mcmc
 #' @importFrom dplyr bind_cols bind_rows filter group_by if_else mutate summarise ungroup
-#' @importFrom ggplot2  aes aes_ aes_string geom_boxplot geom_density geom_errorbar geom_histogram ggplot geom_point ggtitle ylab xlab geom_line geom_ribbon labs theme element_text
+#' @importFrom ggplot2  aes aes_ aes_string geom_boxplot geom_density geom_errorbar geom_histogram 
+#' ggplot geom_point ggtitle ylab xlab geom_line geom_ribbon labs theme element_text
 #' @importFrom graphics lines
 #' @importFrom jsonlite toJSON
 #' @importFrom htmltools save_html
 #' @importFrom httr GET content
-#' @importFrom DataTools checkAnyNonNumericColumns importDataUI importDataServer
+#' @importFrom DataTools checkAnyNonNumericColumns importDataUI importDataServer 
+#' tryCatchWithWarningsAndErrors
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom mice mice complete
