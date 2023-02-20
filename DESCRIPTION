@@ -12,7 +12,7 @@ Imports:
   coda,
   dplyr,
   ggplot2 (>= 2.2.1),
-  DataTools (>= 23.1.7),
+  DataTools (>= 23.02.2),
   htmltools,
   httr,
   jsonlite,
