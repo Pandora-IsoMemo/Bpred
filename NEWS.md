@@ -1,5 +1,10 @@
 # Bpred App
 
+## Version 23.02.2
+
+### Updates
+- catch errors and(!) warnings within a pop up
+
 ## Version 23.02.1
 
 ### New Features
