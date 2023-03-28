@@ -10,4 +10,4 @@
 - see `NEWS.md`
 
 ### Folder for remote models
-- `inst/app/predefinedModels`
+- [`inst/app/predefinedModels`](https://github.com/Pandora-IsoMemo/bpred/tree/main/inst/app/predefinedModels)
