@@ -305,7 +305,8 @@ shinyServer(function(input, output, session) {
   
   importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
-    defaultSource = "file")
+    defaultSource = "file",
+    ignoreWarnings = TRUE)
     #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns)))
   
   observeEvent(importedMeasures(), {
@@ -313,16 +314,21 @@ shinyServer(function(input, output, session) {
     data$measures <- importedMeasures()[[1]]
   })
   
-  observeEvent(data$measures, {
-    req(data$measures)
-    updateMatrixInput(session, "measuresMatrix", value = data$measures %>% as.matrix())
-  })
-  
-  observe({
-    updateSelectizeInput(session, "indVars", choices = data$measures %>% colnames()) 
-    updateSelectizeInput(session, "indVarsUnc", choices = data$measures %>% colnames())
-    updatePickerInput(session, "category", choices = data$measures %>% colnames()) 
+  observeEvent(data$measures, ignoreNULL = FALSE, ignoreInit = TRUE, {
+    if (length(data$measures) == 0) {
+      newVal <- structure("", dim = c(1L, 1L), dimnames = list("", ""))
+      newChoices <- character(0)
+      } else {
+        newVal <- data$measures %>% as.matrix()
+        newChoices <- data$measures %>% colnames()
+      }
     
+    updateSelectizeInput(session, "indVars", choices = newChoices) 
+    updateSelectizeInput(session, "indVarsUnc", choices = newChoices)
+    updatePickerInput(session, "category", choices = newChoices)
+
+    req(!identical(input$measuresMatrix, newVal))
+    updateMatrixInput(session, "measuresMatrix", value = newVal)
   })
 
   observe({
@@ -331,11 +337,10 @@ shinyServer(function(input, output, session) {
     } else {
       updateSelectInput(session, "summaryPlotType",choices = c("KernelDensity", "Histogram", "Boxplot"))
     }
-
   })
   
-  
   observeEvent(input$measuresMatrix, {
+    req(!identical(data$measures, measureMatrixToDf(input$measuresMatrix)))
     data$measures <- measureMatrixToDf(input$measuresMatrix)
   })
 
