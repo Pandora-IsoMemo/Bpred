@@ -12,7 +12,8 @@ library(coda)
 tagList(
   shinyjs::useShinyjs(),
   shiny::navbarPage(
-    title = paste("mpiBpred App", packageVersion("mpiBpred")),
+    includeCSS("www/custom.css"),
+    title = paste("Bpred App", packageVersion("mpiBpred")),
     theme = shinythemes::shinytheme("flatly"),
     id = "tab",
     # DATA ---------------------------------------------------------------------------------------
@@ -638,9 +639,6 @@ tagList(
           downloadModelUI("modelDownload", "Download Model"),
           uploadModelUI("modelUpload", "Upload Model")
         )
-      ),
-      tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
       )
     )
   ),
