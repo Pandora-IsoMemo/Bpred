@@ -12,9 +12,11 @@ library(coda)
 tagList(
   shinyjs::useShinyjs(),
   shiny::navbarPage(
-    includeCSS("www/custom.css"),
+    header = includeCSS("www/custom.css"),
     title = paste("Bpred App", packageVersion("mpiBpred")),
     theme = shinythemes::shinytheme("flatly"),
+    position = "fixed-top",
+    collapsible = TRUE,
     id = "tab",
     # DATA ---------------------------------------------------------------------------------------
     tabPanel(
