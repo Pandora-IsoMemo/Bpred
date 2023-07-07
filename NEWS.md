@@ -1,5 +1,11 @@
 # Bpred App
 
+## Version 23.07.0
+
+### Bug Fixes
+- fix bug with the header of matrix and the update of the matrix (#22)
+- use most recent version of shinyMatrix
+
 ## Version 23.03.1
 
 ### Bug fixes
