@@ -296,39 +296,59 @@ shinyServer(function(input, output, session) {
   #output$measures <- renderDataTable(data$measures)
   
   observeEvent(input$simulateMeasures, {
-    data$measures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
-                            X1 = c(1, 0.9, 1.2, 4, 5),
-                            SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
-                            X2 = c(1.5, 1.8, 1.1, 2.25, NA),
-                            SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
+    newMeasures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
+                              X1 = c(1, 0.9, 1.2, 4, 5),
+                              SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
+                              X2 = c(1.5, 1.8, 1.1, 2.25, NA),
+                              SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
+    
+    updateMatrixInput(session, "measuresMatrix", value = newMeasures %>% as.matrix())
   })
   
   importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
     defaultSource = "file",
-    ignoreWarnings = TRUE)
-    #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns)))
+    ignoreWarnings = TRUE
+    #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
+  )
   
   observeEvent(importedMeasures(), {
     req(length(importedMeasures()) > 0)
-    data$measures <- importedMeasures()[[1]]
+    newMeasures <- importedMeasures()[[1]]
+    
+    if (length(newMeasures) == 0) {
+      newVal <- structure("", dim = c(1L, 1L), dimnames = list("", ""))
+    } else {
+      newVal <- newMeasures %>% 
+        as.matrix()
+    }
+    
+    req(!identical(input$measuresMatrix, newVal))
+    updateMatrixInput(session, "measuresMatrix", value = newVal)
+  })
+  
+  observeEvent(input$measuresMatrix, {
+    req(!identical(data$measures, measureMatrixToDf(input$measuresMatrix)))
+    
+    if (ncol(measureMatrixToDf(input$measuresMatrix)) == 0) {
+      # reset
+      data$measures <- NULL
+    } else {
+      data$measures <- measureMatrixToDf(input$measuresMatrix)
+    }
   })
   
   observeEvent(data$measures, ignoreNULL = FALSE, ignoreInit = TRUE, {
     if (length(data$measures) == 0) {
-      newVal <- structure("", dim = c(1L, 1L), dimnames = list("", ""))
+      # reset
       newChoices <- character(0)
-      } else {
-        newVal <- data$measures %>% as.matrix()
-        newChoices <- data$measures %>% colnames()
-      }
+    } else {
+      newChoices <- data$measures %>% colnames()
+    }
     
     updateSelectizeInput(session, "indVars", choices = newChoices) 
     updateSelectizeInput(session, "indVarsUnc", choices = newChoices)
     updatePickerInput(session, "category", choices = newChoices)
-
-    req(!identical(input$measuresMatrix, newVal))
-    updateMatrixInput(session, "measuresMatrix", value = newVal)
   })
 
   observe({
@@ -339,11 +359,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  observeEvent(input$measuresMatrix, {
-    req(!identical(data$measures, measureMatrixToDf(input$measuresMatrix)))
-    data$measures <- measureMatrixToDf(input$measuresMatrix)
-  })
-
   # ESTIMATES -------------------------------------------------------------------
   yEstimates <- reactiveVal(NULL)
   functionsFit <- reactiveVal(NULL)

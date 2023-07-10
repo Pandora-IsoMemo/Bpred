@@ -1,6 +1,6 @@
 Package: mpiBpred
 Title: What the Package Does (one line, title case)
-Version: 23.03.1.5
+Version: 23.07.0
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
@@ -23,7 +23,7 @@ Imports:
   modules,
   rsync,
   shiny,
-  shinyMatrix,
+  shinyMatrix (>= 0.7.0),
   shinyWidgets,
   shinycssloaders,
   shinyjs,
@@ -36,4 +36,4 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
