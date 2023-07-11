@@ -1,5 +1,8 @@
 # Bpred App
 
+## Version 23.07.1
+### New Features
+- show Bayesian R-squared in formula overview (following: https://avehtari.github.io/bayes_R2/bayes_R2.html)
 ## Version 23.07.0
 
 ### Bug Fixes

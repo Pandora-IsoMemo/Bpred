@@ -180,6 +180,7 @@ shinyServer(function(input, output, session) {
                                                                                     paste(signif(quantile(formulas$objects[[input$formName]]$beta[,x],c(0.025, 0.975)), 4), collapse = ","),
                                                                                                              sep = " = (", collapse = ",)")), collapse = ", ", ")"),
                          R_squared = signif(1 - sum((colMeans(res$yPredmc) - y)^2) / sum((y-mean(y))^2), 4),
+                         Bayes_R_squared = signif(bayes_R2_res(y=y, ypred = res$yPredmc),4),
                          p_direction = paste0(lapply(1:length(parNames),
                                                      function(x) paste(parNames[x],
                                                                        paste(signif(max(sum(formulas$objects[[input$formName]]$beta[,x] > 0),
