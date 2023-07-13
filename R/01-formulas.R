@@ -14,6 +14,7 @@ enrichForm <- function(formDF, parNames, formulasObject, y) {
                                                                                   paste(signif(quantile(formulasObject$beta[,x],c(0.025, 0.975)), 4), collapse = ","),
                                                                                   sep = " = (", collapse = ",)")), collapse = ", ", ")"),
                          R_squared = signif(1 - sum((colMeans(formulasObject$yPredmc) - y)^2) / sum((y-mean(y))^2), 4),
+                         Bayes_R_squared = signif(bayes_R2_res(y=y, ypred = formulasObject$yPredmc),4),
                          p_direction = paste0(lapply(1:length(parNames),
                                                      function(x) paste(parNames[x],
                                                                        paste(signif(max(sum(formulasObject$beta[,x] > 0),
