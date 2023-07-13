@@ -11,9 +11,9 @@ enrichForm(formDF, parNames, formulasObject, y)
 
 \item{parNames}{(character) names of parameters from form}
 
-\item{formulasObject}{fitted formulas object}
+\item{formulasObject}{(list) fitted formulas object}
 
-\item{y}{y variable}
+\item{y}{(numeric) y variable}
 }
 \description{
 Enrich Form

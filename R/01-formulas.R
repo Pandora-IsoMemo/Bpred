@@ -2,8 +2,8 @@
 #'
 #' @param formDF (data.frame) a dataframe containing the form, name, x and y variables
 #' @param parNames (character) names of parameters from form
-#' @param formulasObject fitted formulas object
-#' @param y y variable
+#' @param formulasObject (list) fitted formulas object
+#' @param y (numeric) y variable
 #'
 #' @export
 enrichForm <- function(formDF, parNames, formulasObject, y) {
@@ -46,4 +46,17 @@ enrichForm <- function(formDF, parNames, formulasObject, y) {
   )
   
   cbind(formDF, measures)
+}
+
+#' Bayes R2 Res
+#' 
+#' @param y (numeric) y variable
+#' @param ypred (numeric) predicted y from fitted formulas object
+#' 
+#' @export 
+bayes_R2_res <- function(y, ypred) {
+  e <- -1 * sweep(ypred, 2, y)
+  var_ypred <- apply(ypred, 1, var)
+  var_e <- apply(e, 1, var)
+  mean(var_ypred / (var_ypred + var_e))
 }
