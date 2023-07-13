@@ -176,7 +176,7 @@ shinyServer(function(input, output, session) {
                          formula = form) %>%
         enrichForm(parNames = parNames, formulasObject = formulas$objects[[input$formName]], y = y)
       
-    formulas$f <- data.frame(rbind(formulas$f, form))
+    formulas$f <- bind_rows(formulas$f, form)
     functionsFit(formulas)
 })
   
@@ -674,7 +674,7 @@ if(is.null(input$regfunctions)){
     if (!is.null(inputFields[["selectFType"]])) {
       updateRadioButtons(session, "selectFType", selected = inputFields[["selectFType"]])
     } else {
-      updateRadioButtons(session, "selectFType", selected = character(0))
+      updateRadioButtons(session, "selectFType", selected = "linear")
     }
     
     ## updateSelectizeInput
