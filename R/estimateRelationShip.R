@@ -14,14 +14,6 @@ linkToType <- function(link) {
   type
 }
 
-#' @export 
-bayes_R2_res <- function(y, ypred) {
-  e <- -1 * sweep(ypred, 2, y)
-  var_ypred <- apply(ypred, 1, var)
-  var_e <- apply(e, 1, var)
-  mean(var_ypred / (var_ypred + var_e))
-}
-
 linkToForm <- function(link) {
   if (link == "linIntcp") {
     type <- "{beta} * [x] + {alpha}"
