@@ -46,6 +46,7 @@ testthat::test_that("enrichForm", {
         parameter = "slope = 2.026, intercept = 1.537",
         credible_intervals_95p = "slope = (1.824,2.221), intercept = (1.342,1.726)",
         R_squared = 0.8164,
+        Bayes_R_squared = 0.8146,
         p_direction = "slope = (1), intercept = (1)"
       ),
       class = "data.frame",
