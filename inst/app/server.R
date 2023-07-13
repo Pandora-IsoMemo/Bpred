@@ -166,25 +166,16 @@ shinyServer(function(input, output, session) {
         return(NULL)
       }
       formulas$objects[[input$formName]] <- res
+      
       form <- data.frame(name = input$formName,
                          y = input$f_y,
                          x = paste(input$custom_x, collapse = ", "),
                          yUnc = input$f_yunc,
                          xUnc = paste(custom_x_unc, collapse = ", "),
                          link = "none", 
-                         formula = form,
-                         parameter = paste(parNames,
-                                           signif(colMeans(formulas$objects[[input$formName]]$beta), 4), sep = " = ", collapse = ", "),
-                         credible_intervals_95p = paste0(lapply(1:length(parNames),
-                                                                  function(x) paste(parNames[x],
-                                                                                    paste(signif(quantile(formulas$objects[[input$formName]]$beta[,x],c(0.025, 0.975)), 4), collapse = ","),
-                                                                                                             sep = " = (", collapse = ",)")), collapse = ", ", ")"),
-                         R_squared = signif(1 - sum((colMeans(res$yPredmc) - y)^2) / sum((y-mean(y))^2), 4),
-                         p_direction = paste0(lapply(1:length(parNames),
-                                                     function(x) paste(parNames[x],
-                                                                       paste(signif(max(sum(formulas$objects[[input$formName]]$beta[,x] > 0),
-                                                                                        sum(formulas$objects[[input$formName]]$beta[,x] < 0)) / length(formulas$objects[[input$formName]]$beta[,x]), 4), collapse = ","),
-                                                                       sep = " = (", collapse = "")), collapse = ", ", ")"))
+                         formula = form) %>%
+        enrichForm(parNames = parNames, formulasObject = formulas$objects[[input$formName]], y = y)
+      
     formulas$f <- data.frame(rbind(formulas$f, form))
     functionsFit(formulas)
 })
