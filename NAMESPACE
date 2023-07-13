@@ -3,6 +3,7 @@
 export(convergenceDiagnostics)
 export(downloadModel)
 export(downloadModelUI)
+export(enrichForm)
 export(estimateY)
 export(exportCSV)
 export(exportFilename)
