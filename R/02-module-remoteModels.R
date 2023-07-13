@@ -82,10 +82,12 @@ remoteModelsServer <- function(id, githubRepo = "bpred") {
 #' Get Remote Models From Github
 #' 
 #' Get remote models from github directory
+#' 
+#' @param apiOut (list) output of api call from getGithubContent
 #' @inheritParams remoteModelsServer
-getRemoteModelsFromGithub <- function(githubRepo) {
+getRemoteModelsFromGithub <- function(githubRepo, apiOut = NULL) {
   res <- try({
-    apiOut <- getGithubContent(githubRepo = githubRepo)
+    if (is.null(apiOut)) apiOut <- getGithubContent(githubRepo = githubRepo)
     lapply(apiOut, function(el) el$name) %>%
       unlist() %>%
       sub(pattern = '\\.zip$', replacement = '')

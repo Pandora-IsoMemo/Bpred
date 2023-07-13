@@ -1,10 +1,15 @@
 testthat::test_that("Test module remoteModels", {
-  testthat::expect_true(length(getGithubContent(githubRepo = "bpred")) > 0)
-  testthat::expect_true(length(getRemoteModelsFromGithub(githubRepo = "bpred")) > 0)
-  testthat::expect_true(length(getGithubContent(githubRepo = "bpred")) == 
-                          length(getRemoteModelsFromGithub(githubRepo = "bpred")))
+  testApiOut <- getGithubContent(githubRepo = "bpred")
   
-  testModel <- getRemoteModelsFromGithub(githubRepo = "bpred")[1]
+  testthat::expect_true(length(testApiOut) > 0)
+  testthat::expect_true(length(getRemoteModelsFromGithub(githubRepo = "bpred",
+                                                         apiOut = testApiOut)) > 0)
+  testthat::expect_true(length(testApiOut) == 
+                          length(getRemoteModelsFromGithub(githubRepo = "bpred",
+                                                           apiOut = testApiOut)))
+  
+  testModel <- getRemoteModelsFromGithub(githubRepo = "bpred",
+                                         apiOut = testApiOut)[1]
   
   testServer(remoteModelsServer,
              {
@@ -20,5 +25,4 @@ testthat::test_that("Test module remoteModels", {
                testthat::expect_true(testModel %in% remoteChoices())
                testthat::expect_equal(substr(pathToRemote(), start = 1, stop = 5), "/tmp/")
              })
-  
 })

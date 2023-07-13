@@ -4,10 +4,12 @@
 \alias{getRemoteModelsFromGithub}
 \title{Get Remote Models From Github}
 \usage{
-getRemoteModelsFromGithub(githubRepo)
+getRemoteModelsFromGithub(githubRepo, apiOut = NULL)
 }
 \arguments{
 \item{githubRepo}{(character) name of used github repository}
+
+\item{apiOut}{(list) output of api call from getGithubContent}
 }
 \description{
 Get remote models from github directory
