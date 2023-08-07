@@ -1,5 +1,10 @@
 # Bpred App
 
+## Version 23.08.0
+
+### Bug Fixes
+- updates error message (#27)
+
 ## Version 23.07.1
 
 ### New Features
