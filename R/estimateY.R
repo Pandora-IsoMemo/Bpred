@@ -204,7 +204,7 @@ estimateY <- function(relationship, regfunctions,
     
     ret <- try({eval(parse(text = relationship))}, silent = TRUE)
     if(class(ret) == "try-error"){
-      ret <- "Independent variables or regression function not found in your formula. Please check formula and specified independent variables and regression functions"
+      ret <- "Independent variables or regression function not found in your formula. Please review your formula and regression functions to ensure all independent variables are included. Also check for correct placement of brackets or if brackets are missing."
     }
       ret
   }

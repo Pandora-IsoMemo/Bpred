@@ -1,6 +1,6 @@
 Package: mpiBpred
 Title: What the Package Does (one line, title case)
-Version: 23.07.1.1
+Version: 23.08.0
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
