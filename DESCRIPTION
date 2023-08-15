@@ -1,4 +1,4 @@
-Package: mpiBpred
+Package: Bpred
 Title: What the Package Does (one line, title case)
 Version: 23.08.0
 Authors@R: c(
