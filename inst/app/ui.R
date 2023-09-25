@@ -344,7 +344,7 @@ tagList(
             multiple = TRUE
           ),
           selectizeInput(
-            inputId = "indVars",
+            inputId = "indVarsX",
             label = "indVars:",
             choices = character(0),
             multiple = TRUE
@@ -638,8 +638,9 @@ tagList(
           ## right sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
-          downloadModelUI("modelDownload", "Download Model"),
-          uploadModelUI("modelUpload", "Upload Model")
+          downloadModelUI("modelDownload", label = "Download Model"),
+          tags$br(), tags$br(),
+          importDataUI("modelUpload", label = "Import Model")
         )
       )
     )
