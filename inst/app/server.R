@@ -7,8 +7,13 @@ library(xlsx)
 library(shinyjs)
 library(mpiBpred)
 library(coda)
+library(yaml)
 
 options(shiny.maxRequestSize = 200*1024^2)
+
+# load config variables
+configFile <- system.file("config.yaml", package = "mpiBpred")
+appConfig <- yaml::read_yaml(configFile)
 
 shinyServer(function(input, output, session) {
   # DATA -------------------------------------------------------------------------------
@@ -37,7 +42,8 @@ shinyServer(function(input, output, session) {
   ### UPLOAD DATA 
   importedData <- DataTools::importDataServer(
     "DataFile",
-    defaultSource = "file",
+    defaultSource = appConfig$defaultSourceData,
+    rPackageName = appConfig$rPackageName,
     customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
   
@@ -298,7 +304,8 @@ shinyServer(function(input, output, session) {
   
   importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
-    defaultSource = "file",
+    defaultSource = appConfig$defaultSourceData,
+    rPackageName = appConfig$rPackageName,
     ignoreWarnings = TRUE
     #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
@@ -448,7 +455,9 @@ if(is.null(input$regfunctions)){
     data$refSample <- paste0("c(", input$summaryRefSample, ")") %>% parse(text = .)
   })
   
-  importedRefSample <- DataTools::importDataServer("DataRefSample", defaultSource = "file")
+  importedRefSample <- DataTools::importDataServer("DataRefSample", 
+                                                   defaultSource = appConfig$defaultSourceData,
+                                                   rPackageName = appConfig$rPackageName)
   observeEvent(importedRefSample(), {
     req(length(importedRefSample()) > 0)
     data$refSample <- importedRefSample()[[1]]
@@ -463,14 +472,18 @@ if(is.null(input$regfunctions)){
     data$freq <- paste0("c(", input$summaryFreqTable2, ")") %>% parse(text = .)
   })
   
-  importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", defaultSource = "file")
+  importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", 
+                                                      defaultSource = appConfig$defaultSourceData,
+                                                      rPackageName = appConfig$rPackageName)
   observeEvent(importedRefFreqTable(), {
     req(length(importedRefFreqTable()) > 0)
     data$values <- importedRefFreqTable()[[1]]
     alert("Reference Values updated.")
   })
   
-  importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", defaultSource = "file")
+  importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", 
+                                                       defaultSource = appConfig$defaultSourceData,
+                                                       rPackageName = appConfig$rPackageName)
   observeEvent(importedRefFreqTable2(), {
     req(length(importedRefFreqTable2()) > 0)
     data$freq <- importedRefFreqTable2()[[1]]
@@ -594,18 +607,18 @@ if(is.null(input$regfunctions)){
                       inputs = reactiveValues(inputObj = reactiveValuesToList(input),
                                               formulasObj = reactiveValuesToList(formulas)),
                       model = yEstimates,
-                      rPackageName = "mpiBpred",
-                      fileExtension = "bpred",
+                      rPackageName = appConfig$rPackageName,
+                      fileExtension = appConfig$fileExtension,
                       modelNotes = uploadedNotes,
                       triggerUpdate = reactive(TRUE))
 
   uploadedValues <- importDataServer("modelUpload",
                                      title = "Import Model",
-                                     defaultSource = "file",
                                      importType = "model",
-                                     rPackageName = "mpiBpred",
-                                     ignoreWarnings = TRUE,
-                                     fileExtension = "bpred")
+                                     defaultSource = appConfig$defaultSourceModel,
+                                     rPackageName = appConfig$rPackageName,
+                                     fileExtension = appConfig$fileExtension,
+                                     ignoreWarnings = TRUE)
   
   observe({
     req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["data"]]))
