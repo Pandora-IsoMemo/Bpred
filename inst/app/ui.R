@@ -40,11 +40,11 @@ tagList(
             width = "75%"
           ),
           tags$hr(),
-          importDataUI("modelUpload", label = "Import Model"),
+          DataTools::importDataUI("modelUpload", label = "Import Model"),
           checkboxInput("useDownload", label = "Download model"),
           conditionalPanel(
             condition = "input.useDownload == true",
-            downloadModelUI("modelDownload", label = "Download")
+            DataTools::downloadModelUI("modelDownload", label = "Download")
           )
         ),
         mainPanel(

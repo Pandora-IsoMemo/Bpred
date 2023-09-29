@@ -602,23 +602,23 @@ if(is.null(input$regfunctions)){
   # MODEL DOWN- / UPLOAD ----
   
   uploadedNotes <- reactiveVal(NULL)
-  downloadModelServer("modelDownload",
-                      dat = reactive(reactiveValuesToList(data)),
-                      inputs = reactiveValues(inputObj = reactiveValuesToList(input),
-                                              formulasObj = reactiveValuesToList(formulas)),
-                      model = yEstimates,
-                      rPackageName = appConfig$rPackageName,
-                      fileExtension = appConfig$fileExtension,
-                      modelNotes = uploadedNotes,
-                      triggerUpdate = reactive(TRUE))
+  DataTools::downloadModelServer("modelDownload",
+                                 dat = reactive(reactiveValuesToList(data)),
+                                 inputs = reactiveValues(inputObj = reactiveValuesToList(input),
+                                                         formulasObj = reactiveValuesToList(formulas)),
+                                 model = yEstimates,
+                                 rPackageName = appConfig$rPackageName,
+                                 fileExtension = appConfig$fileExtension,
+                                 modelNotes = uploadedNotes,
+                                 triggerUpdate = reactive(TRUE))
 
-  uploadedValues <- importDataServer("modelUpload",
-                                     title = "Import Model",
-                                     importType = "model",
-                                     defaultSource = appConfig$defaultSourceModel,
-                                     rPackageName = appConfig$rPackageName,
-                                     fileExtension = appConfig$fileExtension,
-                                     ignoreWarnings = TRUE)
+  uploadedValues <- DataTools::importDataServer("modelUpload",
+                                                title = "Import Model",
+                                                importType = "model",
+                                                defaultSource = appConfig$defaultSourceModel,
+                                                rPackageName = appConfig$rPackageName,
+                                                fileExtension = appConfig$fileExtension,
+                                                ignoreWarnings = TRUE)
   
   observe({
     req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["data"]]))
