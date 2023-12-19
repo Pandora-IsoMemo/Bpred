@@ -7,13 +7,8 @@ library(xlsx)
 library(shinyjs)
 library(mpiBpred)
 library(coda)
-library(yaml)
 
 options(shiny.maxRequestSize = 200*1024^2)
-
-# load config variables
-configFile <- system.file("config.yaml", package = "mpiBpred")
-appConfig <- yaml::read_yaml(configFile)
 
 shinyServer(function(input, output, session) {
   # DATA -------------------------------------------------------------------------------
@@ -42,8 +37,9 @@ shinyServer(function(input, output, session) {
   ### UPLOAD DATA 
   importedData <- DataTools::importDataServer(
     "DataFile",
-    defaultSource = appConfig$defaultSourceData,
-    rPackageName = appConfig$rPackageName,
+    defaultSource = config()[["defaultSourceData"]],
+    ckanFileTypes = config()[["ckanFileTypes"]],
+    rPackageName = config()[["rPackageName"]],
     customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
   
@@ -304,8 +300,9 @@ shinyServer(function(input, output, session) {
   
   importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
-    defaultSource = appConfig$defaultSourceData,
-    rPackageName = appConfig$rPackageName,
+    defaultSource = config()[["defaultSourceData"]],
+    ckanFileTypes = config()[["ckanFileTypes"]],
+    rPackageName = config()[["rPackageName"]],
     ignoreWarnings = TRUE
     #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
@@ -456,8 +453,9 @@ if(is.null(input$regfunctions)){
   })
   
   importedRefSample <- DataTools::importDataServer("DataRefSample", 
-                                                   defaultSource = appConfig$defaultSourceData,
-                                                   rPackageName = appConfig$rPackageName)
+                                                   defaultSource = config()[["defaultSourceData"]],
+                                                   ckanFileTypes = config()[["ckanFileTypes"]],
+                                                   rPackageName = config()[["rPackageName"]])
   observeEvent(importedRefSample(), {
     req(length(importedRefSample()) > 0)
     data$refSample <- importedRefSample()[[1]]
@@ -473,8 +471,9 @@ if(is.null(input$regfunctions)){
   })
   
   importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", 
-                                                      defaultSource = appConfig$defaultSourceData,
-                                                      rPackageName = appConfig$rPackageName)
+                                                      defaultSource = config()[["defaultSourceData"]],
+                                                      ckanFileTypes = config()[["ckanFileTypes"]],
+                                                      rPackageName = config()[["rPackageName"]])
   observeEvent(importedRefFreqTable(), {
     req(length(importedRefFreqTable()) > 0)
     data$values <- importedRefFreqTable()[[1]]
@@ -482,8 +481,9 @@ if(is.null(input$regfunctions)){
   })
   
   importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", 
-                                                       defaultSource = appConfig$defaultSourceData,
-                                                       rPackageName = appConfig$rPackageName)
+                                                       defaultSource = config()[["defaultSourceData"]],
+                                                       ckanFileTypes = config()[["ckanFileTypes"]],
+                                                       rPackageName = config()[["rPackageName"]])
   observeEvent(importedRefFreqTable2(), {
     req(length(importedRefFreqTable2()) > 0)
     data$freq <- importedRefFreqTable2()[[1]]
@@ -607,18 +607,20 @@ if(is.null(input$regfunctions)){
                                  inputs = reactiveValues(inputObj = reactiveValuesToList(input),
                                                          formulasObj = reactiveValuesToList(formulas)),
                                  model = yEstimates,
-                                 rPackageName = appConfig$rPackageName,
-                                 fileExtension = appConfig$fileExtension,
+                                 rPackageName = config()[["rPackageName"]],
+                                 fileExtension = config()[["fileExtension"]],
                                  modelNotes = uploadedNotes,
                                  triggerUpdate = reactive(TRUE))
 
   uploadedValues <- DataTools::importDataServer("modelUpload",
                                                 title = "Import Model",
                                                 importType = "model",
-                                                defaultSource = appConfig$defaultSourceModel,
-                                                rPackageName = appConfig$rPackageName,
-                                                fileExtension = appConfig$fileExtension,
-                                                ignoreWarnings = TRUE)
+                                                ckanFileTypes = config()[["ckanModelTypes"]],
+                                                ignoreWarnings = TRUE,
+                                                defaultSource = config()[["defaultSourceModel"]],
+                                                mainFolder = config()[["mainFolder"]],
+                                                fileExtension = config()[["fileExtension"]],
+                                                rPackageName = config()[["rPackageName"]])
   
   observe({
     req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["data"]]))

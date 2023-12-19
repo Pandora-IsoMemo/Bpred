@@ -27,6 +27,7 @@
 #' @importFrom utils capture.output combn download.file packageName packageVersion write.table
 #' @importFrom shinyjs alert
 #' @importFrom xlsx write.xlsx
+#' @importFrom yaml read_yaml
 #'
 globalVariables(c("model", "dataObj", "formulasObj", "inputObj"))
 NULL
