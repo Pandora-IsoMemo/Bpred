@@ -641,6 +641,7 @@ tagList(
       )
     )
   ),
+  #shinyTools::headerButtonsUI(id = "header", help_link = "https://pandora-isomemo.github.io/MapR/articles/how-to-use-MapR.html"),
   div(
     id = "header-right",
     div(
