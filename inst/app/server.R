@@ -242,28 +242,17 @@ shinyServer(function(input, output, session) {
                         filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_")
   )
   
-  
-  observeEvent(input$exportDataF, {
-    req(functionsFit())
-    showModal(modalDialog(
-      "Export Data",
-      easyClose = TRUE,
-      footer = modalButton("OK"),
-      exportPopUpUI("dataExportF")
-    ))
-  })
-  exportPopUpServer("dataExportF",
-                    exportData = reactive(
-                      plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                                    yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                    obj = functionsFit()$objects[[input$dispF]],
-                                    ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                                    xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
-                                    xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
-                                    PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
-                    ), 
-                    filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
-  
+  dataExportServer("exportDataF", 
+                   dataFun = reactive(function() {
+                     plotFunctions(data = data$dat, xVar = input$xVarDisp,
+                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
+                                   obj = functionsFit()$objects[[input$dispF]],
+                                   ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
+                                   xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
+                                   xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
+                                   PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
+                   }), 
+                   filename = paste(gsub("-", "", Sys.Date()), "formulasData", sep = "_"))
   
   #convergence diagnostics
   printFunDiag <- reactive({
@@ -541,20 +530,9 @@ if(is.null(input$regfunctions)){
                   boxQuantile = input$boxQuantile)
   })
   
-  
-  observeEvent(input$exportSummary, {
-    req(data$results[1])
-    showModal(modalDialog(
-      "Export Data",
-      easyClose = TRUE,
-      footer = modalButton("OK"),
-      exportPopUpUI("summaryExport")
-    ))
-  })
-  exportPopUpServer("summaryExport",
-                    exportData = reactive(data$results[1]), 
-                    filename = paste(gsub("-", "", Sys.Date()), "Summary", sep = "_"))
-  
+  dataExportServer("exportSummary", 
+                   dataFun = reactive(function() { data$results[1] }), 
+                   filename = paste(gsub("-", "", Sys.Date()), "Summary", sep = "_"))
   
   observeEvent(input$exportPlot, {
     req(yEstimates())
@@ -584,20 +562,9 @@ if(is.null(input$regfunctions)){
                         filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_")
   )
 
-  
-  observeEvent(input$exportData, {
-    req(data$exportData)
-    showModal(modalDialog(
-      "Export Data",
-      easyClose = TRUE,
-      footer = modalButton("OK"),
-      exportPopUpUI("dataExport")
-    ))
-  })
-  exportPopUpServer("dataExport",
-                    exportData = reactive(data$exportData), 
-                    filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
-  
+  dataExportServer("exportData", 
+                   dataFun = reactive(function() {data$exportData}), 
+                   filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
   
   # MODEL DOWN- / UPLOAD ----
   

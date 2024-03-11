@@ -23,6 +23,7 @@
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset runjs useShinyjs
 #' @importFrom shinyMatrix matrixInput updateMatrixInput
+#' @importFrom shinyTools dataExportButton dataExportServer
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif var
 #' @importFrom utils capture.output combn download.file packageName packageVersion write.table
 #' @importFrom shinyjs alert

@@ -284,7 +284,7 @@ tagList(
             ),
             
             actionButton("exportPlotF", "Export Plot"),
-            actionButton("exportDataF", "Export Data")
+            dataExportButton("exportDataF", label = "Export Data")
           )
         ))
       )
@@ -516,7 +516,7 @@ tagList(
                 step = 0.001
               )),
               actionButton("exportPlot", "Export Plot"),
-              actionButton("exportData", "Export Data")
+              dataExportButton("exportData", label = "Export Data")
             ),
             tabPanel(
               ### Summary Statistics ----
@@ -635,7 +635,7 @@ tagList(
               tags$br(),
               verbatimTextOutput("summaryEstimates") %>%
                 withSpinner(color = "#20c997"),
-              actionButton("exportSummary", "Export Mean Tables")
+              dataExportButton("exportSummary", label = "Export Mean Tables")
             )
           ))
       )

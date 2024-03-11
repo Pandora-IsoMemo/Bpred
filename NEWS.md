@@ -1,5 +1,10 @@
 # Bpred App
 
+## Version: 24.03.0
+
+### Updates
+- integration of modules from shinyTools: dataExport
+
 ## Version: 23.12.1
 
 ### Bug Fixes
