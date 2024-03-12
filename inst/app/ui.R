@@ -284,7 +284,7 @@ tagList(
             ),
             
             actionButton("exportPlotF", "Export Plot"),
-            dataExportButton("exportDataF", label = "Export Data")
+            shinyTools::dataExportButton("exportDataF", label = "Export Data")
           )
         ))
       )
@@ -442,31 +442,11 @@ tagList(
               
               plotOutput("plot") %>% withSpinner(color =
                                                    "#20c997"),
-              textAreaInput(
-                inputId = ("headerLabel"),
-                label = "Header",
-                value = ""
-              ),
-              textAreaInput(
-                inputId = ("xlabel"),
-                label = "Title x-axis",
-                value = ""
-              ),
-              textAreaInput(
-                inputId = ("ylabel"),
-                label = "Title y-axis",
-                value = ""
-              ),
-              numericInput(
-                inputId = ("xTextSize"),
-                label = "Font size x-axis title",
-                value = 24
-              ),
-              numericInput(
-                inputId = ("yTextSize"),
-                label = "Font size y-axis title",
-                value = 24
-              ),
+              fluidRow(
+                column(4, shinyTools::plotTitlesUI("EstimateTitles")),
+                column(4, shinyTools::plotRangesUI("EstimateRanges")),
+              column(4,
+                     tags$h4("Plot"),
               numericInput(
                 inputId = ("xAxisSize"),
                 label = "Font size x-axis",
@@ -515,8 +495,9 @@ tagList(
                 max = 1,
                 step = 0.001
               )),
-              actionButton("exportPlot", "Export Plot"),
-              dataExportButton("exportData", label = "Export Data")
+              )),
+              shinyTools::plotExportButton("exportPlot", label = "Export Plot"),
+              shinyTools::dataExportButton("exportData", label = "Export Data")
             ),
             tabPanel(
               ### Summary Statistics ----
@@ -635,7 +616,7 @@ tagList(
               tags$br(),
               verbatimTextOutput("summaryEstimates") %>%
                 withSpinner(color = "#20c997"),
-              dataExportButton("exportSummary", label = "Export Mean Tables")
+              shinyTools::dataExportButton("exportSummary", label = "Export Mean Tables")
             )
           ))
       )
