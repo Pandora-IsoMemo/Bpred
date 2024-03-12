@@ -3,7 +3,7 @@
 ## Version: 24.03.0
 
 ### Updates
-- integration of modules from shinyTools: dataExport
+- integration of modules from shinyTools: dataExport, plotExport (#36)
 
 ## Version: 23.12.1
 
