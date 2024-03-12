@@ -8,12 +8,10 @@
 #' @import shiny
 #' @importFrom coda raftery.diag gelman.diag geweke.diag heidel.diag mcmc
 #' @importFrom dplyr bind_cols bind_rows filter group_by if_else mutate summarise ungroup
-#' @importFrom ggplot2  aes aes_ aes_string geom_boxplot geom_density geom_errorbar geom_histogram 
-#' ggplot geom_point ggtitle ylab xlab geom_line geom_ribbon labs theme element_text
+#' @importFrom ggplot2 aes aes_ aes_string geom_boxplot geom_density geom_errorbar geom_histogram 
+#' ggplot geom_point ggtitle geom_line geom_ribbon theme element_text
 #' @importFrom graphics lines
-#' @importFrom jsonlite toJSON
-#' @importFrom htmltools save_html
-#' @importFrom httr GET content
+#' @importFrom httr content
 #' @importFrom DataTools checkAnyNonNumericColumns downloadModelUI downloadModelServer importDataUI 
 #'  importDataServer tryCatchWithWarningsAndErrors
 #' @importFrom magrittr %>%
@@ -27,9 +25,8 @@
 #'  formatRangesOfGGplot headerButtonsUI plotExportButton plotExportServer 
 #'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif var
-#' @importFrom utils capture.output combn download.file packageName packageVersion write.table
+#' @importFrom utils capture.output combn packageVersion
 #' @importFrom shinyjs alert
-#' @importFrom xlsx write.xlsx
 #' @importFrom yaml read_yaml
 #'
 globalVariables(c("model", "dataObj", "formulasObj", "inputObj"))

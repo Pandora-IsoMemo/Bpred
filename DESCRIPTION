@@ -15,9 +15,7 @@ Imports:
   dplyr,
   ggplot2 (>= 2.2.1),
   DataTools (>= 23.12.2),
-  htmltools,
   httr,
-  jsonlite,
   magrittr,
   mice,
   modules,
@@ -29,9 +27,7 @@ Imports:
   shinyjs,
   shinythemes,
   shinyTools,
-  xlsx,
-  yaml,
-  zip
+  yaml
 Suggests: lintr, testthat
 License: GPL (>= 3)
 Encoding: UTF-8
