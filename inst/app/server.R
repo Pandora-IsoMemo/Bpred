@@ -537,11 +537,10 @@ if(is.null(input$regfunctions)){
   
   output$plot <- renderPlot({
     req(yEstimates())
-    plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType,
+    plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType,
+                  nBins = input$nBins, meanType = input$meanType,
                   xAxisSize = input$xAxisSize, yAxisSize = input$yAxisSize,
                   showLegend = input$showLegend,
-                  #colorPalette = "default",
-                  #fontFamily = NULL,
                   whiskerMultiplier = input$whiskerMultiplier,
                   boxQuantile = input$boxQuantile) %>%
       shinyTools::formatTitlesOfGGplot(titles = plotEstimatesTitles) %>%
@@ -561,8 +560,6 @@ if(is.null(input$regfunctions)){
                                                meanType = input$meanType,
                                                xAxisSize = input$xAxisSize, yAxisSize = input$yAxisSize,
                                                showLegend = input$showLegend,
-                                               #colorPalette = "default",
-                                               #fontFamily = NULL,
                                                whiskerMultiplier = input$whiskerMultiplier,
                                                boxQuantile = input$boxQuantile)
                                }),

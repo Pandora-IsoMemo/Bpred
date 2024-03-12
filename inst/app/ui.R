@@ -443,21 +443,6 @@ tagList(
                 label = "Show legend",
                 value = TRUE
               ),
-              # selectInput(
-              #   inputId = ("colorPalette"),
-              #   label = "Color Palette",
-              #   choices = c(
-              #     "default",
-              #     "white",
-              #     RColorBrewer::brewer.pal.info %>% row.names()
-              #   )
-              # ),
-              # selectInput(
-              #   inputId = ("fontFamily"),
-              #   label = "Font",
-              #   selected = NULL,
-              #   choices = availableFonts()
-              # ),
               conditionalPanel(
                 condition = "input.summaryPlotType == 'Boxplot'",
               sliderInput(

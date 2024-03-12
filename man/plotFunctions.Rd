@@ -9,11 +9,6 @@ plotFunctions(
   xVar,
   yVar,
   object,
-  ylabel = "",
-  xlabel = "",
-  headerLabel = "",
-  xTextSize = 24,
-  yTextSize = 24,
   xAxisSize = 18,
   yAxisSize = 18,
   PointSize = 1,
@@ -28,16 +23,6 @@ plotFunctions(
 \item{yVar}{dependent variable}
 
 \item{object}{object}
-
-\item{ylabel}{ylabel}
-
-\item{xlabel}{xlabel}
-
-\item{headerLabel}{title label}
-
-\item{xTextSize}{x label text size}
-
-\item{yTextSize}{y label text size}
 
 \item{xAxisSize}{x axis text size}
 

@@ -5,11 +5,6 @@
 #' @param plotType A character. Form of presentation, choices are "KernelDensity" (default), "Histogram" or "Boxplot"
 #' @param nBins An integer Number of bins for histogram
 #' @param meanType A character "1" for total variance for category type, "2" for mean variance
-#' @param ylabel ylabel
-#' @param xlabel xlabel
-#' @param headerLabel title label
-#' @param xTextSize x label text size
-#' @param yTextSize y label text size
 #' @param xAxisSize x axis text size
 #' @param yAxisSize y axis text size
 #' @param showLegend show legend?
@@ -19,12 +14,8 @@
 #' @return A ggplot2 object with densities
 #' @export
 plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity", nBins = 15, meanType = "1",
-                          ylabel = "", xlabel = "", headerLabel = "",
-                          xTextSize = 24, yTextSize = 24,
                           xAxisSize = 18, yAxisSize = 18,
                           showLegend = TRUE,
-                          #colorPalette = "default",
-                          #fontFamily = NULL,
                           whiskerMultiplier = 0.95,
                           boxQuantile = 0.68){
   # fix R CMD check warnings
@@ -62,8 +53,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
       
       
       g <- ggplot(dataSummary, aes_(x = ~ Sample, fill = ~ Sample)) #+
-      #ylab(ylabel) + xlab(xlabel)
-      
+       
       g <- g + geom_boxplot(mapping = aes(
         lower = q32,
         upper = q68,
@@ -103,7 +93,6 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
         ungroup
       
       g <- ggplot(dataSummary, aes_(x = ~ Individual, fill = ~ Individual)) #+
-      #ylab(ylabel) + xlab(xlabel)
       
       g <- g + geom_boxplot(mapping = aes(
         lower = q32,
@@ -155,8 +144,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
           ) %>%
           ungroup
         
-        g <- ggplot(dataSummary, aes_(x = ~ Category, fill = ~ Category)) #+
-        #ylab(ylabel) + xlab(xlabel)
+        g <- ggplot(dataSummary, aes_(x = ~ Category, fill = ~ Category))
         
         g <- g + geom_boxplot(mapping = aes(
           lower = q32,
@@ -178,23 +166,11 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
     
   }
   g <- g + theme(
-    axis.title.x = element_text(size = xTextSize),
-    axis.title.y = element_text(size = yTextSize),
     axis.text.x = element_text(size = xAxisSize),
     axis.text.y = element_text(size = yAxisSize)
   )
-  if (headerLabel != "") {
-    g <- g + labs(title = headerLabel) +
-      theme(plot.title = element_text(hjust = 0.5))
-  }
   if (!showLegend) {
     g <- g + theme(legend.position = "none")
-  }
-  if (ylabel != "") {
-    g <- g + ylab(ylabel)
-  }
-  if (xlabel != "") {
-    g <- g + xlab(xlabel)
   }
   
   g
@@ -327,11 +303,6 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 #' @param xVar independent variable
 #' @param yVar dependent variable
 #' @param object object
-#' @param ylabel ylabel
-#' @param xlabel xlabel
-#' @param headerLabel title label
-#' @param xTextSize x label text size
-#' @param yTextSize y label text size
 #' @param xAxisSize x axis text size
 #' @param yAxisSize y axis text size
 #' @param PointSize point size
@@ -339,8 +310,6 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 #' 
 #' @export
 plotFunctions <- function(data, xVar, yVar, object, 
-                          ylabel = "", xlabel = "", headerLabel = "",
-                          xTextSize = 24, yTextSize = 24,
                           xAxisSize = 18, yAxisSize = 18,
                           PointSize= 1, LineWidth = 1
 ){
@@ -376,21 +345,9 @@ plotFunctions <- function(data, xVar, yVar, object,
   g <- ggplot(as.data.frame(data), aes_string(x = xVar, y = yVar)) + geom_point(size = PointSize) + 
     geom_line(data = lineData, aes(x = xPred, y = yPred), size = LineWidth)
   g <- g + theme(
-    axis.title.x = element_text(size = xTextSize),
-    axis.title.y = element_text(size = yTextSize),
     axis.text.x = element_text(size = xAxisSize),
     axis.text.y = element_text(size = yAxisSize)
   )
-  if (headerLabel != "") {
-    g <- g + labs(title = headerLabel) +
-      theme(plot.title = element_text(hjust = 0.5))
-  }
-  if (ylabel != "") {
-    g <- g + ylab(ylabel)
-  }
-  if (xlabel != "") {
-    g <- g + xlab(xlabel)
-  }
   
   list(g = g, exportData = lineData)
 }
