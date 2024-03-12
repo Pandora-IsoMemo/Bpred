@@ -237,31 +237,11 @@ tagList(
             pickerInput("dispF", "Choose formula", choices = character(0)),
             plotOutput("plotDisp"),
             selectInput("xVarDisp", "Choose x variable", choices = character(0)),
-            textAreaInput(
-              inputId = ("headerLabelF"),
-              label = "Header",
-              value = ""
-            ),
-            textAreaInput(
-              inputId = ("xlabelF"),
-              label = "Title x-axis",
-              value = ""
-            ),
-            textAreaInput(
-              inputId = ("ylabelF"),
-              label = "Title y-axis",
-              value = ""
-            ),
-            numericInput(
-              inputId = ("xTextSizeF"),
-              label = "Font size x-axis title",
-              value = 24
-            ),
-            numericInput(
-              inputId = ("yTextSizeF"),
-              label = "Font size y-axis title",
-              value = 24
-            ),
+            fluidRow(
+              column(4, shinyTools::plotTitlesUI("FormulasTitles")),
+              column(4, shinyTools::plotRangesUI("FormulasRanges")),
+              column(4,
+                     tags$h4("Plot"),
             numericInput(
               inputId = ("xAxisSizeF"),
               label = "Font size x-axis",
@@ -281,9 +261,10 @@ tagList(
               inputId = "LineWidthF",
               label = "Line Width",
               min = 0.1, max = 5,value =  1, step = 0.1
-            ),
+            )
+            )),
             
-            actionButton("exportPlotF", "Export Plot"),
+            shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
             shinyTools::dataExportButton("exportDataF", label = "Export Data")
           )
         ))

@@ -204,6 +204,21 @@ shinyServer(function(input, output, session) {
     }
     })
   
+  plotFormulasTitles <- shinyTools::plotTitlesServer(
+    "FormulasTitles", 
+    type = "ggplot",
+    initTitles = list(plot = config()[["plotTitle"]],
+                      xAxis = config()[["plotTitle"]],
+                      yAxis = config()[["plotTitle"]])
+  )
+  
+  plotFormulasRanges <- shinyTools::plotRangesServer(
+    "FormulasRanges",
+    type = "ggplot",
+    initRanges = list(xAxis = config()[["plotRange"]],
+                      yAxis = config()[["plotRange"]])
+  )
+  
   output$plotDisp <- renderPlot({
     req(data)
     if(!(input$xVarDisp == "")){
@@ -211,44 +226,32 @@ shinyServer(function(input, output, session) {
         plotFunctions(data = data$dat, xVar = input$xVarDisp,
                       yVar = formulas$f[formulas$f == input$dispF, "y"],
                       obj = formulas$objects[[input$dispF]],
-                      ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                      xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
                       xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
-                      PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
+                      PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g %>%
+          shinyTools::formatTitlesOfGGplot(titles = plotFormulasTitles) %>%
+          shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
       },message = "Drawing plot")
     }
   })
   
-  
-  observeEvent(input$exportPlotF, {
-    req(functionsFit())
-    showModal(modalDialog(
-      title = "Export Graphic",
-      footer = modalButton("OK"),
-      exportPlotPopUpUI("plotExportF"),
-      easyClose = TRUE
-    ))
-  })
-  exportPlotPopUpServer("plotExportF", 
-                        exportPlot = reactive(
-                          plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                                        yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                        obj = functionsFit()$objects[[input$dispF]],
-                                        ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                                        xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
-                                        xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
-                                        PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
-                        ), 
-                        filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_")
-  )
+  shinyTools::plotExportServer("exportPlotF",
+                               plotFun = reactive(function() {
+                                 plotFunctions(data = data$dat, xVar = input$xVarDisp,
+                                               yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
+                                               obj = functionsFit()$objects[[input$dispF]],
+                                               xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
+                                               PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
+                               }),
+                               plotType = "ggplot",
+                               filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
+                               initTitles = plotFormulasTitles,
+                               initRanges = plotFormulasRanges)
   
   shinyTools::dataExportServer("exportDataF", 
                                dataFun = reactive(function() {
                                  plotFunctions(data = data$dat, xVar = input$xVarDisp,
                                                yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
                                                obj = functionsFit()$objects[[input$dispF]],
-                                               ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                                               xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
                                                xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
                                                PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
                                }), 
