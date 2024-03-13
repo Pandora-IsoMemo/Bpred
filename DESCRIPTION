@@ -35,3 +35,4 @@ LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
 RoxygenNote: 7.2.3
+URL: https://pandora-isomemo.github.io/bpred/
