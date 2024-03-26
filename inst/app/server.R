@@ -545,7 +545,7 @@ if(is.null(input$regfunctions)){
                   boxQuantile = input$boxQuantile) %>%
       shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
       shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
-      tryCatchWithWarningsAndErrors(errorTitle = "Plotting failed")
+      DataTools::tryCatchWithWarningsAndErrors(errorTitle = "Plotting failed")
   })
   
   shinyTools::dataExportServer("exportSummary", 
