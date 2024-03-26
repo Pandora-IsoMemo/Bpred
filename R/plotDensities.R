@@ -17,7 +17,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
                           boxQuantile = 0.68){
   # fix R CMD check warnings
   Sample <- Value <- Category <- yPred <- Individual <- NULL
-  if(class(yEstimates) != "list" && length(yEstimates) != 2){
+  if(!inherits(yEstimates, "list") && length(yEstimates) != 2){
     stop("Please define inputs and click on \"estimate Y \" first")
   }
   
@@ -250,7 +250,7 @@ summariseEstimates <- function(yEstimates, type = "Sample",
     listEst$reference <- refSample
   }
   if (checkDifferencesReference == TRUE && referenceType == "freqTable" &&
-      class(referenceTable) == "matrix" && nrow(referenceTable) == 2 && ncol(referenceTable) > 1){
+      inherits(referenceTable, "matrix") && nrow(referenceTable) == 2 && ncol(referenceTable) > 1){
     referenceSample <- rep(referenceTable[1, ], referenceTable[2, ])
     refSample <- rnorm(listEst[[1]], mean = referenceSample,
                        sd = density(referenceSample, kernel = "gaussian")$bw)

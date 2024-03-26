@@ -163,7 +163,7 @@ shinyServer(function(input, output, session) {
                                         parNamesDir = parNamesDir) %>%
          DataTools::tryCatchWithWarningsAndErrors()
        
-      if(class(res) == "character"){
+      if(inherits(res, "character")){
         shinyjs::alert(res)
         return(NULL)
       }
@@ -408,7 +408,7 @@ if(is.null(input$regfunctions)){
       eval() %>%
         DataTools::tryCatchWithWarningsAndErrors()},
       message = "computing new y estimates", value = 0.3)
-    if(class(model) == "character"){
+    if(inherits(model, "character")){
       shinyjs::alert(model) 
       return()
     }
