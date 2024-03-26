@@ -27,8 +27,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
                  Sample =
                    factor(rep(1:length(yEstimates$Y_Samples_Individual),
                               times = unlist(lapply(yEstimates$Y_Samples_Individual, length)))))
-    g <- ggplot(IndividualData, aes(x = Value, fill = Sample)) +
-      ggtitle("Density by sample")
+    g <- ggplot(IndividualData, aes(x = Value, fill = Sample))
     if (plotType == "KernelDensity") g <- g + geom_density(alpha = 0.25)
     if (plotType == "Histogram") g <- g +
       geom_histogram(alpha = 0.75, bins = nBins, position = "identity")
@@ -49,7 +48,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
         ungroup
       
       
-      g <- ggplot(dataSummary, aes_(x = ~ Sample, fill = ~ Sample)) #+
+      g <- ggplot(dataSummary, aes_(x = ~ Sample, fill = ~ Sample))
        
       g <- g + geom_boxplot(mapping = aes(
         lower = q32,
@@ -68,7 +67,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
   if (type == "Combined"){
     IndividualData <- data.frame(Value = unlist(yEstimates$Y_Samples_Combined), Individual = "Combined")
     
-    g <- ggplot(IndividualData, aes(x = Value)) + ggtitle("Combined density")
+    g <- ggplot(IndividualData, aes(x = Value))
     if (plotType == "KernelDensity") g <- g + geom_density(alpha = 0.25, fill = "red")
     if (plotType == "Histogram") g <- g +
       geom_histogram(alpha = 0.75, bins = nBins, position = "identity")
@@ -89,7 +88,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
         ) %>%
         ungroup
       
-      g <- ggplot(dataSummary, aes_(x = ~ Individual, fill = ~ Individual)) #+
+      g <- ggplot(dataSummary, aes_(x = ~ Individual, fill = ~ Individual))
       
       g <- g + geom_boxplot(mapping = aes(
         lower = q32,
@@ -120,7 +119,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
     }
     
     if(plotType != "TimePlot"){
-      g <- ggplot(IndividualData, aes(x = Value, fill = Category)) + ggtitle("Density by category")
+      g <- ggplot(IndividualData, aes(x = Value, fill = Category))
       if (plotType == "KernelDensity") g <- g + geom_density(alpha = 0.25)
       if (plotType == "Histogram") g <- g +
         geom_histogram(alpha = 0.75, bins = nBins, position = "identity")
@@ -157,7 +156,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
       
     } else {
       IndividualData <- IndividualData %>% group_by(Category) %>% summarise(meanEst = mean(Value), upper = quantile(Value, 0.975), lower = quantile(Value, 0.025))
-      g <- ggplot(IndividualData, aes(x = Category, y = meanEst, group = 1)) + ggtitle("Mean and 95\\% uncertainty by category") + 
+      g <- ggplot(IndividualData, aes(x = Category, y = meanEst, group = 1)) +
         geom_line() + geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2)
     }
     
@@ -167,7 +166,25 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
     g <- g + theme(legend.position = "none")
   }
   
-  g
+  g %>%
+    setDefaultTitle(type, plotType)
+}
+
+#' Set Deafult Title
+#' 
+#' @param g (ggplot) ggplot
+#' @inheritParams plotDensities
+setDefaultTitle <- function(g, type, plotType) {
+  title <- switch (type,
+                   "Sample" = "Density by sample",
+                   "Combined" = "Combined density",
+                   "Category" = ifelse(plotType != "TimePlot",
+                                       "Density by category",
+                                       "Mean and 95\\% uncertainty by category"),
+                   ""
+  )
+  
+  g + ggtitle(title)
 }
 
 #' Summarise estimates and check for pairwise differences

@@ -544,7 +544,8 @@ if(is.null(input$regfunctions)){
                   whiskerMultiplier = input$whiskerMultiplier,
                   boxQuantile = input$boxQuantile) %>%
       shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
-      shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges)
+      shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
+      tryCatchWithWarningsAndErrors(errorTitle = "Plotting failed")
   })
   
   shinyTools::dataExportServer("exportSummary", 
