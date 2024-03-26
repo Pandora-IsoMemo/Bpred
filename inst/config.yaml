@@ -11,16 +11,21 @@ ckanModelTypes:
   - "zip"
   - "bpred"
 githubRepo: "bpred"        # for import of models
-mainFolder: "predefinedModels"  # for import of models
 fileExtension: "bpred"      # for download of models
 rPackageName: "mpiBpred"       # for download and import of models
-# default values for plot titles and ranges
+# default values for plot titles
 plotTitle:
   text: ""
   fontType: "plain"
   color: "#000000"
   size: 24
   hide: false
+plotText:
+  fontType: "plain"
+  color: "#000000"
+  size: 14
+  hide: false
+# default range of axis
 plotRange:
   min: 0
   max: 1

@@ -204,12 +204,14 @@ shinyServer(function(input, output, session) {
     }
     })
   
-  plotFormulasTitles <- shinyTools::plotTitlesServer(
+  plotFormulasText <- shinyTools::plotTitlesServer(
     "FormulasTitles", 
     type = "ggplot",
-    initTitles = list(plot = config()[["plotTitle"]],
-                      xAxis = config()[["plotTitle"]],
-                      yAxis = config()[["plotTitle"]])
+    initText = list(plotTitle  = config()[["plotTitle"]],
+                    xAxisTitle = config()[["plotTitle"]],
+                    yAxisTitle = config()[["plotTitle"]],
+                    xAxisText  = config()[["plotText"]],
+                    yAxisText  = config()[["plotText"]])
   )
   
   plotFormulasRanges <- shinyTools::plotRangesServer(
@@ -228,7 +230,7 @@ shinyServer(function(input, output, session) {
                       obj = formulas$objects[[input$dispF]],
                       xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
                       PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g %>%
-          shinyTools::formatTitlesOfGGplot(titles = plotFormulasTitles) %>%
+          shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
           shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
       },message = "Drawing plot")
     }
@@ -244,7 +246,7 @@ shinyServer(function(input, output, session) {
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
-                               initTitles = plotFormulasTitles,
+                               initText = plotFormulasText,
                                initRanges = plotFormulasRanges)
   
   shinyTools::dataExportServer("exportDataF", 
@@ -520,12 +522,14 @@ if(is.null(input$regfunctions)){
     data$results
     })  
   
-  plotEstimatesTitles <- shinyTools::plotTitlesServer(
+  plotEstimatesText <- shinyTools::plotTitlesServer(
     "EstimateTitles", 
     type = "ggplot",
-    initTitles = list(plot = config()[["plotTitle"]],
-                      xAxis = config()[["plotTitle"]],
-                      yAxis = config()[["plotTitle"]])
+    initText = list(plotTitle  = config()[["plotTitle"]],
+                    xAxisTitle = config()[["plotTitle"]],
+                    yAxisTitle = config()[["plotTitle"]],
+                    xAxisText  = config()[["plotText"]],
+                    yAxisText  = config()[["plotText"]])
   )
   
   plotEstimatesRanges <- shinyTools::plotRangesServer(
@@ -543,7 +547,7 @@ if(is.null(input$regfunctions)){
                   showLegend = input$showLegend,
                   whiskerMultiplier = input$whiskerMultiplier,
                   boxQuantile = input$boxQuantile) %>%
-      shinyTools::formatTitlesOfGGplot(titles = plotEstimatesTitles) %>%
+      shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
       shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges)
   })
   
@@ -565,7 +569,7 @@ if(is.null(input$regfunctions)){
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_"),
-                               initTitles = plotEstimatesTitles,
+                               initText = plotEstimatesText,
                                initRanges = plotEstimatesRanges)
   
   shinyTools::dataExportServer("exportData", 
@@ -591,7 +595,6 @@ if(is.null(input$regfunctions)){
                                                 ckanFileTypes = config()[["ckanModelTypes"]],
                                                 ignoreWarnings = TRUE,
                                                 defaultSource = config()[["defaultSourceModel"]],
-                                                mainFolder = config()[["mainFolder"]],
                                                 fileExtension = config()[["fileExtension"]],
                                                 rPackageName = config()[["rPackageName"]])
   
