@@ -37,7 +37,9 @@ shinyServer(function(input, output, session) {
   ### UPLOAD DATA 
   importedData <- DataTools::importDataServer(
     "DataFile",
-    defaultSource = "file",
+    defaultSource = config()[["defaultSourceData"]],
+    ckanFileTypes = config()[["ckanFileTypes"]],
+    rPackageName = config()[["rPackageName"]],
     customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
   
@@ -298,7 +300,9 @@ shinyServer(function(input, output, session) {
   
   importedMeasures <- DataTools::importDataServer(
     "MeasuresFile",
-    defaultSource = "file",
+    defaultSource = config()[["defaultSourceData"]],
+    ckanFileTypes = config()[["ckanFileTypes"]],
+    rPackageName = config()[["rPackageName"]],
     ignoreWarnings = TRUE
     #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
@@ -337,7 +341,7 @@ shinyServer(function(input, output, session) {
       newChoices <- data$measures %>% colnames()
     }
     
-    updateSelectizeInput(session, "indVars", choices = newChoices) 
+    updateSelectizeInput(session, "indVarsX", choices = newChoices) 
     updateSelectizeInput(session, "indVarsUnc", choices = newChoices)
     updatePickerInput(session, "category", choices = newChoices)
   })
@@ -356,14 +360,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$estimateY, {
 
     # if(!all(sapply(c(
-    #   length(paste0("c(", paste0("'", input$indVars, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval),
+    #   length(paste0("c(", paste0("'", input$indVarsX, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval),
     #   length(paste0("c(", paste0("'", input$indVarsUnc, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval)), 
     #   FUN = identical, length(paste0("c(", paste0("'", input$regfunctions, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval ))))
     #   { 
     #     shinyjs::alert("For 'regfunctions', 'indVars' and 'indVarsUnc' always the same amount of variables has to be selected.")
     #     return()
     # }
-    lInd <- length(which((paste0("c(", paste0("'", input$indVars, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
+    lInd <- length(which((paste0("c(", paste0("'", input$indVarsX, "'", collapse = ", "), ")") %>% parse(text = .) %>% eval) != ""))
     if(is.null(input$indVarsUnc)){
       lUnc <- 0
     } else {
@@ -399,7 +403,7 @@ if(is.null(input$regfunctions)){
 }
     model <- withProgress({paste0("estimateY(relationship = '", input$relationship, "', ", 
            "regfunctions = ", regfunctions, ", ",
-           "indVars= c(", paste0("'", input$indVars, "'", collapse = ", "),"), ",
+           "indVars= c(", paste0("'", input$indVarsX, "'", collapse = ", "),"), ",
            "data = data$measures,", 
            "indVarsUnc = c(", paste0("'", input$indVarsUnc, "'", collapse = ", "),"), ",
            "category = '", input$category, "', ",
@@ -448,7 +452,10 @@ if(is.null(input$regfunctions)){
     data$refSample <- paste0("c(", input$summaryRefSample, ")") %>% parse(text = .)
   })
   
-  importedRefSample <- DataTools::importDataServer("DataRefSample", defaultSource = "file")
+  importedRefSample <- DataTools::importDataServer("DataRefSample", 
+                                                   defaultSource = config()[["defaultSourceData"]],
+                                                   ckanFileTypes = config()[["ckanFileTypes"]],
+                                                   rPackageName = config()[["rPackageName"]])
   observeEvent(importedRefSample(), {
     req(length(importedRefSample()) > 0)
     data$refSample <- importedRefSample()[[1]]
@@ -463,14 +470,20 @@ if(is.null(input$regfunctions)){
     data$freq <- paste0("c(", input$summaryFreqTable2, ")") %>% parse(text = .)
   })
   
-  importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", defaultSource = "file")
+  importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", 
+                                                      defaultSource = config()[["defaultSourceData"]],
+                                                      ckanFileTypes = config()[["ckanFileTypes"]],
+                                                      rPackageName = config()[["rPackageName"]])
   observeEvent(importedRefFreqTable(), {
     req(length(importedRefFreqTable()) > 0)
     data$values <- importedRefFreqTable()[[1]]
     alert("Reference Values updated.")
   })
   
-  importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", defaultSource = "file")
+  importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", 
+                                                       defaultSource = config()[["defaultSourceData"]],
+                                                       ckanFileTypes = config()[["ckanFileTypes"]],
+                                                       rPackageName = config()[["rPackageName"]])
   observeEvent(importedRefFreqTable2(), {
     req(length(importedRefFreqTable2()) > 0)
     data$freq <- importedRefFreqTable2()[[1]]
@@ -588,122 +601,109 @@ if(is.null(input$regfunctions)){
   
   # MODEL DOWN- / UPLOAD ----
   
-  uploadedNotes <- reactiveVal()
-  callModule(downloadModel, "modelDownload", 
-             allParentInput = reactive(reactiveValuesToList(input)),
-             yEstimates = yEstimates, formulas = formulas, data = data, 
-             uploadedNotes = uploadedNotes)
+  uploadedNotes <- reactiveVal(NULL)
+  DataTools::downloadModelServer("modelDownload",
+                                 dat = reactive(reactiveValuesToList(data)),
+                                 inputs = reactiveValues(inputObj = reactiveValuesToList(input),
+                                                         formulasObj = reactiveValuesToList(formulas)),
+                                 model = yEstimates,
+                                 rPackageName = config()[["rPackageName"]],
+                                 fileExtension = config()[["fileExtension"]],
+                                 modelNotes = uploadedNotes,
+                                 triggerUpdate = reactive(TRUE))
 
-  uploadedData <- callModule(uploadModel, "modelUpload")
+  uploadedValues <- DataTools::importDataServer("modelUpload",
+                                                title = "Import Model",
+                                                importType = "model",
+                                                ckanFileTypes = config()[["ckanModelTypes"]],
+                                                ignoreWarnings = TRUE,
+                                                defaultSource = config()[["defaultSourceModel"]],
+                                                mainFolder = config()[["mainFolder"]],
+                                                fileExtension = config()[["fileExtension"]],
+                                                rPackageName = config()[["rPackageName"]])
   
-  observeEvent(uploadedData$data, {
-    # update data in tab "Data" and tab "Measures" ----
+  observe({
+    req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["data"]]))
+    
+    # update data object in tab "Data" ----
+    uploadedData <- uploadedValues()[[1]][["data"]]
     for (name in names(data))
-      if (!is.null(uploadedData$data[[name]])) {
-        data[[name]] <- uploadedData$data[[name]]
+      if (!is.null(uploadedData[[name]])) {
+        data[[name]] <- uploadedData[[name]]
       } else if (name %in% c("dat", "exportedData")) {
         data[[name]] <- data.frame()
       } else {
         data[[name]] <- NULL
       }
-  })
-
-  observeEvent(uploadedData$formulas, {
+    
+    # update notes in tab "Estimates" model download ----
+    uploadedNotes(uploadedValues()[[1]][["notes"]])
+  }) %>% 
+    bindEvent(uploadedValues())
+  
+  observe(priority = -100, {
+    req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["inputs"]]))
     # update data in "Defined Formulas" in tab "Formulas" ----
+    uploadedFormulas <- uploadedValues()[[1]][["inputs"]][["formulasObj"]]
     for (name in names(formulas))
-      if (!is.null(uploadedData$formulas[[name]])) {
-        formulas[[name]] <- uploadedData$formulas[[name]]
+      if (!is.null(uploadedFormulas[[name]])) {
+        formulas[[name]] <- uploadedFormulas[[name]]
       } else if (name == "f") {
         formulas$f <- data.frame()
       } else {
         formulas[[name]] <- list()
       }
-  })
+    
+    if (!is.null(uploadedValues()[[1]][["inputs"]][["inputObj"]][["measuresMatrix"]])) {
+      # update data in tab "Measures" ----
+      uploadedMeasures <- uploadedValues()[[1]][["inputs"]][["inputObj"]][["measuresMatrix"]] %>% 
+        as.matrix()
+      # session$sendInputMessage() does not work for matrixInput()
+      updateMatrixInput(session, "measuresMatrix", value = uploadedMeasures)
+    }
+  }) %>% 
+    bindEvent(uploadedValues())
   
-  observeEvent(uploadedData$notes, {
-    # update model and notes in tab "Estimates" ----
-    uploadedNotes(uploadedData$notes)
-  })
-  
-  observeEvent(uploadedData$model, priority = -100, {
-    # update model and notes in tab "Estimates" ----
-    yEstimates(uploadedData$model)
+  observe(priority = -200, {
+    req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["inputs"]]))
+    ## update inputs ----
+    uploadedInputs <- uploadedValues()[[1]][["inputs"]][["inputObj"]]
     
-    ## update these inputs from model output ----
-    #(this is also available for formally saved model objects, before version 22.11.1)
-    updateSelectizeInput(session, "indVars", selected = uploadedData$model$indVars)
-    updateSelectizeInput(session, "indVarsUnc", selected = uploadedData$model$indVarsUnc)
-    updatePickerInput(session, "category", selected = uploadedData$model$category)
-    updateSelectInput(session, "yDist", selected = uploadedData$model$distribution)
-    updateTextInput(session, "n_samples", value = uploadedData$model$n_samples)
-    updateCheckboxInput(session, "includeRegUnc", value = uploadedData$model$includeRegUnc)
-  })
-  
-  observeEvent(uploadedData$inputFields, priority = -100, {
-    inputFields <- uploadedData$inputFields
-    # update inputs in tab "DATA" ----
-    updateNumericInput(session, "n", value = inputFields[["n"]])
+    # following inputs are updated differently
+    excludedInputs <- c("measuresMatrix", "indVars", "indVarsX", "indVarsUnc", "category", "yDist",
+                        "n_samples", "includeRegUnc")
     
-    # update inputs in tab "FORMULAS" and "Estimates" ----
-    ## updateTextInput
-    for (i in c("formName", "formCustom", "parRestricted", "relationship")) {
-      if (!is.null(i)) {
-        updateTextInput(session, i, value = inputFields[[i]])
-      } else {
-        updateTextInput(session, i, value = "")
-      }
-    }
-    ## updatePickerInput
-    for (i in c("f_y", "f_x", "f_xunc", "regfunctions")) {
-      if (!is.null(i)) {
-        updatePickerInput(session, i, selected = inputFields[[i]])
-      } else {
-        updatePickerInput(session, i, selected = list())
-      }
-    }
-    ## updateSelectInput
-    for (i in c("f_yunc", "f_xunc", "f_link")) {
-      if (!is.null(i)) {
-        updateSelectInput(session, i, selected = inputFields[[i]])
-      } else {
-        updateSelectInput(session, i, selected = list())
-      }
+    inputIDs <- names(uploadedInputs)
+    inputIDs <- inputIDs[(inputIDs %in% names(input)) & !(inputIDs %in% excludedInputs)]
+    
+    for (i in 1:length(inputIDs)) {
+      session$sendInputMessage(inputIDs[i],  list(value = uploadedInputs[[inputIDs[i]]]) )
     }
     
-    ## updateRadioButtons
-    if (!is.null(inputFields[["selectFType"]])) {
-      updateRadioButtons(session, "selectFType", selected = inputFields[["selectFType"]])
-    } else {
-      updateRadioButtons(session, "selectFType", selected = "linear")
+    # update model tab "Estimates" ----
+    uploadedModel <- uploadedValues()[[1]][["model"]]
+    
+    ## update these inputs from model output
+    # because these inputs are also available for formally saved model objects, before version 22.11.1)
+    
+    # rename to remove name ambiguities
+    if (!is.null(uploadedModel[["indVars"]])) {
+      uploadedModel[["indVarsX"]] <- uploadedModel[["indVars"]]
+      uploadedModel[["indVars"]] <- NULL
     }
     
-    ## updateSelectizeInput
-    for (i in c("custom_x", "custom_x_unc")) {
-      if (!is.null(i)) {
-        updateSelectizeInput(session, i, selected = inputFields[[i]])
-      } else {
-        updateSelectizeInput(session, i, selected = list())
-      }
-    }
+    inputIDs <- c("indVarsX", "indVarsUnc", "category", "n_samples", "includeRegUnc")
+    inputIDs <- inputIDs[(inputIDs %in% names(input))]
     
-    ## updateCheckboxInput
-    for (i in c("dirichlet", "imputeMissing", "rangeRestrict")) {
-      if (!is.null(i)) {
-        updateCheckboxInput(session, i, value = inputFields[[i]])
-      } else {
-        updateCheckboxInput(session, i, value = FALSE)
-      }
+    for (i in 1:length(inputIDs)) {
+      session$sendInputMessage(inputIDs[i],  list(value = uploadedModel[[inputIDs[i]]]) )
     }
+    updateSelectInput(session, "yDist", selected = uploadedModel[["distribution"]])
     
-    ## updateSliderInput, updateNumericInput
-    # if is.null, than no update (is.null is ignored by default):
-    updateSliderInput(session, "iter", value = inputFields[["iter"]])
-    updateSliderInput(session, "burnin", value = inputFields[["burnin"]])
-    updateSliderInput(session, "chains", value = inputFields[["chains"]])
-    updateSliderInput(session, "thinning", value = inputFields[["thinning"]])
-    updateNumericInput(session, "minRange", value = inputFields[["minRange"]])
-    updateNumericInput(session, "maxRange", value = inputFields[["maxRange"]])
-  })
+    ## update model object
+    yEstimates(uploadedModel)
+  }) %>% 
+    bindEvent(uploadedValues())
     
   observeEvent(input$getHelp, {
     showModal(modalDialog(
