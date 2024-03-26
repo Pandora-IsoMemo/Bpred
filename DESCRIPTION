@@ -26,7 +26,7 @@ Imports:
   shinycssloaders,
   shinyjs,
   shinythemes,
-  shinyTools (>= 24.03.4),
+  shinyTools (>= 24.03.3),
   yaml
 Suggests: lintr, testthat
 License: GPL (>= 3)
