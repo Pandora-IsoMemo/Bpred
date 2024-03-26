@@ -2,6 +2,7 @@
 % Please edit documentation in R/NAMESPACE.R
 \docType{package}
 \name{mpiBpred}
+\alias{-package}
 \alias{mpiBpred}
 \title{The 'mpiBpred' package.}
 \description{

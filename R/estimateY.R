@@ -81,7 +81,7 @@ estimateY <- function(relationship, regfunctions,
 
   if(imputeMissing & any(is.na(data))){
     if(category != ""){
-      if(class(data[, category]) == "character"){
+      if(inherits(data[, category], "character")){
         data[, category] <- factor(data[, category])
       }
     }
@@ -96,7 +96,7 @@ estimateY <- function(relationship, regfunctions,
       }
     }
     if(category != ""){
-      if(class(data[, category]) == "factor"){
+      if(inherits(data[, category], "factor")){
       new_data[, category] <- apply(sapply(1:length(completed), function(x) completed[[x]][,category]), 1, getMode)
     }
     }
@@ -203,7 +203,7 @@ estimateY <- function(relationship, regfunctions,
     }
     
     ret <- try({eval(parse(text = relationship))}, silent = TRUE)
-    if(class(ret) == "try-error"){
+    if(inherits(ret, "try-error")){
       ret <- "Independent variables or regression function not found in your formula. Please review your formula and regression functions to ensure all independent variables are included. Also check for correct placement of brackets or if brackets are missing."
     }
       ret
@@ -290,7 +290,7 @@ estimateY <- function(relationship, regfunctions,
     }
     retSamples <- retSamples[sample(1:length(retSamples), n_samples, replace = TRUE)]
   })
-  if(class(Y_Samples_Individual[[1]]) == "character") return(Y_Samples_Individual[[1]][1])
+  if(inherits(Y_Samples_Individual[[1]], "character")) return(Y_Samples_Individual[[1]][1])
   
   Y_Samples_Combined <- unlist(Y_Samples_Individual)
   

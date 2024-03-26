@@ -237,41 +237,12 @@ tagList(
             pickerInput("dispF", "Choose formula", choices = character(0)),
             plotOutput("plotDisp"),
             selectInput("xVarDisp", "Choose x variable", choices = character(0)),
-            textAreaInput(
-              inputId = ("headerLabelF"),
-              label = "Header",
-              value = ""
-            ),
-            textAreaInput(
-              inputId = ("xlabelF"),
-              label = "Title x-axis",
-              value = ""
-            ),
-            textAreaInput(
-              inputId = ("ylabelF"),
-              label = "Title y-axis",
-              value = ""
-            ),
-            numericInput(
-              inputId = ("xTextSizeF"),
-              label = "Font size x-axis title",
-              value = 24
-            ),
-            numericInput(
-              inputId = ("yTextSizeF"),
-              label = "Font size y-axis title",
-              value = 24
-            ),
-            numericInput(
-              inputId = ("xAxisSizeF"),
-              label = "Font size x-axis",
-              value = 18
-            ),
-            numericInput(
-              inputId = ("yAxisSizeF"),
-              label = "Font size y-axis",
-              value = 18
-            ),
+            tags$br(),
+            fluidRow(
+              column(4, shinyTools::plotTitlesUI("FormulasTitles")),
+              column(4, shinyTools::plotRangesUI("FormulasRanges")),
+              column(4,
+                     tags$h4("Plot Data"),
             sliderInput(
               inputId = "PointSizeF",
               label = "Point size",
@@ -282,9 +253,9 @@ tagList(
               label = "Line Width",
               min = 0.1, max = 5,value =  1, step = 0.1
             ),
-            
-            actionButton("exportPlotF", "Export Plot"),
-            actionButton("exportDataF", "Export Data")
+            shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
+            shinyTools::dataExportButton("exportDataF", label = "Export Data")
+            ))
           )
         ))
       )
@@ -442,61 +413,16 @@ tagList(
               
               plotOutput("plot") %>% withSpinner(color =
                                                    "#20c997"),
-              textAreaInput(
-                inputId = ("headerLabel"),
-                label = "Header",
-                value = ""
-              ),
-              textAreaInput(
-                inputId = ("xlabel"),
-                label = "Title x-axis",
-                value = ""
-              ),
-              textAreaInput(
-                inputId = ("ylabel"),
-                label = "Title y-axis",
-                value = ""
-              ),
-              numericInput(
-                inputId = ("xTextSize"),
-                label = "Font size x-axis title",
-                value = 24
-              ),
-              numericInput(
-                inputId = ("yTextSize"),
-                label = "Font size y-axis title",
-                value = 24
-              ),
-              numericInput(
-                inputId = ("xAxisSize"),
-                label = "Font size x-axis",
-                value = 18
-              ),
-              numericInput(
-                inputId = ("yAxisSize"),
-                label = "Font size y-axis",
-                value = 18
-              ),
+              fluidRow(
+                column(4, shinyTools::plotTitlesUI("EstimateTitles")),
+                column(4, shinyTools::plotRangesUI("EstimateRanges")),
+              column(4,
+                     tags$h4("Plot Data"),
               checkboxInput(
                 inputId = ("showLegend"),
                 label = "Show legend",
                 value = TRUE
               ),
-              # selectInput(
-              #   inputId = ("colorPalette"),
-              #   label = "Color Palette",
-              #   choices = c(
-              #     "default",
-              #     "white",
-              #     RColorBrewer::brewer.pal.info %>% row.names()
-              #   )
-              # ),
-              # selectInput(
-              #   inputId = ("fontFamily"),
-              #   label = "Font",
-              #   selected = NULL,
-              #   choices = availableFonts()
-              # ),
               conditionalPanel(
                 condition = "input.summaryPlotType == 'Boxplot'",
               sliderInput(
@@ -515,8 +441,9 @@ tagList(
                 max = 1,
                 step = 0.001
               )),
-              actionButton("exportPlot", "Export Plot"),
-              actionButton("exportData", "Export Data")
+              shinyTools::plotExportButton("exportPlot", label = "Export Plot"),
+              shinyTools::dataExportButton("exportData", label = "Export Data")
+              ))
             ),
             tabPanel(
               ### Summary Statistics ----
@@ -635,12 +562,13 @@ tagList(
               tags$br(),
               verbatimTextOutput("summaryEstimates") %>%
                 withSpinner(color = "#20c997"),
-              actionButton("exportSummary", "Export Mean Tables")
+              shinyTools::dataExportButton("exportSummary", label = "Export Mean Tables")
             )
           ))
       )
     )
   ),
+  #shinyTools::headerButtonsUI(id = "header", help_link = "https://pandora-isomemo.github.io/MapR/articles/how-to-use-MapR.html"),
   div(
     id = "header-right",
     div(
