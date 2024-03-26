@@ -23,7 +23,7 @@ plotTitle:
 plotText:
   fontType: "plain"
   color: "#000000"
-  size: 14
+  size: 18
   hide: false
 # default range of axis
 plotRange:

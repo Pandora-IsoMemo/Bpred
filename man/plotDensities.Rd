@@ -10,8 +10,6 @@ plotDensities(
   plotType = "KernelDensity",
   nBins = 15,
   meanType = "1",
-  xAxisSize = 18,
-  yAxisSize = 18,
   showLegend = TRUE,
   whiskerMultiplier = 0.95,
   boxQuantile = 0.68
@@ -27,10 +25,6 @@ plotDensities(
 \item{nBins}{An integer Number of bins for histogram}
 
 \item{meanType}{A character "1" for total variance for category type, "2" for mean variance}
-
-\item{xAxisSize}{x axis text size}
-
-\item{yAxisSize}{y axis text size}
 
 \item{showLegend}{show legend?}
 

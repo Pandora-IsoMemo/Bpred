@@ -228,7 +228,6 @@ shinyServer(function(input, output, session) {
         plotFunctions(data = data$dat, xVar = input$xVarDisp,
                       yVar = formulas$f[formulas$f == input$dispF, "y"],
                       obj = formulas$objects[[input$dispF]],
-                      xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
                       PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g %>%
           shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
           shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
@@ -241,7 +240,6 @@ shinyServer(function(input, output, session) {
                                  plotFunctions(data = data$dat, xVar = input$xVarDisp,
                                                yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
                                                obj = functionsFit()$objects[[input$dispF]],
-                                               xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
                                                PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
                                }),
                                plotType = "ggplot",
@@ -254,7 +252,6 @@ shinyServer(function(input, output, session) {
                                  plotFunctions(data = data$dat, xVar = input$xVarDisp,
                                                yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
                                                obj = functionsFit()$objects[[input$dispF]],
-                                               xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
                                                PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
                                }), 
                                filename = paste(gsub("-", "", Sys.Date()), "formulasData", sep = "_"))
@@ -543,7 +540,6 @@ if(is.null(input$regfunctions)){
     req(yEstimates())
     plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType,
                   nBins = input$nBins, meanType = input$meanType,
-                  xAxisSize = input$xAxisSize, yAxisSize = input$yAxisSize,
                   showLegend = input$showLegend,
                   whiskerMultiplier = input$whiskerMultiplier,
                   boxQuantile = input$boxQuantile) %>%
@@ -562,7 +558,6 @@ if(is.null(input$regfunctions)){
                                                plotType = input$summaryPlotType, 
                                                nBins = input$nBins,
                                                meanType = input$meanType,
-                                               xAxisSize = input$xAxisSize, yAxisSize = input$yAxisSize,
                                                showLegend = input$showLegend,
                                                whiskerMultiplier = input$whiskerMultiplier,
                                                boxQuantile = input$boxQuantile)

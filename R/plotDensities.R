@@ -5,8 +5,6 @@
 #' @param plotType A character. Form of presentation, choices are "KernelDensity" (default), "Histogram" or "Boxplot"
 #' @param nBins An integer Number of bins for histogram
 #' @param meanType A character "1" for total variance for category type, "2" for mean variance
-#' @param xAxisSize x axis text size
-#' @param yAxisSize y axis text size
 #' @param showLegend show legend?
 #' @param whiskerMultiplier multiplier of boxplot whiskers
 #' @param boxQuantile quantile of boxplot
@@ -14,7 +12,6 @@
 #' @return A ggplot2 object with densities
 #' @export
 plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity", nBins = 15, meanType = "1",
-                          xAxisSize = 18, yAxisSize = 18,
                           showLegend = TRUE,
                           whiskerMultiplier = 0.95,
                           boxQuantile = 0.68){
@@ -165,10 +162,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
     }
     
   }
-  g <- g + theme(
-    axis.text.x = element_text(size = xAxisSize),
-    axis.text.y = element_text(size = yAxisSize)
-  )
+  
   if (!showLegend) {
     g <- g + theme(legend.position = "none")
   }
@@ -303,14 +297,11 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 #' @param xVar independent variable
 #' @param yVar dependent variable
 #' @param object object
-#' @param xAxisSize x axis text size
-#' @param yAxisSize y axis text size
 #' @param PointSize point size
 #' @param LineWidth line width
 #' 
 #' @export
 plotFunctions <- function(data, xVar, yVar, object, 
-                          xAxisSize = 18, yAxisSize = 18,
                           PointSize= 1, LineWidth = 1
 ){
   yPred <- xPred <- NULL
@@ -344,10 +335,6 @@ plotFunctions <- function(data, xVar, yVar, object,
   
   g <- ggplot(as.data.frame(data), aes_string(x = xVar, y = yVar)) + geom_point(size = PointSize) + 
     geom_line(data = lineData, aes(x = xPred, y = yPred), size = LineWidth)
-  g <- g + theme(
-    axis.text.x = element_text(size = xAxisSize),
-    axis.text.y = element_text(size = yAxisSize)
-  )
   
   list(g = g, exportData = lineData)
 }

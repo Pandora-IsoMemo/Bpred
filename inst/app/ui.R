@@ -237,21 +237,12 @@ tagList(
             pickerInput("dispF", "Choose formula", choices = character(0)),
             plotOutput("plotDisp"),
             selectInput("xVarDisp", "Choose x variable", choices = character(0)),
+            tags$br(),
             fluidRow(
               column(4, shinyTools::plotTitlesUI("FormulasTitles")),
               column(4, shinyTools::plotRangesUI("FormulasRanges")),
               column(4,
-                     tags$h4("Plot"),
-            numericInput(
-              inputId = ("xAxisSizeF"),
-              label = "Font size x-axis",
-              value = 18
-            ),
-            numericInput(
-              inputId = ("yAxisSizeF"),
-              label = "Font size y-axis",
-              value = 18
-            ),
+                     tags$h4("Plot Data"),
             sliderInput(
               inputId = "PointSizeF",
               label = "Point size",
@@ -261,11 +252,10 @@ tagList(
               inputId = "LineWidthF",
               label = "Line Width",
               min = 0.1, max = 5,value =  1, step = 0.1
-            )
-            )),
-            
+            ),
             shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
             shinyTools::dataExportButton("exportDataF", label = "Export Data")
+            ))
           )
         ))
       )
@@ -427,17 +417,7 @@ tagList(
                 column(4, shinyTools::plotTitlesUI("EstimateTitles")),
                 column(4, shinyTools::plotRangesUI("EstimateRanges")),
               column(4,
-                     tags$h4("Plot"),
-              numericInput(
-                inputId = ("xAxisSize"),
-                label = "Font size x-axis",
-                value = 18
-              ),
-              numericInput(
-                inputId = ("yAxisSize"),
-                label = "Font size y-axis",
-                value = 18
-              ),
+                     tags$h4("Plot Data"),
               checkboxInput(
                 inputId = ("showLegend"),
                 label = "Show legend",
@@ -461,9 +441,9 @@ tagList(
                 max = 1,
                 step = 0.001
               )),
-              )),
               shinyTools::plotExportButton("exportPlot", label = "Export Plot"),
               shinyTools::dataExportButton("exportData", label = "Export Data")
+              ))
             ),
             tabPanel(
               ### Summary Statistics ----

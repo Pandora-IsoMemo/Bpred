@@ -4,16 +4,7 @@
 \alias{plotFunctions}
 \title{Plot functions}
 \usage{
-plotFunctions(
-  data,
-  xVar,
-  yVar,
-  object,
-  xAxisSize = 18,
-  yAxisSize = 18,
-  PointSize = 1,
-  LineWidth = 1
-)
+plotFunctions(data, xVar, yVar, object, PointSize = 1, LineWidth = 1)
 }
 \arguments{
 \item{data}{data}
@@ -23,10 +14,6 @@ plotFunctions(
 \item{yVar}{dependent variable}
 
 \item{object}{object}
-
-\item{xAxisSize}{x axis text size}
-
-\item{yAxisSize}{y axis text size}
 
 \item{PointSize}{point size}
 
