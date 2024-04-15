@@ -15,6 +15,9 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
                           showLegend = TRUE,
                           whiskerMultiplier = 0.95,
                           boxQuantile = 0.68){
+  
+  if (is.null(yEstimates)) return(NULL)
+  
   # fix R CMD check warnings
   Sample <- Value <- Category <- yPred <- Individual <- NULL
   if(!inherits(yEstimates, "list") && length(yEstimates) != 2){
@@ -321,6 +324,8 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 plotFunctions <- function(data, xVar, yVar, object, 
                           PointSize= 1, LineWidth = 1
 ){
+  if (length(data) == 0 || is.null(xVar) || xVar == "") return (list(g = NULL, exportData = NULL))
+  
   yPred <- xPred <- NULL
   xLim <- c(min(data[,xVar], na.rm = TRUE),max(data[,xVar], na.rm = TRUE))
   #predict
