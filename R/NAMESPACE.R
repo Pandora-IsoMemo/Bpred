@@ -14,8 +14,8 @@
 #' @importFrom jsonlite toJSON
 #' @importFrom htmltools save_html
 #' @importFrom httr GET content
-#' @importFrom DataTools checkAnyNonNumericColumns importDataUI importDataServer 
-#' tryCatchWithWarningsAndErrors
+#' @importFrom DataTools checkAnyNonNumericColumns downloadModelUI downloadModelServer importDataUI 
+#'  importDataServer tryCatchWithWarningsAndErrors
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom mice mice complete
@@ -27,6 +27,7 @@
 #' @importFrom utils capture.output combn download.file packageName packageVersion write.table
 #' @importFrom shinyjs alert
 #' @importFrom xlsx write.xlsx
+#' @importFrom yaml read_yaml
 #'
 globalVariables(c("model", "dataObj", "formulasObj", "inputObj"))
 NULL
