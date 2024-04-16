@@ -12,7 +12,7 @@ Imports:
   coda,
   dplyr,
   ggplot2 (>= 2.2.1),
-  DataTools (>= 24.01.0),
+  DataTools (>= 24.04.2),
   htmltools,
   httr,
   jsonlite,
@@ -27,6 +27,7 @@ Imports:
   shinyjs,
   shinythemes,
   xlsx,
+  yaml,
   zip
 Suggests: lintr, testthat
 License: GPL (>= 3)

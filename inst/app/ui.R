@@ -20,7 +20,7 @@ tagList(
     id = "tab",
     # DATA ---------------------------------------------------------------------------------------
     tabPanel(
-      title = "Data",
+      title = "Data/Model Import/Export",
       id = "Data",
       value = "Data",
       sidebarLayout(
@@ -28,8 +28,6 @@ tagList(
           ## left sidebar ----
           width = 2,
           style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
-          h3("Upload Data"),
-          tags$br(),
           DataTools::importDataUI("DataFile", "Import Data"),
           tags$br(), tags$br(),
           actionButton("simulateData", "Simulate Example Data"),
@@ -40,6 +38,13 @@ tagList(
             value = 100,
             min = 1,
             width = "75%"
+          ),
+          tags$hr(),
+          DataTools::importDataUI("modelUpload", label = "Import Model"),
+          checkboxInput("useDownload", label = "Download model"),
+          conditionalPanel(
+            condition = "input.useDownload == true",
+            DataTools::downloadModelUI("modelDownload", label = "Download")
           )
         ),
         mainPanel(
@@ -344,7 +349,7 @@ tagList(
             multiple = TRUE
           ),
           selectizeInput(
-            inputId = "indVars",
+            inputId = "indVarsX",
             label = "indVars:",
             choices = character(0),
             multiple = TRUE
@@ -623,7 +628,6 @@ tagList(
                                      )
                                    ))
                 )
-                
               ),
               tags$hr(),
               actionButton("estimateSummary", "Compute Summary Statistics"),
@@ -633,14 +637,7 @@ tagList(
                 withSpinner(color = "#20c997"),
               actionButton("exportSummary", "Export Mean Tables")
             )
-          )),
-        sidebarPanel(
-          ## right sidebar ----
-          width = 2,
-          style = "position:fixed; width:15%; max-width:350px; overflow-y:auto; height:85%",
-          downloadModelUI("modelDownload", "Download Model"),
-          uploadModelUI("modelUpload", "Upload Model")
-        )
+          ))
       )
     )
   ),

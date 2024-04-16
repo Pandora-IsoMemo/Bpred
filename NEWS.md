@@ -1,6 +1,34 @@
-# Bpred App 23.08.0
+# Bpred App 24.04.01
+
+## New Features
+
+- add R-cmd-check workflow
+- add pkgdown documentation
+- Ensure compliance of CRAN Standard in NEWS File
+
+# Bpred App 23.12.1
 
 ## Bug Fixes
+- _Import of models from Pandora_: 
+  - an error message occurred when trying to load a model from pandora.
+  - fix: adding the missing download of the zip file from the url before unpacking the zip
+
+# Bpred App 23.12.0
+
+## New Features
+- _Import of models_: display of "About" information that is associated to a selected Pandora 
+  Repository
+
+# Bpred App 23.09.0
+
+## New Features
+- _Import of models_:
+  - option to import models from Pandora platform
+
+# Bpred App 23.08.0
+
+### Bug Fixes
+
 - updates error message (#27)
 
 # Bpred App 23.07.1
