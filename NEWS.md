@@ -1,7 +1,7 @@
 # Bpred 24.03.0
 
 ## New Features
-- option to show a credible interval in "Formulas" - "Display formulas"
+- option to show a credible interval in "Formulas" - "Display formulas" (#33)
 
 # Bpred 24.03.0
 
