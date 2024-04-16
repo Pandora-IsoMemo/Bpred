@@ -1,5 +1,7 @@
 # Bpred App
 
+Bayesian multivariate regression application
+
 ### Access to online version:
 - MAIN version: https://isomemoapp.com/app/bpred
 

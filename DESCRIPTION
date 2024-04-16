@@ -1,5 +1,5 @@
 Package: mpiBpred
-Title: What the Package Does (one line, title case)
+Title: Bayesian multivariate regression application
 Version: 24.03.0.3
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
