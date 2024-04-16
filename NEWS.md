@@ -1,4 +1,4 @@
-# Bpred 24.04.0
+# Bpred 24.04.1
 
 ## Updates
 - update table under tab "Measures" formatted such as table under tab "Data" (#33)
