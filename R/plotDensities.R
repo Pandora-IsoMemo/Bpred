@@ -332,9 +332,9 @@ plotFunctions <- function(data,
                           PointSize = 1, 
                           LineWidth = 1,
                           prop = 0.8,
-                          ...
-){
-  if (length(data) == 0 || is.null(xVar) || xVar == "") return (list(g = NULL, exportData = NULL))
+                          ...){
+  if (length(data) == 0 || is.null(xVar) || xVar == "" || is.null(object)) 
+    return (list(g = NULL, exportData = NULL))
   
   yPred <- xPred <- NULL
   xLim <- c(min(data[,xVar], na.rm = TRUE),max(data[,xVar], na.rm = TRUE))

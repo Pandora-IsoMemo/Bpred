@@ -49,7 +49,7 @@ tagList(
         ),
         mainPanel(
           ## main panel ----
-          dataTableOutput('data')
+          DT::dataTableOutput("data")
           ),
       )
     ),
@@ -292,25 +292,7 @@ tagList(
         ),
         mainPanel(
           ## main panel ----
-          matrixInput(
-            inputId = "measuresMatrix",
-            class = "character",
-            value = matrix(),
-            copy = TRUE,
-            paste = TRUE,
-            cols = list(
-              names = TRUE,
-              extend = TRUE,
-              delta = 1,
-              editableNames = TRUE
-            ),
-            rows = list(
-              names = FALSE,
-              editableNames = TRUE,
-              extend = TRUE,
-              delta = 1
-            )
-          )
+          DT::dataTableOutput("measures")
         ),
       )
     ),
