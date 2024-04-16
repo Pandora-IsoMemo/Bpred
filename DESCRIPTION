@@ -21,7 +21,7 @@ Imports:
   modules,
   rsync,
   shiny,
-  shinyMatrix (>= 0.7.0),
+  shinyMatrix (>= 0.8.0),
   shinyWidgets,
   shinycssloaders,
   shinyjs,
