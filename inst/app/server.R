@@ -224,56 +224,59 @@ shinyServer(function(input, output, session) {
                       yAxis = config()[["plotRange"]])
   )
   
+  formulasPlotList <- reactiveVal()
+  observe({
+    req(data, input$xVarDisp)
+    withProgress({
+      newPlotObject <- plotFunctions(
+        data = data$dat, 
+        xVar = input$xVarDisp,
+        yVar = formulas$f[formulas$f == input$dispF, "y"],
+        obj = formulas$objects[[input$dispF]],
+        PointSize = input$PointSizeF,
+        LineWidth = input$LineWidthF,
+        prop = input[["credibilityIntPercent"]]/100,
+        alpha = input[["alphaCredInt"]]
+      )
+      
+      formulasPlotList(newPlotObject)
+    }, message = "Drawing plot")
+  }) %>%
+    bindEvent(input[["applyPlotFormulas"]])
+  
   output$plotDisp <- renderPlot({
-    req(data)
-    if(!(input$xVarDisp == "")){
-      withProgress({
-        plotFunctions(
-          data = data$dat, 
-          xVar = input$xVarDisp,
-          yVar = formulas$f[formulas$f == input$dispF, "y"],
-          obj = formulas$objects[[input$dispF]],
-          PointSize = input$PointSizeF,
-          LineWidth = input$LineWidthF,
-          prop = input[["credibilityIntPercent"]]/100,
-          alpha = input[["alphaCredInt"]]
-        )$g %>%
-          shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-          shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
-      },message = "Drawing plot")
-    }
+    validate(need(formulasPlotList(), 
+                  "Choose x variable and press 'Apply' ..."))
+    
+    formulasPlotList()$g %>%
+      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
   })
   
+  formulasPlotExport <- reactive({
+    req(formulasPlotList())
+    
+    formulasPlotList()$g %>%
+      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
+  })
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
-                                 plotFunctions(
-                                   data = data$dat, 
-                                   xVar = input$xVarDisp,
-                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                   obj = functionsFit()$objects[[input$dispF]],
-                                   PointSize = input$PointSizeF, 
-                                   LineWidth = input$LineWidthF,
-                                   prop = input[["credibilityIntPercent"]]/100,
-                                   alpha = input[["alphaCredInt"]]
-                                 )$g
+                                 formulasPlotExport()
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
                                initText = plotFormulasText,
                                initRanges = plotFormulasRanges)
   
+  formulasDataExport <- reactive({
+    req(formulasPlotList())
+    
+    formulasPlotList()$exportData
+  })
   shinyTools::dataExportServer("exportDataF", 
                                dataFun = reactive(function() {
-                                 plotFunctions(
-                                   data = data$dat, 
-                                   xVar = input$xVarDisp,
-                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                   obj = functionsFit()$objects[[input$dispF]],
-                                   PointSize = input$PointSizeF, 
-                                   LineWidth = input$LineWidthF,
-                                   prop = input[["credibilityIntPercent"]]/100,
-                                   alpha = input[["alphaCredInt"]]
-                                 )$exportData
+                                 formulasDataExport()
                                }), 
                                filename = paste(gsub("-", "", Sys.Date()), "formulasData", sep = "_"))
   
