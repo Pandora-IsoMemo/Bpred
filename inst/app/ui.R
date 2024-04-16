@@ -239,36 +239,32 @@ tagList(
             selectInput("xVarDisp", "Choose x variable", choices = character(0)),
             tags$br(),
             fluidRow(
-              column(4, shinyTools::plotTitlesUI("FormulasTitles")),
-              column(4, shinyTools::plotRangesUI("FormulasRanges")),
-              column(4,
+              column(3, shinyTools::plotTitlesUI("FormulasTitles")),
+              column(3, shinyTools::plotRangesUI("FormulasRanges")),
+              column(3,
                      tags$h4("Plot Data"),
                      sliderInput(
                        inputId = "PointSizeF",
                        label = "Point size",
-                       min = 0.1, max = 5,value =  1, step = 0.1,
-                       width = "100%"
-                     ),
+                       min = 0.1, max = 5,value =  1, step = 0.1),
                      sliderInput(
                        inputId = "LineWidthF",
                        label = "Line Width",
-                       min = 0.1, max = 5,value =  1, step = 0.1,
-                       width = "100%"
-                     ),
+                       min = 0.1, max = 5,value =  1, step = 0.1)
+              ),
+              column(3,
                      tags$h4("Credibility interval"),
                      sliderInput("credibilityIntPercent",
                                  "Length of interval in percent",
                                  min = 0,
                                  max = 99,
                                  value = 80,
-                                 step = 5,
-                                 width = "100%"),
+                                 step = 5),
                      sliderInput("alphaCredInt",
                                  "Transparency of uncertainty region",
                                  min = 0,
                                  max = 1, 
-                                 value = 0.1)
-              )),
+                                 value = 0.1))),
             fluidRow(column(12, align = "right", 
                             shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
                             shinyTools::dataExportButton("exportDataF", label = "Export Data")
