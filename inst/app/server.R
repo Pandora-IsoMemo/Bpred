@@ -224,10 +224,16 @@ shinyServer(function(input, output, session) {
     req(data)
     if(!(input$xVarDisp == "")){
       withProgress({
-        plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                      yVar = formulas$f[formulas$f == input$dispF, "y"],
-                      obj = formulas$objects[[input$dispF]],
-                      PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g %>%
+        plotFunctions(
+          data = data$dat, 
+          xVar = input$xVarDisp,
+          yVar = formulas$f[formulas$f == input$dispF, "y"],
+          obj = formulas$objects[[input$dispF]],
+          PointSize = input$PointSizeF,
+          LineWidth = input$LineWidthF,
+          prop = input[["credibilityIntPercent"]]/100,
+          alpha = input[["alphaCredInt"]]
+        )$g %>%
           shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
           shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
       },message = "Drawing plot")
@@ -236,10 +242,16 @@ shinyServer(function(input, output, session) {
   
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
-                                 plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                                               yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                               obj = functionsFit()$objects[[input$dispF]],
-                                               PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
+                                 plotFunctions(
+                                   data = data$dat, 
+                                   xVar = input$xVarDisp,
+                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
+                                   obj = functionsFit()$objects[[input$dispF]],
+                                   PointSize = input$PointSizeF, 
+                                   LineWidth = input$LineWidthF,
+                                   prop = input[["credibilityIntPercent"]]/100,
+                                   alpha = input[["alphaCredInt"]]
+                                 )$g
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
@@ -248,10 +260,16 @@ shinyServer(function(input, output, session) {
   
   shinyTools::dataExportServer("exportDataF", 
                                dataFun = reactive(function() {
-                                 plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                                               yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                               obj = functionsFit()$objects[[input$dispF]],
-                                               PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
+                                 plotFunctions(
+                                   data = data$dat, 
+                                   xVar = input$xVarDisp,
+                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
+                                   obj = functionsFit()$objects[[input$dispF]],
+                                   PointSize = input$PointSizeF, 
+                                   LineWidth = input$LineWidthF,
+                                   prop = input[["credibilityIntPercent"]]/100,
+                                   alpha = input[["alphaCredInt"]]
+                                 )$exportData
                                }), 
                                filename = paste(gsub("-", "", Sys.Date()), "formulasData", sep = "_"))
   

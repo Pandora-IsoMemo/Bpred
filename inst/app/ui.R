@@ -243,21 +243,39 @@ tagList(
               column(4, shinyTools::plotRangesUI("FormulasRanges")),
               column(4,
                      tags$h4("Plot Data"),
-            sliderInput(
-              inputId = "PointSizeF",
-              label = "Point size",
-              min = 0.1, max = 5,value =  1, step = 0.1
-            ),
-            sliderInput(
-              inputId = "LineWidthF",
-              label = "Line Width",
-              min = 0.1, max = 5,value =  1, step = 0.1
-            ),
-            shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
-            shinyTools::dataExportButton("exportDataF", label = "Export Data")
-            ))
+                     sliderInput(
+                       inputId = "PointSizeF",
+                       label = "Point size",
+                       min = 0.1, max = 5,value =  1, step = 0.1,
+                       width = "100%"
+                     ),
+                     sliderInput(
+                       inputId = "LineWidthF",
+                       label = "Line Width",
+                       min = 0.1, max = 5,value =  1, step = 0.1,
+                       width = "100%"
+                     ),
+                     tags$h4("Credibility interval"),
+                     sliderInput("credibilityIntPercent",
+                                 "Length of interval in percent",
+                                 min = 0,
+                                 max = 99,
+                                 value = 80,
+                                 step = 5,
+                                 width = "100%"),
+                     sliderInput("alphaCredInt",
+                                 "Transparency of uncertainty region",
+                                 min = 0,
+                                 max = 1, 
+                                 value = 0.1)
+              )),
+            fluidRow(column(12, align = "right", 
+                            shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
+                            shinyTools::dataExportButton("exportDataF", label = "Export Data")
+            )),
+            tags$br()
           )
-        ))
+          ))
       )
     ),
     # MEASURES -----------------------------------------------------------------------------------

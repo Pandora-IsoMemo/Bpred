@@ -319,10 +319,20 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 #' @param object object
 #' @param PointSize point size
 #' @param LineWidth line width
+#' @param ... Other arguments passed on to \code{layer()} for display of the credibility interval.
+#'  These are often aesthetics, used to set an aesthetic to a fixed value, like 
+#'  \code{colour = "red"} or \code{alpha = 0.5}.
+#' @inheritParams extractQuantileProbs
 #' 
 #' @export
-plotFunctions <- function(data, xVar, yVar, object, 
-                          PointSize= 1, LineWidth = 1
+plotFunctions <- function(data,
+                          xVar, 
+                          yVar,
+                          object, 
+                          PointSize = 1, 
+                          LineWidth = 1,
+                          prop = 0.8,
+                          ...
 ){
   if (length(data) == 0 || is.null(xVar) || xVar == "") return (list(g = NULL, exportData = NULL))
   
@@ -353,10 +363,37 @@ plotFunctions <- function(data, xVar, yVar, object,
     })
   })
   
-  lineData <- data.frame(xPred = xPred, yPred = colMeans(predMatrix))
+  probs <- extractQuantileProbs(prop = prop)
+  lineData <- data.frame(xPred = xPred, 
+                         yPred = colMeans(predMatrix),
+                         yMin = apply(predMatrix, MARGIN = 2, FUN = quantile, probs = probs[1]),
+                         yMax = apply(predMatrix, MARGIN = 2, FUN = quantile, probs = probs[2]))
   
-  g <- ggplot(as.data.frame(data), aes_string(x = xVar, y = yVar)) + geom_point(size = PointSize) + 
-    geom_line(data = lineData, aes(x = xPred, y = yPred), size = LineWidth)
+  g <- ggplot(as.data.frame(data)) + 
+    geom_point(aes_string(x = xVar, y = yVar), size = PointSize) + 
+    geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yPred"]]),
+              size = LineWidth) +
+    geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMin"]]),
+              size = 0.2*LineWidth, ...) +
+    geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMax"]]),
+              size = 0.2*LineWidth, ...) +
+    ggplot2::geom_ribbon(data = lineData, 
+                         aes(x = .data[["xPred"]], 
+                             ymin = .data[["yMin"]], 
+                             ymax = .data[["yMax"]]), 
+                         linetype = 2, ...)
   
   list(g = g, exportData = lineData)
+}
+
+#' Extract Quantile Props
+#' 
+#' Extract lower and upper probabilities for the \code{stats::quantile} function
+#' 
+#' @param prop (numeric) double between 0 and 1: length of credibility interval. The default value is 80 percent.
+extractQuantileProbs <- function(prop = 0.8) {
+  lower <- (1 - prop) / 2
+  upper <- 1 - lower
+  
+  c(lower = lower, upper = upper)
 }
