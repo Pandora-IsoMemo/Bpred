@@ -21,6 +21,7 @@ Imports:
   magrittr,
   mice,
   modules,
+  rlang,
   rsync,
   shiny,
   shinyWidgets,

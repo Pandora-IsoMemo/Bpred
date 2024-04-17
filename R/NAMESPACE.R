@@ -19,6 +19,7 @@
 #' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom mice mice complete
 #' @importFrom modules module
+#' @importFrom rlang .data
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset runjs useShinyjs
 #' @importFrom shinyTools dataExportButton dataExportServer formatTitlesOfGGplot 
