@@ -19,6 +19,7 @@ Imports:
   magrittr,
   mice,
   modules,
+  rlang,
   rsync,
   shiny,
   shinyMatrix (>= 0.8.0),
