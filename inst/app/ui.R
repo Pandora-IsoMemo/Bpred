@@ -49,7 +49,7 @@ tagList(
         ),
         mainPanel(
           ## main panel ----
-          dataTableOutput('data')
+          DT::dataTableOutput("data")
           ),
       )
     ),
@@ -235,8 +235,15 @@ tagList(
           tabPanel(
             "Display formulas",
             pickerInput("dispF", "Choose formula", choices = character(0)),
+            tags$br(),
             plotOutput("plotDisp"),
-            selectInput("xVarDisp", "Choose x variable", choices = character(0)),
+            fluidRow(
+              column(6, selectInput("xVarDisp", "Choose x variable", choices = character(0))),
+              column(6,
+                     align = "right",
+                     style = "margin-top: 1em",
+                     actionButton("applyPlotFormulas", label = "Apply")),
+            ),
             tags$br(),
             fluidRow(
               column(3, shinyTools::plotTitlesUI("FormulasTitles")),
@@ -265,10 +272,11 @@ tagList(
                                  min = 0,
                                  max = 1, 
                                  value = 0.1))),
-            fluidRow(column(12, align = "right", 
-                            shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
-                            shinyTools::dataExportButton("exportDataF", label = "Export Data")
-            )),
+            fluidRow(
+              column(12, align = "right", 
+                     shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
+                     shinyTools::dataExportButton("exportDataF", label = "Export Data"))
+              ),
             tags$br()
           )
           ))
@@ -292,25 +300,7 @@ tagList(
         ),
         mainPanel(
           ## main panel ----
-          matrixInput(
-            inputId = "measuresMatrix",
-            class = "character",
-            value = matrix(),
-            copy = TRUE,
-            paste = TRUE,
-            cols = list(
-              names = TRUE,
-              extend = TRUE,
-              delta = 1,
-              editableNames = TRUE
-            ),
-            rows = list(
-              names = FALSE,
-              editableNames = TRUE,
-              extend = TRUE,
-              delta = 1
-            )
-          )
+          DT::dataTableOutput("measures")
         ),
       )
     ),
@@ -372,7 +362,7 @@ tagList(
           ),
           checkboxInput(
             "includeRegUnc",
-            "Include uncertainty of regression parameters:",
+            "Include uncertainty of regression parameters",
             value = TRUE
           ),
           HTML("<br>"),

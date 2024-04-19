@@ -11,9 +11,13 @@ options(shiny.maxRequestSize = 200*1024^2)
 
 shinyServer(function(input, output, session) {
   # DATA -------------------------------------------------------------------------------
-  data <- reactiveValues(dat = data.frame(), refSample = NULL, results = NULL, exportData = data.frame())
+  data <- reactiveValues(dat = data.frame(),
+                         measures = data.frame(),
+                         refSample = NULL, 
+                         results = NULL, 
+                         exportData = data.frame())
   
-  output$data <- renderDataTable(data$dat)
+  output$data <- DT::renderDataTable(data$dat)
   
   ### SIMULATE DATA 
   observeEvent(input$simulateData, {
@@ -220,56 +224,59 @@ shinyServer(function(input, output, session) {
                       yAxis = config()[["plotRange"]])
   )
   
+  formulasPlotList <- reactiveVal()
+  observe({
+    req(data, input$xVarDisp)
+    withProgress({
+      newPlotObject <- plotFunctions(
+        data = data$dat, 
+        xVar = input$xVarDisp,
+        yVar = formulas$f[formulas$f == input$dispF, "y"],
+        obj = formulas$objects[[input$dispF]],
+        PointSize = input$PointSizeF,
+        LineWidth = input$LineWidthF,
+        prop = input[["credibilityIntPercent"]]/100,
+        alpha = input[["alphaCredInt"]]
+      )
+      
+      formulasPlotList(newPlotObject)
+    }, message = "Drawing plot")
+  }) %>%
+    bindEvent(input[["applyPlotFormulas"]])
+  
   output$plotDisp <- renderPlot({
-    req(data)
-    if(!(input$xVarDisp == "")){
-      withProgress({
-        plotFunctions(
-          data = data$dat, 
-          xVar = input$xVarDisp,
-          yVar = formulas$f[formulas$f == input$dispF, "y"],
-          obj = formulas$objects[[input$dispF]],
-          PointSize = input$PointSizeF,
-          LineWidth = input$LineWidthF,
-          prop = input[["credibilityIntPercent"]]/100,
-          alpha = input[["alphaCredInt"]]
-        )$g %>%
-          shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-          shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
-      },message = "Drawing plot")
-    }
+    validate(need(formulasPlotList(), 
+                  "Choose x variable and press 'Apply' ..."))
+    
+    formulasPlotList()$g %>%
+      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
   })
   
+  formulasPlotExport <- reactive({
+    req(formulasPlotList())
+    
+    formulasPlotList()$g %>%
+      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
+  })
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
-                                 plotFunctions(
-                                   data = data$dat, 
-                                   xVar = input$xVarDisp,
-                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                   obj = functionsFit()$objects[[input$dispF]],
-                                   PointSize = input$PointSizeF, 
-                                   LineWidth = input$LineWidthF,
-                                   prop = input[["credibilityIntPercent"]]/100,
-                                   alpha = input[["alphaCredInt"]]
-                                 )$g
+                                 formulasPlotExport()
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
                                initText = plotFormulasText,
                                initRanges = plotFormulasRanges)
   
+  formulasDataExport <- reactive({
+    req(formulasPlotList())
+    
+    formulasPlotList()$exportData
+  })
   shinyTools::dataExportServer("exportDataF", 
                                dataFun = reactive(function() {
-                                 plotFunctions(
-                                   data = data$dat, 
-                                   xVar = input$xVarDisp,
-                                   yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                   obj = functionsFit()$objects[[input$dispF]],
-                                   PointSize = input$PointSizeF, 
-                                   LineWidth = input$LineWidthF,
-                                   prop = input[["credibilityIntPercent"]]/100,
-                                   alpha = input[["alphaCredInt"]]
-                                 )$exportData
+                                 formulasDataExport()
                                }), 
                                filename = paste(gsub("-", "", Sys.Date()), "formulasData", sep = "_"))
   
@@ -294,16 +301,14 @@ shinyServer(function(input, output, session) {
   
   # MEASURES --------------------------------------------------------------------
 
-  #output$measures <- renderDataTable(data$measures)
+  output$measures <- DT::renderDataTable(DT::datatable(data$measures))
   
   observeEvent(input$simulateMeasures, {
-    newMeasures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
+    data$measures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
                               X1 = c(1, 0.9, 1.2, 4, 5),
                               SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
                               X2 = c(1.5, 1.8, 1.1, 2.25, NA),
                               SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
-    
-    updateMatrixInput(session, "measuresMatrix", value = newMeasures %>% as.matrix())
   })
   
   importedMeasures <- DataTools::importDataServer(
@@ -317,28 +322,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(importedMeasures(), {
     req(length(importedMeasures()) > 0)
-    newMeasures <- importedMeasures()[[1]]
-    
-    if (length(newMeasures) == 0) {
-      newVal <- structure("", dim = c(1L, 1L), dimnames = list("", ""))
-    } else {
-      newVal <- newMeasures %>% 
-        as.matrix()
-    }
-    
-    req(!identical(input$measuresMatrix, newVal))
-    updateMatrixInput(session, "measuresMatrix", value = newVal)
-  })
-  
-  observeEvent(input$measuresMatrix, {
-    req(!identical(data$measures, measureMatrixToDf(input$measuresMatrix)))
-    
-    if (ncol(measureMatrixToDf(input$measuresMatrix)) == 0) {
-      # reset
-      data$measures <- NULL
-    } else {
-      data$measures <- measureMatrixToDf(input$measuresMatrix)
-    }
+    data$measures <- importedMeasures()[[1]]
   })
   
   observeEvent(data$measures, ignoreNULL = FALSE, ignoreInit = TRUE, {
@@ -619,7 +603,7 @@ if(is.null(input$regfunctions)){
     for (name in names(data))
       if (!is.null(uploadedData[[name]])) {
         data[[name]] <- uploadedData[[name]]
-      } else if (name %in% c("dat", "exportedData")) {
+      } else if (name %in% c("dat", "exportedData", "measures")) {
         data[[name]] <- data.frame()
       } else {
         data[[name]] <- NULL
@@ -642,14 +626,6 @@ if(is.null(input$regfunctions)){
       } else {
         formulas[[name]] <- list()
       }
-    
-    if (!is.null(uploadedValues()[[1]][["inputs"]][["inputObj"]][["measuresMatrix"]])) {
-      # update data in tab "Measures" ----
-      uploadedMeasures <- uploadedValues()[[1]][["inputs"]][["inputObj"]][["measuresMatrix"]] %>% 
-        as.matrix()
-      # session$sendInputMessage() does not work for matrixInput()
-      updateMatrixInput(session, "measuresMatrix", value = uploadedMeasures)
-    }
   }) %>% 
     bindEvent(uploadedValues())
   
@@ -659,6 +635,7 @@ if(is.null(input$regfunctions)){
     uploadedInputs <- uploadedValues()[[1]][["inputs"]][["inputObj"]]
     
     # following inputs are updated differently
+    # input "measuresMatrix" is deprecated and was removed
     excludedInputs <- c("measuresMatrix", "indVars", "indVarsX", "indVarsUnc", "category", "yDist",
                         "n_samples", "includeRegUnc")
     

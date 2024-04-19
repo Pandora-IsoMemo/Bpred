@@ -1,4 +1,9 @@
-# Bpred 24.03.0
+# Bpred 24.04.1
+
+## Updates
+- update table under tab "Measures" formatted such as table under tab "Data" (#33)
+
+# Bpred 24.04.0
 
 ## New Features
 - option to show a credible interval in "Formulas" - "Display formulas" (#33)
