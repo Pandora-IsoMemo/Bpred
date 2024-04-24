@@ -661,15 +661,15 @@ if(is.null(input$regfunctions)){
     if (!is.null(uploadedModel[["indVars"]])) {
       uploadedModel[["indVarsX"]] <- uploadedModel[["indVars"]]
       uploadedModel[["indVars"]] <- NULL
+      
+      inputIDs <- c("indVarsX", "indVarsUnc", "category", "n_samples", "includeRegUnc")
+      inputIDs <- inputIDs[(inputIDs %in% names(input))]
+      
+      for (i in 1:length(inputIDs)) {
+        session$sendInputMessage(inputIDs[i],  list(value = uploadedModel[[inputIDs[i]]]) )
+      }
+      updateSelectInput(session, "yDist", selected = uploadedModel[["distribution"]])
     }
-    
-    inputIDs <- c("indVarsX", "indVarsUnc", "category", "n_samples", "includeRegUnc")
-    inputIDs <- inputIDs[(inputIDs %in% names(input))]
-    
-    for (i in 1:length(inputIDs)) {
-      session$sendInputMessage(inputIDs[i],  list(value = uploadedModel[[inputIDs[i]]]) )
-    }
-    updateSelectInput(session, "yDist", selected = uploadedModel[["distribution"]])
     
     ## update model object
     yEstimates(uploadedModel)

@@ -324,7 +324,12 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 plotFunctions <- function(data, xVar, yVar, object, 
                           PointSize= 1, LineWidth = 1
 ){
-  if (length(data) == 0 || is.null(xVar) || xVar == "") return (list(g = NULL, exportData = NULL))
+  if (length(data) == 0 ||
+      is.null(xVar) ||
+      xVar == "" ||
+      is.null(yVar) || 
+      yVar == "" ||
+      length(object) == 0) return (list(g = NULL, exportData = NULL))
   
   yPred <- xPred <- NULL
   xLim <- c(min(data[,xVar], na.rm = TRUE),max(data[,xVar], na.rm = TRUE))
