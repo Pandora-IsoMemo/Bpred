@@ -1,6 +1,6 @@
 Package: mpiBpred
-Title: What the Package Does (one line, title case)
-Version: 23.12.2.1
+Title: Bayesian multivariate regression application
+Version: 24.03.0.4
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
@@ -14,27 +14,24 @@ Imports:
   coda,
   dplyr,
   ggplot2 (>= 2.2.1),
-  DataTools (>= 24.03.0.2),
-  htmltools,
+  DataTools (>= 24.04.2),
   httr,
-  jsonlite,
   magrittr,
   mice,
   modules,
   rsync,
   shiny,
-  shinyMatrix (>= 0.7.0),
+  shinyMatrix (>= 0.8.0),
   shinyWidgets,
   shinycssloaders,
   shinyjs,
   shinythemes,
-  xlsx,
-  yaml,
-  zip
+  shinyTools (>= 24.03.3),
+  yaml
 Suggests: lintr, testthat
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

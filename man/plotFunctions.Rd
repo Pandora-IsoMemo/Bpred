@@ -4,21 +4,7 @@
 \alias{plotFunctions}
 \title{Plot functions}
 \usage{
-plotFunctions(
-  data,
-  xVar,
-  yVar,
-  object,
-  ylabel = "",
-  xlabel = "",
-  headerLabel = "",
-  xTextSize = 24,
-  yTextSize = 24,
-  xAxisSize = 18,
-  yAxisSize = 18,
-  PointSize = 1,
-  LineWidth = 1
-)
+plotFunctions(data, xVar, yVar, object, PointSize = 1, LineWidth = 1)
 }
 \arguments{
 \item{data}{data}
@@ -28,20 +14,6 @@ plotFunctions(
 \item{yVar}{dependent variable}
 
 \item{object}{object}
-
-\item{ylabel}{ylabel}
-
-\item{xlabel}{xlabel}
-
-\item{headerLabel}{title label}
-
-\item{xTextSize}{x label text size}
-
-\item{yTextSize}{y label text size}
-
-\item{xAxisSize}{x axis text size}
-
-\item{yAxisSize}{y axis text size}
 
 \item{PointSize}{point size}
 
