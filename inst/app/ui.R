@@ -49,7 +49,7 @@ tagList(
         ),
         mainPanel(
           ## main panel ----
-          dataTableOutput('data')
+          DT::dataTableOutput("data")
           ),
       )
     ),
@@ -235,29 +235,51 @@ tagList(
           tabPanel(
             "Display formulas",
             pickerInput("dispF", "Choose formula", choices = character(0)),
+            tags$br(),
             plotOutput("plotDisp"),
-            selectInput("xVarDisp", "Choose x variable", choices = character(0)),
+            fluidRow(
+              column(6, selectInput("xVarDisp", "Choose x variable", choices = character(0))),
+              column(6,
+                     align = "right",
+                     style = "margin-top: 1em",
+                     actionButton("applyPlotFormulas", label = "Apply")),
+            ),
             tags$br(),
             fluidRow(
-              column(4, shinyTools::plotTitlesUI("FormulasTitles")),
-              column(4, shinyTools::plotRangesUI("FormulasRanges")),
-              column(4,
+              column(3, shinyTools::plotTitlesUI("FormulasTitles")),
+              column(3, shinyTools::plotRangesUI("FormulasRanges")),
+              column(3,
                      tags$h4("Plot Data"),
-            sliderInput(
-              inputId = "PointSizeF",
-              label = "Point size",
-              min = 0.1, max = 5,value =  1, step = 0.1
-            ),
-            sliderInput(
-              inputId = "LineWidthF",
-              label = "Line Width",
-              min = 0.1, max = 5,value =  1, step = 0.1
-            ),
-            shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
-            shinyTools::dataExportButton("exportDataF", label = "Export Data")
-            ))
+                     sliderInput(
+                       inputId = "PointSizeF",
+                       label = "Point size",
+                       min = 0.1, max = 5,value =  1, step = 0.1),
+                     sliderInput(
+                       inputId = "LineWidthF",
+                       label = "Line Width",
+                       min = 0.1, max = 5,value =  1, step = 0.1)
+              ),
+              column(3,
+                     tags$h4("Credibility interval"),
+                     sliderInput("credibilityIntPercent",
+                                 "Length of interval in percent",
+                                 min = 0,
+                                 max = 99,
+                                 value = 80,
+                                 step = 5),
+                     sliderInput("alphaCredInt",
+                                 "Transparency of uncertainty region",
+                                 min = 0,
+                                 max = 1, 
+                                 value = 0.1))),
+            fluidRow(
+              column(12, align = "right", 
+                     shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
+                     shinyTools::dataExportButton("exportDataF", label = "Export Data"))
+              ),
+            tags$br()
           )
-        ))
+          ))
       )
     ),
     # MEASURES -----------------------------------------------------------------------------------
@@ -278,25 +300,7 @@ tagList(
         ),
         mainPanel(
           ## main panel ----
-          matrixInput(
-            inputId = "measuresMatrix",
-            class = "character",
-            value = matrix(),
-            copy = TRUE,
-            paste = TRUE,
-            cols = list(
-              names = TRUE,
-              extend = TRUE,
-              delta = 1,
-              editableNames = TRUE
-            ),
-            rows = list(
-              names = FALSE,
-              editableNames = TRUE,
-              extend = TRUE,
-              delta = 1
-            )
-          )
+          DT::dataTableOutput("measures")
         ),
       )
     ),
@@ -358,7 +362,7 @@ tagList(
           ),
           checkboxInput(
             "includeRegUnc",
-            "Include uncertainty of regression parameters:",
+            "Include uncertainty of regression parameters",
             value = TRUE
           ),
           HTML("<br>"),

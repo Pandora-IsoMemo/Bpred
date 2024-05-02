@@ -1,9 +1,10 @@
 Package: mpiBpred
 Title: Bayesian multivariate regression application
-Version: 24.03.0.4
+Version: 24.04.0
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
-    person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
+    person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut")),
+    person("Antonia", "Runge", email = "antonia.runge@inwt-statistics.de", role = c("ctb"))
     )
 Maintainer: INWT Statistics <marcus.gross@inwt-statistics.de>
 Description: What the package does (one paragraph).
@@ -15,13 +16,14 @@ Imports:
   dplyr,
   ggplot2 (>= 2.2.1),
   DataTools (>= 24.04.2),
+  DT,
   httr,
   magrittr,
   mice,
   modules,
+  rlang,
   rsync,
   shiny,
-  shinyMatrix (>= 0.8.0),
   shinyWidgets,
   shinycssloaders,
   shinyjs,
