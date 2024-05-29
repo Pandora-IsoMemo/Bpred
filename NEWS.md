@@ -1,7 +1,8 @@
-# Bpred App 24.05.01
+# Bpred 24.05.0
 
 ## New Features
 
+- Renaming of R-Package
 - pkgdown documentation
 
 # Bpred App 24.03.0
