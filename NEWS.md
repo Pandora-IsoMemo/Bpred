@@ -1,6 +1,16 @@
-# Bpred App 24.04.01
+# Bpred App 24.05.01
 
 ## New Features
+
+- pkgdown documentation
+
+# Bpred App 24.03.0
+
+## Updates
+
+- integration of modules from shinyTools: dataExport, plotExport (#36)
+
+# Bpred App 23.12.1
 
 - add R-cmd-check workflow
 - add pkgdown documentation

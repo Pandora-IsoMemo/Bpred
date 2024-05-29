@@ -3,7 +3,6 @@ library(shinyWidgets)
 library(shinyMatrix)
 library(dplyr)
 library(ggplot2)
-library(xlsx)
 library(shinyjs)
 library(mpiBpred)
 library(coda)
@@ -163,7 +162,7 @@ shinyServer(function(input, output, session) {
                                         parNamesDir = parNamesDir) %>%
          DataTools::tryCatchWithWarningsAndErrors()
        
-      if(class(res) == "character"){
+      if(inherits(res, "character")){
         shinyjs::alert(res)
         return(NULL)
       }
@@ -204,6 +203,23 @@ shinyServer(function(input, output, session) {
     }
     })
   
+  plotFormulasText <- shinyTools::plotTitlesServer(
+    "FormulasTitles", 
+    type = "ggplot",
+    initText = list(plotTitle  = config()[["plotTitle"]],
+                    xAxisTitle = config()[["plotTitle"]],
+                    yAxisTitle = config()[["plotTitle"]],
+                    xAxisText  = config()[["plotText"]],
+                    yAxisText  = config()[["plotText"]])
+  )
+  
+  plotFormulasRanges <- shinyTools::plotRangesServer(
+    "FormulasRanges",
+    type = "ggplot",
+    initRanges = list(xAxis = config()[["plotRange"]],
+                      yAxis = config()[["plotRange"]])
+  )
+  
   output$plotDisp <- renderPlot({
     req(data)
     if(!(input$xVarDisp == "")){
@@ -211,59 +227,33 @@ shinyServer(function(input, output, session) {
         plotFunctions(data = data$dat, xVar = input$xVarDisp,
                       yVar = formulas$f[formulas$f == input$dispF, "y"],
                       obj = formulas$objects[[input$dispF]],
-                      ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                      xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
-                      xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
-                      PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
+                      PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g %>%
+          shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+          shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
       },message = "Drawing plot")
     }
   })
   
+  shinyTools::plotExportServer("exportPlotF",
+                               plotFun = reactive(function() {
+                                 plotFunctions(data = data$dat, xVar = input$xVarDisp,
+                                               yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
+                                               obj = functionsFit()$objects[[input$dispF]],
+                                               PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
+                               }),
+                               plotType = "ggplot",
+                               filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
+                               initText = plotFormulasText,
+                               initRanges = plotFormulasRanges)
   
-  observeEvent(input$exportPlotF, {
-    req(functionsFit())
-    showModal(modalDialog(
-      title = "Export Graphic",
-      footer = modalButton("OK"),
-      exportPlotPopUpUI("plotExportF"),
-      easyClose = TRUE
-    ))
-  })
-  exportPlotPopUpServer("plotExportF", 
-                        exportPlot = reactive(
-                          plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                                        yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                        obj = functionsFit()$objects[[input$dispF]],
-                                        ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                                        xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
-                                        xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
-                                        PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$g
-                        ), 
-                        filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_")
-  )
-  
-  
-  observeEvent(input$exportDataF, {
-    req(functionsFit())
-    showModal(modalDialog(
-      "Export Data",
-      easyClose = TRUE,
-      footer = modalButton("OK"),
-      exportPopUpUI("dataExportF")
-    ))
-  })
-  exportPopUpServer("dataExportF",
-                    exportData = reactive(
-                      plotFunctions(data = data$dat, xVar = input$xVarDisp,
-                                    yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
-                                    obj = functionsFit()$objects[[input$dispF]],
-                                    ylabel = input$ylabelF, xlabel = input$xlabelF, headerLabel = input$headerLabelF,
-                                    xTextSize = input$xTextSizeF, yTextSize = input$yTextSizeF,
-                                    xAxisSize = input$xAxisSizeF, yAxisSize = input$yAxisSizeF,
-                                    PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
-                    ), 
-                    filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
-  
+  shinyTools::dataExportServer("exportDataF", 
+                               dataFun = reactive(function() {
+                                 plotFunctions(data = data$dat, xVar = input$xVarDisp,
+                                               yVar = functionsFit()$f[functionsFit()$f == input$dispF, "y"],
+                                               obj = functionsFit()$objects[[input$dispF]],
+                                               PointSize = input$PointSizeF, LineWidth = input$LineWidthF)$exportData
+                               }), 
+                               filename = paste(gsub("-", "", Sys.Date()), "formulasData", sep = "_"))
   
   #convergence diagnostics
   printFunDiag <- reactive({
@@ -417,7 +407,7 @@ if(is.null(input$regfunctions)){
       eval() %>%
         DataTools::tryCatchWithWarningsAndErrors()},
       message = "computing new y estimates", value = 0.3)
-    if(class(model) == "character"){
+    if(inherits(model, "character")){
       shinyjs::alert(model) 
       return()
     }
@@ -528,76 +518,58 @@ if(is.null(input$regfunctions)){
     data$results
     })  
   
+  plotEstimatesText <- shinyTools::plotTitlesServer(
+    "EstimateTitles", 
+    type = "ggplot",
+    initText = list(plotTitle  = config()[["plotTitle"]],
+                    xAxisTitle = config()[["plotTitle"]],
+                    yAxisTitle = config()[["plotTitle"]],
+                    xAxisText  = config()[["plotText"]],
+                    yAxisText  = config()[["plotText"]])
+  )
+  
+  plotEstimatesRanges <- shinyTools::plotRangesServer(
+    "EstimateRanges",
+    type = "ggplot",
+    initRanges = list(xAxis = config()[["plotRange"]],
+                      yAxis = config()[["plotRange"]])
+  )
+  
   output$plot <- renderPlot({
     req(yEstimates())
-    plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType, nBins = input$nBins, meanType = input$meanType,
-                  ylabel = input$ylabel, xlabel = input$xlabel, headerLabel = input$headerLabel,
-                  xTextSize = input$xTextSize, yTextSize = input$yTextSize,
-                  xAxisSize = input$xAxisSize, yAxisSize = input$yAxisSize,
+    plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType,
+                  nBins = input$nBins, meanType = input$meanType,
                   showLegend = input$showLegend,
-                  #colorPalette = "default",
-                  #fontFamily = NULL,
                   whiskerMultiplier = input$whiskerMultiplier,
-                  boxQuantile = input$boxQuantile)
+                  boxQuantile = input$boxQuantile) %>%
+      shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
+      shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
+      DataTools::tryCatchWithWarningsAndErrors(errorTitle = "Plotting failed")
   })
   
+  shinyTools::dataExportServer("exportSummary", 
+                               dataFun = reactive(function() { data$results[1] }), 
+                               filename = paste(gsub("-", "", Sys.Date()), "Summary", sep = "_"))
   
-  observeEvent(input$exportSummary, {
-    req(data$results[1])
-    showModal(modalDialog(
-      "Export Data",
-      easyClose = TRUE,
-      footer = modalButton("OK"),
-      exportPopUpUI("summaryExport")
-    ))
-  })
-  exportPopUpServer("summaryExport",
-                    exportData = reactive(data$results[1]), 
-                    filename = paste(gsub("-", "", Sys.Date()), "Summary", sep = "_"))
+  shinyTools::plotExportServer("exportPlot",
+                               plotFun = reactive(function() {
+                                 plotDensities(yEstimates(),
+                                               type = input$summaryType, 
+                                               plotType = input$summaryPlotType, 
+                                               nBins = input$nBins,
+                                               meanType = input$meanType,
+                                               showLegend = input$showLegend,
+                                               whiskerMultiplier = input$whiskerMultiplier,
+                                               boxQuantile = input$boxQuantile)
+                               }),
+                               plotType = "ggplot",
+                               filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_"),
+                               initText = plotEstimatesText,
+                               initRanges = plotEstimatesRanges)
   
-  
-  observeEvent(input$exportPlot, {
-    req(yEstimates())
-    showModal(modalDialog(
-      title = "Export Graphic",
-      footer = modalButton("OK"),
-      exportPlotPopUpUI("plotExport"),
-      easyClose = TRUE
-    ))
-  })
-  exportPlotPopUpServer("plotExport", 
-                        exportPlot = reactive(
-                          plotDensities(yEstimates(),
-                                        type = input$summaryType, 
-                                        plotType = input$summaryPlotType, 
-                                        nBins = input$nBins,
-                                        meanType = input$meanType,
-                                        ylabel = input$ylabel, xlabel = input$xlabel, headerLabel = input$headerLabel,
-                                        xTextSize = input$xTextSize, yTextSize = input$yTextSize,
-                                        xAxisSize = input$xAxisSize, yAxisSize = input$yAxisSize,
-                                        showLegend = input$showLegend,
-                                        #colorPalette = "default",
-                                        #fontFamily = NULL,
-                                        whiskerMultiplier = input$whiskerMultiplier,
-                                        boxQuantile = input$boxQuantile)
-                        ), 
-                        filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_")
-  )
-
-  
-  observeEvent(input$exportData, {
-    req(data$exportData)
-    showModal(modalDialog(
-      "Export Data",
-      easyClose = TRUE,
-      footer = modalButton("OK"),
-      exportPopUpUI("dataExport")
-    ))
-  })
-  exportPopUpServer("dataExport",
-                    exportData = reactive(data$exportData), 
-                    filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
-  
+  shinyTools::dataExportServer("exportData", 
+                               dataFun = reactive(function() {data$exportData}), 
+                               filename = paste(gsub("-", "", Sys.Date()), "yEstimatesData", sep = "_"))
   
   # MODEL DOWN- / UPLOAD ----
   
@@ -618,7 +590,6 @@ if(is.null(input$regfunctions)){
                                                 ckanFileTypes = config()[["ckanModelTypes"]],
                                                 ignoreWarnings = TRUE,
                                                 defaultSource = config()[["defaultSourceModel"]],
-                                                mainFolder = config()[["mainFolder"]],
                                                 fileExtension = config()[["fileExtension"]],
                                                 rPackageName = config()[["rPackageName"]])
   
@@ -690,15 +661,15 @@ if(is.null(input$regfunctions)){
     if (!is.null(uploadedModel[["indVars"]])) {
       uploadedModel[["indVarsX"]] <- uploadedModel[["indVars"]]
       uploadedModel[["indVars"]] <- NULL
+      
+      inputIDs <- c("indVarsX", "indVarsUnc", "category", "n_samples", "includeRegUnc")
+      inputIDs <- inputIDs[(inputIDs %in% names(input))]
+      
+      for (i in 1:length(inputIDs)) {
+        session$sendInputMessage(inputIDs[i],  list(value = uploadedModel[[inputIDs[i]]]) )
+      }
+      updateSelectInput(session, "yDist", selected = uploadedModel[["distribution"]])
     }
-    
-    inputIDs <- c("indVarsX", "indVarsUnc", "category", "n_samples", "includeRegUnc")
-    inputIDs <- inputIDs[(inputIDs %in% names(input))]
-    
-    for (i in 1:length(inputIDs)) {
-      session$sendInputMessage(inputIDs[i],  list(value = uploadedModel[[inputIDs[i]]]) )
-    }
-    updateSelectInput(session, "yDist", selected = uploadedModel[["distribution"]])
     
     ## update model object
     yEstimates(uploadedModel)
