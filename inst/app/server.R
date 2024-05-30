@@ -4,7 +4,7 @@ library(shinyMatrix)
 library(dplyr)
 library(ggplot2)
 library(shinyjs)
-library(mpiBpred)
+library(Bpred)
 library(coda)
 
 options(shiny.maxRequestSize = 200*1024^2)

@@ -1,11 +1,14 @@
-# Bpred App
+# Bpred
 
 Bayesian multivariate regression application
 
 ### Access to online version:
 - MAIN version: https://isomemoapp.com/app/bpred
+- BETA version: https://isomemoapp.com/app/bpred-beta
 
-### Help and installation instructions:
+### Documentation and installation instructions:
+
+- https://pandora-isomemo.github.io/bpred/
 - https://github.com/Pandora-IsoMemo/bpred/wiki
 
 ### Release notes:

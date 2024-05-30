@@ -1,10 +1,9 @@
-#' The 'mpiBpred' package.
+#' The 'Bpred' package.
 #'
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
 #' @docType package
-#' @name mpiBpred
-#' @aliases mpiBpred
+#' @name Bpred
 #' @import shiny
 #' @importFrom coda raftery.diag gelman.diag geweke.diag heidel.diag mcmc
 #' @importFrom dplyr bind_cols bind_rows filter group_by if_else mutate summarise ungroup

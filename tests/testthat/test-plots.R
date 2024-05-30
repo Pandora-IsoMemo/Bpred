@@ -2,7 +2,7 @@ testthat::test_that("plots creation", {
   load(testthat::test_path("testdata/test_plots.RData"))
   
   g <-
-    mpiBpred::plotDensities(yEstimates, type = "Category", plotType = "KernelDensity")
+    Bpred::plotDensities(yEstimates, type = "Category", plotType = "KernelDensity")
   
   
   testthat::expect_type(g, "list")

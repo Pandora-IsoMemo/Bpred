@@ -5,7 +5,7 @@
 #' @export
 startApplication <- function(port = 4242) {
   shiny::runApp(
-    system.file("app", package = "mpiBpred"),
+    system.file("app", package = "Bpred"),
     port = port,
     host = "0.0.0.0"
   )

@@ -11,7 +11,7 @@ testthat::test_that("posterior estimation simple", {
     )
   
   yEstimates <-
-    mpiBpred::estimateY(
+    Bpred::estimateY(
       relationship = "Y ~ 3 + 1 * one([X1]) + two([X2]) / 2",
       regfunctions = list(one = f1, two = f2),
       indVars = c("X1", "X2"),
@@ -30,7 +30,7 @@ testthat::test_that("posterior estimation simple", {
   testthat::expect_equal(mean(yEstimates$Y_Samples_Combined), mean(unlist(yEstimates$Y_Samples_Category)))
   
   testthat::expect_type(
-    mpiBpred::estimateY(
+    Bpred::estimateY(
       relationship = "Y ~ 3 + 1 * f3([X2] * f1([X1]))",
       regfunctions = list(f1 = f1, f2 = f2),
       indVars = c("X1", "X2"),
@@ -55,7 +55,7 @@ testthat::test_that("posterior estimation complex", {
     )
   
   yEstimates <-
-    mpiBpred::estimateY(
+    Bpred::estimateY(
       relationship = "Y ~ 3 + 1 * two([X2]) * one([X1])",
       regfunctions = list(one = f1, two = f2),
       indVars = c("X1", "X2"),
@@ -84,7 +84,7 @@ testthat::test_that("posterior estimation no uncertainty", {
     )
   
   yEstimates <-
-    mpiBpred::estimateY(
+    Bpred::estimateY(
       relationship = "Y ~ 3 + 1 * two([X2]) * one([X1])",
       regfunctions = list(one = f1, two = f2),
       indVars = c("X1", "X2"),

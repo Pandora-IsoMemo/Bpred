@@ -2,7 +2,7 @@ testthat::test_that("Summarise estimates table", {
   load(testthat::test_path("testdata/test_plots.RData"))
   
   result <-
-    mpiBpred::summariseEstimates(
+    Bpred::summariseEstimates(
       yEstimates,
       type = "Sample",
       probability = 0.95,
@@ -17,28 +17,28 @@ testthat::test_that("Summarise estimates table", {
   testthat::expect_equal(nrow(result$Means), 6)
   
   result <-
-    mpiBpred::summariseEstimates(yEstimates, type = "Sample", probability = 0.95)
+    Bpred::summariseEstimates(yEstimates, type = "Sample", probability = 0.95)
   
   testthat::expect_type(result, "list")
   testthat::expect_length(result, 2)
   testthat::expect_equal(nrow(result$Means), 5)
   
   result <-
-    mpiBpred::summariseEstimates(yEstimates, type = "Combined", probability = 0.95)
+    Bpred::summariseEstimates(yEstimates, type = "Combined", probability = 0.95)
   
   testthat::expect_type(result, "list")
   testthat::expect_length(result, 1)
   testthat::expect_equal(nrow(result$Means), 1)
   
   result <-
-    mpiBpred::summariseEstimates(yEstimates, type = "Category", probability = 0.95)
+    Bpred::summariseEstimates(yEstimates, type = "Category", probability = 0.95)
   
   testthat::expect_type(result, "list")
   testthat::expect_length(result, 2)
   testthat::expect_equal(nrow(result$Means), 2)
   
   result <-
-    mpiBpred::summariseEstimates(
+    Bpred::summariseEstimates(
       yEstimates,
       type = "Sample",
       probability = 0.95,
@@ -52,7 +52,7 @@ testthat::test_that("Summarise estimates table", {
   testthat::expect_length(result, 2)
   
   result <-
-    mpiBpred::summariseEstimates(
+    Bpred::summariseEstimates(
       yEstimates,
       type = "Sample",
       probability = 0.95,
