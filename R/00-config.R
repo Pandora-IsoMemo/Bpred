@@ -4,6 +4,6 @@
 #' 
 #' @export
 config <- function() {
-  config_path <- system.file("config.yaml", package = "mpiBpred")
+  config_path <- system.file("config.yaml", package = "Bpred")
   read_yaml(config_path)
 }

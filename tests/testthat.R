@@ -1,4 +1,4 @@
 library(testthat)
-library(mpiBpred)
+library(Bpred)
 
-test_check("mpiBpred")
+test_check("Bpred")

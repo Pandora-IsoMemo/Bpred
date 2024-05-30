@@ -97,6 +97,6 @@ referenceType = "dist",
 referenceSample = c(60, 52, 75, 48, 50, 56))
 
 #Alternative: Start Shiny-App
-shiny::runApp(paste0(system.file(package = "mpiBpred"),"/app"))
+shiny::runApp(paste0(system.file(package = "Bpred"),"/app"))
 }
 }

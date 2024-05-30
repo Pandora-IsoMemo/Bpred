@@ -6,14 +6,14 @@ library(dplyr)
 library(shinycssloaders)
 library(ggplot2)
 library(shinyjs)
-library(mpiBpred)
+library(Bpred)
 library(coda)
 
 tagList(
   shinyjs::useShinyjs(),
   shiny::navbarPage(
     header = includeCSS("www/custom.css"),
-    title = paste("Bpred App", packageVersion("mpiBpred")),
+    title = paste("Bpred App", packageVersion("Bpred")),
     theme = shinythemes::shinytheme("flatly"),
     position = "fixed-top",
     collapsible = TRUE,

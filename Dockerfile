@@ -4,4 +4,4 @@ ADD . .
 
 RUN installPackage
 
-CMD ["Rscript", "-e", "mpiBpred::startApplication(3838)"]
+CMD ["Rscript", "-e", "Bpred::startApplication(3838)"]
