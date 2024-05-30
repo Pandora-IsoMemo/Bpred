@@ -8,8 +8,8 @@ Bayesian multivariate regression application
 
 ### Documentation and installation instructions:
 
-- https://pandora-isomemo.github.io/bpred/
-- https://github.com/Pandora-IsoMemo/bpred/wiki
+- https://pandora-isomemo.github.io/Bpred/
+- https://github.com/Pandora-IsoMemo/Bpred/wiki
 
 ### Release notes:
 - see `NEWS.md`
