@@ -12,20 +12,19 @@
 #' @importFrom graphics lines
 #' @importFrom httr content
 #' @importFrom DataTools checkAnyNonNumericColumns downloadModelUI downloadModelServer importDataUI 
-#'  importDataServer tryCatchWithWarningsAndErrors
+#'  importDataServer importOptions
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom mice mice complete
 #' @importFrom modules module
 #' @importFrom rsync rsync getData sendObject listFiles
-#' @importFrom shinyjs alert reset runjs useShinyjs
+#' @importFrom shinyjs alert reset useShinyjs
 #' @importFrom shinyMatrix matrixInput updateMatrixInput
 #' @importFrom shinyTools dataExportButton dataExportServer formatTitlesOfGGplot 
 #'  formatRangesOfGGplot headerButtonsUI plotExportButton plotExportServer 
-#'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer
+#'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer shinyTryCatch
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif var
 #' @importFrom utils capture.output combn packageVersion
-#' @importFrom shinyjs alert
 #' @importFrom yaml read_yaml
 #'
 globalVariables(c("model", "dataObj", "formulasObj", "inputObj"))
