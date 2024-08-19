@@ -284,6 +284,8 @@ estimateY <- function(relationship, regfunctions,
     
       }
     retSamples <- unlist(lapply(1:n_samples, function(x) tempFunction(relationship, values[x, ], indVars)))
+    if (all(is.na(retSamples))) warning("All samples are NA. Please check your formula and regression functions.")
+    
     retSamples <- retSamples[retSamples >= rangeY[1] & retSamples <= rangeY[2]]
     if(length(retSamples) < 10){
       return("Restriction values do not fit to the formula. Please widen or omit them")
