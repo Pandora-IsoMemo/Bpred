@@ -1,6 +1,6 @@
 #' The 'Bpred' package.
 #'
-#' @description A DESCRIPTION OF THE PACKAGE
+#' @description Bayesian multivariate regression application.
 #'
 #' @docType package
 #' @name Bpred
@@ -12,32 +12,20 @@
 #' @importFrom graphics lines
 #' @importFrom httr content
 #' @importFrom DataTools checkAnyNonNumericColumns downloadModelUI downloadModelServer importDataUI 
-#'  importDataServer tryCatchWithWarningsAndErrors
+#'  importDataServer importUI importServer importOptions
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
 #' @importFrom mice mice complete
 #' @importFrom modules module
 #' @importFrom rsync rsync getData sendObject listFiles
-#' @importFrom shinyjs alert reset runjs useShinyjs
+#' @importFrom shinyjs alert reset useShinyjs
 #' @importFrom shinyMatrix matrixInput updateMatrixInput
 #' @importFrom shinyTools dataExportButton dataExportServer formatTitlesOfGGplot 
 #'  formatRangesOfGGplot headerButtonsUI plotExportButton plotExportServer 
-#'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer
+#'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer shinyTryCatch
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif var
 #' @importFrom utils capture.output combn packageVersion
-#' @importFrom shinyjs alert
 #' @importFrom yaml read_yaml
 #'
 globalVariables(c("model", "dataObj", "formulasObj", "inputObj"))
-NULL
-
-#' Server and UI Functions for Shiny Module
-#'
-#' @param input shiny input object
-#' @param output shiny output object
-#' @param session shiny session
-#' @param id namespace id
-#' @param title title of tab in tabset panel
-#'
-#' @name shinyModule
 NULL

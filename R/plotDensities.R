@@ -21,10 +21,14 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
   # fix R CMD check warnings
   Sample <- Value <- Category <- yPred <- Individual <- NULL
   if(!inherits(yEstimates, "list") && length(yEstimates) != 2){
-    stop("Please define inputs and click on \"estimate Y \" first")
+    stop("Please define inputs and click on 'Estimate Y' first")
   }
   
   if (type == "Sample"){
+    if (all(is.na(unlist(yEstimates$Y_Samples_Individual)))) {
+      stop("All samples are 'NA'. Check your inputs!")
+    }
+    
     IndividualData <-
       data.frame(Value = unlist(yEstimates$Y_Samples_Individual),
                  Sample =
@@ -67,7 +71,11 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
     }
   }
   
-  if (type == "Combined"){
+  if (type == "Combined") {
+    if (all(is.na(unlist(yEstimates$Y_Samples_Combined)))) {
+      stop("All samples are 'NA'. Check your inputs!")
+    }
+    
     IndividualData <- data.frame(Value = unlist(yEstimates$Y_Samples_Combined), Individual = "Combined")
     
     g <- ggplot(IndividualData, aes(x = Value))
@@ -108,6 +116,9 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
   if (type == "Category"){
     if (is.null(yEstimates$Y_Samples_Category)){
       stop("No categories found. Check your data")
+    }
+    if (all(is.na(unlist(yEstimates$Y_Samples_Category)))) {
+      stop("All samples are 'NA'. Check your inputs!")
     }
     if(meanType == "1"){
       IndividualData <-

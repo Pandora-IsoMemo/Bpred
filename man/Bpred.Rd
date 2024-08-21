@@ -6,5 +6,5 @@
 \alias{Bpred}
 \title{The 'Bpred' package.}
 \description{
-A DESCRIPTION OF THE PACKAGE
+Bayesian multivariate regression application.
 }
