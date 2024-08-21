@@ -42,7 +42,7 @@ shinyServer(function(input, output, session) {
     "DataFile",
     defaultSource = config()[["defaultSourceData"]],
     ckanFileTypes = config()[["ckanFileTypes"]],
-    options = importOptions(rPackageName = config()[["rPackageName"]]),
+    options = DataTools::importOptions(rPackageName = config()[["rPackageName"]]),
     customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
   
@@ -317,7 +317,7 @@ shinyServer(function(input, output, session) {
     "MeasuresFile",
     defaultSource = config()[["defaultSourceData"]],
     ckanFileTypes = config()[["ckanFileTypes"]],
-    options = importOptions(rPackageName = config()[["rPackageName"]]),
+    options = DataTools::importOptions(rPackageName = config()[["rPackageName"]]),
     ignoreWarnings = TRUE
     #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
@@ -451,7 +451,7 @@ if(is.null(input$regfunctions)){
   importedRefSample <- DataTools::importDataServer("DataRefSample", 
                                                    defaultSource = config()[["defaultSourceData"]],
                                                    ckanFileTypes = config()[["ckanFileTypes"]],
-                                                   options = importOptions(rPackageName = config()[["rPackageName"]]))
+                                                   options = DataTools::importOptions(rPackageName = config()[["rPackageName"]]))
   observeEvent(importedRefSample(), {
     req(length(importedRefSample()) > 0)
     data$refSample <- importedRefSample()[[1]]
@@ -469,7 +469,7 @@ if(is.null(input$regfunctions)){
   importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", 
                                                       defaultSource = config()[["defaultSourceData"]],
                                                       ckanFileTypes = config()[["ckanFileTypes"]],
-                                                      options = importOptions(rPackageName = config()[["rPackageName"]]))
+                                                      options = DataTools::importOptions(rPackageName = config()[["rPackageName"]]))
   observeEvent(importedRefFreqTable(), {
     req(length(importedRefFreqTable()) > 0)
     data$values <- importedRefFreqTable()[[1]]
@@ -479,7 +479,7 @@ if(is.null(input$regfunctions)){
   importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", 
                                                        defaultSource = config()[["defaultSourceData"]],
                                                        ckanFileTypes = config()[["ckanFileTypes"]],
-                                                       options = importOptions(rPackageName = config()[["rPackageName"]]))
+                                                       options = DataTools::importOptions(rPackageName = config()[["rPackageName"]]))
   observeEvent(importedRefFreqTable2(), {
     req(length(importedRefFreqTable2()) > 0)
     data$freq <- importedRefFreqTable2()[[1]]
@@ -599,7 +599,7 @@ if(is.null(input$regfunctions)){
                                                 ignoreWarnings = TRUE,
                                                 defaultSource = config()[["defaultSourceModel"]],
                                                 fileExtension = config()[["fileExtension"]],
-                                                options = importOptions(rPackageName = config()[["rPackageName"]]))
+                                                options = DataTools::importOptions(rPackageName = config()[["rPackageName"]]))
   
   observe({
     req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["data"]]))
