@@ -21,7 +21,6 @@
 #' @importFrom rlang .data
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset useShinyjs
-#' @importFrom shinyMatrix matrixInput updateMatrixInput
 #' @importFrom shinyTools dataExportButton dataExportServer formatTitlesOfGGplot 
 #'  formatRangesOfGGplot headerButtonsUI plotExportButton plotExportServer 
 #'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer shinyTryCatch
