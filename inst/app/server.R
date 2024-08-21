@@ -590,7 +590,7 @@ if(is.null(input$regfunctions)){
                                  modelNotes = uploadedNotes,
                                  triggerUpdate = reactive(TRUE))
 
-  uploadedValues <- DataTools::importDataServer("modelUpload",
+  uploadedValues <- DataTools::importServer("modelUpload",
                                                 title = "Import Model",
                                                 importType = "model",
                                                 ckanFileTypes = config()[["ckanModelTypes"]],

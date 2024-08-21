@@ -6,7 +6,7 @@ Authors@R: c(
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
     )
 Maintainer: INWT Statistics <marcus.gross@inwt-statistics.de>
-Description: What the package does (one paragraph).
+Description: Bayesian multivariate regression application.
 Depends: R (>= 4.0.0)
 Imports:
   coda,
