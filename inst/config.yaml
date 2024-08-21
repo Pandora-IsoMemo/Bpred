@@ -8,8 +8,8 @@ ckanFileTypes:
   - "odt"
   - "txt"
 ckanModelTypes:
-  - "zip"
   - "bpred"
+  - "zip"
 githubRepo: "Bpred"        # for import of models
 fileExtension: "bpred"      # for download of models
 rPackageName: "Bpred"       # for download and import of models

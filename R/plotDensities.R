@@ -49,7 +49,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
           meanEst = mean(Value),
           q68 = quantile(Value, boxQuantile),
           q95 = quantile(Value, 1 - ((1 - whiskerMultiplier) / 2)),
-          q32 = quantile(Value, 1- boxQuantile),
+          q32 = quantile(Value, 1 - boxQuantile),
           q05 = quantile(Value, (1 - whiskerMultiplier) / 2),
         ) %>%
         ungroup
@@ -82,7 +82,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
     if (plotType == "KernelDensity") g <- g + geom_density(alpha = 0.25, fill = "red")
     if (plotType == "Histogram") g <- g +
       geom_histogram(alpha = 0.75, bins = nBins, position = "identity")
-    if (plotType == "Boxplot"){
+    if (plotType == "Boxplot") {
       lower <- upper <- middle <- q1 <- q3 <- group <- estimate <- iqr <- minim <- maxim <- meanEst <- q32 <- q68 <- q95 <- q05 <- NULL
       whiskerMultiplier = 0.95
       boxQuantile = 0.68
@@ -94,7 +94,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
           meanEst = mean(Value),
           q68 = quantile(Value, boxQuantile),
           q95 = quantile(Value, 1 - ((1 - whiskerMultiplier) / 2)),
-          q32 = quantile(Value, 1- boxQuantile),
+          q32 = quantile(Value, 1 - boxQuantile),
           q05 = quantile(Value, (1 - whiskerMultiplier) / 2),
         ) %>%
         ungroup
@@ -113,13 +113,14 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
       
     }
   }
-  if (type == "Category"){
-    if (is.null(yEstimates$Y_Samples_Category)){
+  if (type == "Category") {
+    if (is.null(yEstimates$Y_Samples_Category)) {
       stop("No categories found. Check your data")
     }
     if (all(is.na(unlist(yEstimates$Y_Samples_Category)))) {
       stop("All samples are 'NA'. Check your inputs!")
     }
+    
     if(meanType == "1"){
       IndividualData <-
         data.frame(Value = unlist(yEstimates$Y_Samples_Category_Mean),
@@ -132,12 +133,12 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
                                          times = unlist(lapply(yEstimates$Y_Samples_Category, length)))))
     }
     
-    if(plotType != "TimePlot"){
+    if (plotType != "TimePlot") {
       g <- ggplot(IndividualData, aes(x = Value, fill = Category))
       if (plotType == "KernelDensity") g <- g + geom_density(alpha = 0.25)
       if (plotType == "Histogram") g <- g +
         geom_histogram(alpha = 0.75, bins = nBins, position = "identity")
-      if (plotType == "Boxplot"){ 
+      if (plotType == "Boxplot") { 
         lower <- upper <- middle <- q1 <- q3 <- group <- estimate <- iqr <- minim <- maxim <- meanEst <- q32 <- q68 <- q95 <- q05 <- NULL
         whiskerMultiplier = 0.95
         boxQuantile = 0.68
@@ -149,7 +150,7 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
             meanEst = mean(Value),
             q68 = quantile(Value, boxQuantile),
             q95 = quantile(Value, 1 - ((1 - whiskerMultiplier) / 2)),
-            q32 = quantile(Value, 1- boxQuantile),
+            q32 = quantile(Value, 1 - boxQuantile),
             q05 = quantile(Value, (1 - whiskerMultiplier) / 2),
           ) %>%
           ungroup
@@ -189,13 +190,13 @@ plotDensities <- function(yEstimates, type = "Sample", plotType = "KernelDensity
 #' @param g (ggplot) ggplot
 #' @inheritParams plotDensities
 setDefaultTitle <- function(g, type, plotType) {
-  title <- switch (type,
-                   "Sample" = "Density by sample",
-                   "Combined" = "Combined density",
-                   "Category" = ifelse(plotType != "TimePlot",
-                                       "Density by category",
-                                       "Mean and 95\\% uncertainty by category"),
-                   ""
+  title <- switch(type,
+                  "Sample" = "Density by sample",
+                  "Combined" = "Combined density",
+                  "Category" = ifelse(plotType != "TimePlot",
+                                      "Density by category",
+                                      "Mean and 95\\% uncertainty by category"),
+                  ""
   )
   
   g + ggtitle(title)
@@ -227,16 +228,16 @@ summariseEstimates <- function(yEstimates, type = "Sample",
                                referenceSample = c(),
                                referenceTable = matrix(data = NA, nrow = 2),
                                meanType = "1"){
-  if (probability >= 1 | probability <= 0){
+  if (probability >= 1 | probability <= 0) {
     stop("Probability must be greater than 0 and smaller than 1")
   }
   
-  if (type == "Sample"){
+  if (type == "Sample") {
     listEst <- yEstimates$Y_Samples_Individual
     names(listEst) <- 1:length(listEst)
   }
-  if (type == "Category"){
-    if(meanType == "1"){
+  if (type == "Category") {
+    if (meanType == "1") {
       listEst <- yEstimates$Y_Samples_Category_Mean
     } else {
       listEst <- yEstimates$Y_Samples_Category
@@ -246,25 +247,27 @@ summariseEstimates <- function(yEstimates, type = "Sample",
     set.seed(1000)
     listEst <- lapply(listEst, function(x) sample(x, minSampleSize))
   }
-  if (type == "Combined"){
+  if (type == "Combined") {
     listEst <- list(Combined = yEstimates$Y_Samples_Combined)
   }
   
   if (checkDifferencesReference == TRUE && referenceType == "dist" &&
-      !is.null(referenceDist) && !is.null(referenceParameters)){
+      !is.null(referenceDist) && !is.null(referenceParameters)) {
     refSample <- eval(parse(text = (paste0("r", referenceDist,
                                            "(", "n=", length(listEst[[1]]), ",",
                                            paste0(referenceParameters, collapse = ","), ")"))))
     listEst$reference <- refSample
   }
   
-  if (checkDifferencesReference == TRUE && referenceType == "sample" && length(referenceSample) > 1){
+  if (checkDifferencesReference == TRUE &&
+      referenceType == "sample" &&
+      length(referenceSample) > 1) {
     refSample <- rnorm(listEst[[1]], mean = referenceSample,
                        sd = density(referenceSample, kernel = "gaussian")$bw)
     listEst$reference <- refSample
   }
   if (checkDifferencesReference == TRUE && referenceType == "freqTable" &&
-      inherits(referenceTable, "matrix") && nrow(referenceTable) == 2 && ncol(referenceTable) > 1){
+      inherits(referenceTable, "matrix") && nrow(referenceTable) == 2 && ncol(referenceTable) > 1) {
     referenceSample <- rep(referenceTable[1, ], referenceTable[2, ])
     refSample <- rnorm(listEst[[1]], mean = referenceSample,
                        sd = density(referenceSample, kernel = "gaussian")$bw)
@@ -286,7 +289,7 @@ summariseEstimates <- function(yEstimates, type = "Sample",
                                                  quantile, 1 - (1 - probability) / 2), 3))
   names(sumdata)[1] <- type
   print(sumdata, row.names = FALSE)
-  if (checkDifferences == TRUE && length(listEst) > 1){
+  if (checkDifferences == TRUE && length(listEst) > 1) {
     pairwiseCombinations <- combn(names(listEst), 2)
     result <-
       data.frame(Combination = paste(pairwiseCombinations[1, ], "-", pairwiseCombinations[2, ]),
@@ -300,7 +303,7 @@ summariseEstimates <- function(yEstimates, type = "Sample",
     result$p_value[result$p_value > 0.5] <- 1 - result$p_value[result$p_value > 0.5]
     result$p_value <- result$p_value * 2
     q <- sum(rowSums(do.call("cbind", lapply(listEst, function(x){
-      if (mean(x) >= mean(yEst)){
+      if (mean(x) >= mean(yEst)) {
         return(x < mean(yEst))
       } else {
         return(x >= mean(yEst))
@@ -330,19 +333,24 @@ summariseEstimates <- function(yEstimates, type = "Sample",
 #' @param object object
 #' @param PointSize point size
 #' @param LineWidth line width
+#' @param ... Other arguments passed on to \code{layer()} for display of the credibility interval.
+#'  These are often aesthetics, used to set an aesthetic to a fixed value, like 
+#'  \code{colour = "red"} or \code{alpha = 0.5}.
+#' @inheritParams extractQuantileProbs
 #' 
 #' @export
-plotFunctions <- function(data, xVar, yVar, object, 
-                          PointSize= 1, LineWidth = 1
-){
-  if (length(data) == 0 ||
-      is.null(xVar) ||
-      xVar == "" ||
-      is.null(yVar) || 
-      yVar == "" ||
-      length(object) == 0) return (list(g = NULL, exportData = NULL))
+plotFunctions <- function(data,
+                          xVar, 
+                          yVar,
+                          object, 
+                          PointSize = 1, 
+                          LineWidth = 1,
+                          prop = 0.8,
+                          ...){
+  if (length(data) == 0 || is.null(xVar) || xVar == "" || is.null(object)) 
+    return(list(g = NULL, exportData = NULL))
   
-  yPred <- xPred <- NULL
+  xPred <- NULL
   xLim <- c(min(data[,xVar], na.rm = TRUE),max(data[,xVar], na.rm = TRUE))
   #predict
   form <- object$form
@@ -355,12 +363,12 @@ plotFunctions <- function(data, xVar, yVar, object,
     sapply(1:min(nrow(object$beta), 100), function(l){
       xPlot <- xPred[k]
       formNew <- gsub(paste0("\\[", xVar, "\\]"), xPlot, form)
-      if(length(otherX) > 0){
-        for(m in 1:length(otherX)){
+      if (length(otherX) > 0) {
+        for (m in 1:length(otherX)) {
           formNew <- gsub(paste0("\\[", otherX[m], "\\]"), median(data[, otherX[m]], na.rm = TRUE), formNew)
         }
       }
-      for(i in 1:length(parNames)){
+      for (i in 1:length(parNames)) {
         formNew <- gsub(paste0("\\{", parNames[i], "\\}"), object$beta[l, i], formNew)
       }
       
@@ -369,10 +377,37 @@ plotFunctions <- function(data, xVar, yVar, object,
     })
   })
   
-  lineData <- data.frame(xPred = xPred, yPred = colMeans(predMatrix))
+  probs <- extractQuantileProbs(prop = prop)
+  lineData <- data.frame(xPred = xPred, 
+                         yPred = colMeans(predMatrix),
+                         yMin = apply(predMatrix, MARGIN = 2, FUN = quantile, probs = probs[1]),
+                         yMax = apply(predMatrix, MARGIN = 2, FUN = quantile, probs = probs[2]))
   
-  g <- ggplot(as.data.frame(data), aes_string(x = xVar, y = yVar)) + geom_point(size = PointSize) + 
-    geom_line(data = lineData, aes(x = xPred, y = yPred), size = LineWidth)
+  g <- ggplot(as.data.frame(data)) + 
+    geom_point(aes_string(x = xVar, y = yVar), size = PointSize) + 
+    geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yPred"]]),
+              size = LineWidth) +
+    geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMin"]]),
+              size = 0.2*LineWidth, ...) +
+    geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMax"]]),
+              size = 0.2*LineWidth, ...) +
+    ggplot2::geom_ribbon(data = lineData, 
+                         aes(x = .data[["xPred"]], 
+                             ymin = .data[["yMin"]], 
+                             ymax = .data[["yMax"]]), 
+                         linetype = 2, ...)
   
   list(g = g, exportData = lineData)
+}
+
+#' Extract Quantile Props
+#' 
+#' Extract lower and upper probabilities for the \code{stats::quantile} function
+#' 
+#' @param prop (numeric) double between 0 and 1: length of credibility interval. The default value is 80 percent.
+extractQuantileProbs <- function(prop = 0.8) {
+  lower <- (1 - prop) / 2
+  upper <- 1 - lower
+  
+  c(lower = lower, upper = upper)
 }

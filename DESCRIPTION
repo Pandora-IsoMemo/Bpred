@@ -1,9 +1,10 @@
 Package: Bpred
 Title: Bayesian multivariate regression application
-Version: 24.08.0
+Version: 24.08.0.1
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
-    person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
+    person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut")),
+    person("Antonia", "Runge", email = "antonia.runge@inwt-statistics.de", role = c("ctb"))
     )
 Maintainer: INWT Statistics <marcus.gross@inwt-statistics.de>
 Description: Bayesian multivariate regression application.
@@ -13,13 +14,14 @@ Imports:
   dplyr,
   ggplot2 (>= 2.2.1),
   DataTools (>= 24.04.2),
+  DT,
   httr,
   magrittr,
   mice,
   modules,
+  rlang,
   rsync,
   shiny,
-  shinyMatrix (>= 0.8.0),
   shinyWidgets,
   shinycssloaders,
   shinyjs,

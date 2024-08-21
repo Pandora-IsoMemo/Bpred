@@ -4,7 +4,16 @@
 \alias{plotFunctions}
 \title{Plot functions}
 \usage{
-plotFunctions(data, xVar, yVar, object, PointSize = 1, LineWidth = 1)
+plotFunctions(
+  data,
+  xVar,
+  yVar,
+  object,
+  PointSize = 1,
+  LineWidth = 1,
+  prop = 0.8,
+  ...
+)
 }
 \arguments{
 \item{data}{data}
@@ -18,6 +27,12 @@ plotFunctions(data, xVar, yVar, object, PointSize = 1, LineWidth = 1)
 \item{PointSize}{point size}
 
 \item{LineWidth}{line width}
+
+\item{prop}{(numeric) double between 0 and 1: length of credibility interval. The default value is 80 percent.}
+
+\item{...}{Other arguments passed on to \code{layer()} for display of the credibility interval.
+These are often aesthetics, used to set an aesthetic to a fixed value, like 
+\code{colour = "red"} or \code{alpha = 0.5}.}
 }
 \description{
 Plot functions
