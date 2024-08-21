@@ -1,3 +1,14 @@
+# Bpred 24.08.0
+
+## Bug Fixes
+- prevent crash of app when having only NA samples (#48)
+
+# Bpred 24.05.0
+
+## New Features
+- Renaming of R-Package
+- pkgdown documentation
+
 # Bpred 24.04.0
 
 ## New Features
@@ -10,6 +21,12 @@
 
 ## Updates
 - integration of modules from shinyTools: dataExport, plotExport (#36)
+
+# Bpred 23.12.1.1
+
+- add R-cmd-check workflow
+- add pkgdown documentation
+- Ensure compliance of CRAN Standard in NEWS File
 
 # Bpred 23.12.1
 

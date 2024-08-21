@@ -4,7 +4,7 @@ library(shinyMatrix)
 library(dplyr)
 library(ggplot2)
 library(shinyjs)
-library(mpiBpred)
+library(Bpred)
 library(coda)
 
 options(shiny.maxRequestSize = 200*1024^2)
@@ -42,7 +42,7 @@ shinyServer(function(input, output, session) {
     "DataFile",
     defaultSource = config()[["defaultSourceData"]],
     ckanFileTypes = config()[["ckanFileTypes"]],
-    rPackageName = config()[["rPackageName"]],
+    options = importOptions(rPackageName = config()[["rPackageName"]]),
     customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
   
@@ -72,6 +72,7 @@ shinyServer(function(input, output, session) {
     
     # input checks
     req(nrow(data$dat) > 0)
+    
     if(input$selectFType != "custom"){
       req(input$f_y %in% colnames(data$dat))
       req(input$f_x %in% colnames(data$dat))
@@ -81,8 +82,8 @@ shinyServer(function(input, output, session) {
       req(grepl("\\[", input$formCustom) & grepl("\\{", input$formCustom))
       req(input$f_yunc == "none" || input$f_yunc %in% colnames(data$dat))
       req(input$f_y %in% colnames(data$dat))
-      req(is.null(input$custom_x_unc) || input$custom_x_unc %in% colnames(data$dat))
-      req(input$custom_x %in% colnames(data$dat))
+      req(is.null(input$custom_x_unc) || all(input$custom_x_unc %in% colnames(data$dat)))
+      req(all(input$custom_x %in% colnames(data$dat)))
     }
       if(input$selectFType != "custom"){
         X <- data$dat[, input$f_x, drop = FALSE]
@@ -164,7 +165,7 @@ shinyServer(function(input, output, session) {
                                         chains = input$chains,
                                         thinning = input$thinning,
                                         parNamesDir = parNamesDir) %>%
-         DataTools::tryCatchWithWarningsAndErrors()
+         shinyTools::shinyTryCatch(errorTitle = "Defining formula failed")
        
       if(inherits(res, "character")){
         shinyjs::alert(res)
@@ -179,7 +180,8 @@ shinyServer(function(input, output, session) {
                          xUnc = paste(custom_x_unc, collapse = ", "),
                          link = "none", 
                          formula = form) %>%
-        enrichForm(parNames = parNames, formulasObject = formulas$objects[[input$formName]], y = y)
+        enrichForm(parNames = parNames, formulasObject = formulas$objects[[input$formName]], y = y) %>%
+        shinyTools::shinyTryCatch(errorTitle = "Defining formula failed")
       
     formulas$f <- bind_rows(formulas$f, form)
     functionsFit(formulas)
@@ -315,7 +317,7 @@ shinyServer(function(input, output, session) {
     "MeasuresFile",
     defaultSource = config()[["defaultSourceData"]],
     ckanFileTypes = config()[["ckanFileTypes"]],
-    rPackageName = config()[["rPackageName"]],
+    options = importOptions(rPackageName = config()[["rPackageName"]]),
     ignoreWarnings = TRUE
     #customErrorChecks = list(reactive(DataTools::checkAnyNonNumericColumns))
   )
@@ -407,7 +409,7 @@ if(is.null(input$regfunctions)){
            "imputeMissing = ", input$imputeMissing,")") %>% 
       parse(text = .) %>%
       eval() %>%
-        DataTools::tryCatchWithWarningsAndErrors()},
+        shinyTools::shinyTryCatch()},
       message = "computing new y estimates", value = 0.3)
     if(inherits(model, "character")){
       shinyjs::alert(model) 
@@ -425,18 +427,20 @@ if(is.null(input$regfunctions)){
     req(data$refSample)
     req(data$values)
     req(data$freq)
-    data$results <- withProgress({summariseEstimates(yEstimates(),
-                       type = input$summaryType,
-                       probability = as.numeric(gsub(",", ".", input$summaryProb)),
-                       checkDifferencesReference = !(input$summaryRefType == "none"),
-                       referenceType = input$summaryRefType,
-                       referenceDist = input$summaryRefDist,
-                       referenceParameters = paste0("c(", paste0(input$summaryRefParams, ")", collapse = ", ")) %>% parse(text = .),
-                       referenceSample = eval(data$refSample),
-                       referenceTable = matrix(c(eval(data$values), 
-                                                 eval(data$freq)), nrow = 2),
-                       meanType = input$meanType)},
-                       message = "computing summary estimates", value = 0.7)
+    data$results <- 
+      summariseEstimates(yEstimates(),
+                         type = input$summaryType,
+                         probability = as.numeric(gsub(",", ".", input$summaryProb)),
+                         checkDifferencesReference = !(input$summaryRefType == "none"),
+                         referenceType = input$summaryRefType,
+                         referenceDist = input$summaryRefDist,
+                         referenceParameters = paste0("c(", paste0(input$summaryRefParams, ")", collapse = ", ")) %>% parse(text = .),
+                         referenceSample = eval(data$refSample),
+                         referenceTable = matrix(c(eval(data$values), 
+                                                   eval(data$freq)), nrow = 2),
+                         meanType = input$meanType) %>%
+      shinyTools::shinyTryCatch(errorTitle = "Computing summary estimates failed") %>%
+      withProgress(message = "computing summary estimates", value = 0.7)
   })
   
   ## Enter refSample ----
@@ -447,7 +451,7 @@ if(is.null(input$regfunctions)){
   importedRefSample <- DataTools::importDataServer("DataRefSample", 
                                                    defaultSource = config()[["defaultSourceData"]],
                                                    ckanFileTypes = config()[["ckanFileTypes"]],
-                                                   rPackageName = config()[["rPackageName"]])
+                                                   options = importOptions(rPackageName = config()[["rPackageName"]]))
   observeEvent(importedRefSample(), {
     req(length(importedRefSample()) > 0)
     data$refSample <- importedRefSample()[[1]]
@@ -465,7 +469,7 @@ if(is.null(input$regfunctions)){
   importedRefFreqTable <- DataTools::importDataServer("DataRefFreqTable", 
                                                       defaultSource = config()[["defaultSourceData"]],
                                                       ckanFileTypes = config()[["ckanFileTypes"]],
-                                                      rPackageName = config()[["rPackageName"]])
+                                                      options = importOptions(rPackageName = config()[["rPackageName"]]))
   observeEvent(importedRefFreqTable(), {
     req(length(importedRefFreqTable()) > 0)
     data$values <- importedRefFreqTable()[[1]]
@@ -475,7 +479,7 @@ if(is.null(input$regfunctions)){
   importedRefFreqTable2 <- DataTools::importDataServer("DataRefFreqTable2", 
                                                        defaultSource = config()[["defaultSourceData"]],
                                                        ckanFileTypes = config()[["ckanFileTypes"]],
-                                                       rPackageName = config()[["rPackageName"]])
+                                                       options = importOptions(rPackageName = config()[["rPackageName"]]))
   observeEvent(importedRefFreqTable2(), {
     req(length(importedRefFreqTable2()) > 0)
     data$freq <- importedRefFreqTable2()[[1]]
@@ -539,14 +543,15 @@ if(is.null(input$regfunctions)){
   
   output$plot <- renderPlot({
     req(yEstimates())
+    
     plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType,
-                  nBins = input$nBins, meanType = input$meanType,
-                  showLegend = input$showLegend,
-                  whiskerMultiplier = input$whiskerMultiplier,
-                  boxQuantile = input$boxQuantile) %>%
-      shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
-      shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
-      DataTools::tryCatchWithWarningsAndErrors(errorTitle = "Plotting failed")
+                      nBins = input$nBins, meanType = input$meanType,
+                      showLegend = input$showLegend,
+                      whiskerMultiplier = input$whiskerMultiplier,
+                      boxQuantile = input$boxQuantile) %>%
+          shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
+          shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
+      shinyTools::shinyTryCatch(errorTitle = "Plotting failed")
   })
   
   shinyTools::dataExportServer("exportSummary", 
@@ -562,7 +567,8 @@ if(is.null(input$regfunctions)){
                                                meanType = input$meanType,
                                                showLegend = input$showLegend,
                                                whiskerMultiplier = input$whiskerMultiplier,
-                                               boxQuantile = input$boxQuantile)
+                                               boxQuantile = input$boxQuantile) %>%
+                                   shinyTools::shinyTryCatch(errorTitle = "Plotting failed")
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotEstimates", sep = "_"),
@@ -586,14 +592,14 @@ if(is.null(input$regfunctions)){
                                  modelNotes = uploadedNotes,
                                  triggerUpdate = reactive(TRUE))
 
-  uploadedValues <- DataTools::importDataServer("modelUpload",
+  uploadedValues <- DataTools::importServer("modelUpload",
                                                 title = "Import Model",
                                                 importType = "model",
                                                 ckanFileTypes = config()[["ckanModelTypes"]],
                                                 ignoreWarnings = TRUE,
                                                 defaultSource = config()[["defaultSourceModel"]],
                                                 fileExtension = config()[["fileExtension"]],
-                                                rPackageName = config()[["rPackageName"]])
+                                                options = importOptions(rPackageName = config()[["rPackageName"]]))
   
   observe({
     req(length(uploadedValues()) > 0, !is.null(uploadedValues()[[1]][["data"]]))

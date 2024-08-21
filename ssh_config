@@ -1,5 +1,0 @@
-Host github-bpred
-    HostName github.com
-    Port 22
-    User git 
-    IdentityFile /etc/ssh/id_github_bpred

@@ -1,4 +1,4 @@
-# library(mpiBpred)
+# library(Bpred)
 # set.seed(1345234)
 # 
 # #create simulated data set

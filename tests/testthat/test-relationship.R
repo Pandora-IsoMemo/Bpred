@@ -16,7 +16,7 @@ testthat::test_that("computeResults simple example", {
   
   
   f1 <-
-    mpiBpred::fitModel(
+    Bpred::fitModel(
       y = yobs,
       X = data.frame(x= xobs),
       yUnc = yunc,
@@ -37,7 +37,7 @@ testthat::test_that("computeResults simple example", {
   varNames <- gsub("\\[|\\]", "", regmatches(form, gregexpr("\\[.*?\\]", form))[[1]])
   
   f2 <-
-    suppressWarnings({mpiBpred::fitModel(
+    suppressWarnings({Bpred::fitModel(
       y = yobs,
       X = data.frame(x= xobs),
       yUnc = yunc,
@@ -68,7 +68,7 @@ testthat::test_that("computeResults simple example wrong link negative data", {
   parNamesDir <- NULL
   
   f3 <- 
-    suppressWarnings({mpiBpred::fitModel(
+    suppressWarnings({Bpred::fitModel(
       y = yobs,
       X = data.frame(x= xobs),
       yUnc = yunc,
@@ -99,7 +99,7 @@ testthat::test_that("test positive data example", {
   parNamesDir <- NULL
   
   f1 <-
-    mpiBpred::fitModel(
+    Bpred::fitModel(
       y = yobs,
       X = data.frame(x= xobs),
       yUnc = yunc,
@@ -121,7 +121,7 @@ testthat::test_that("test positive data example", {
   parNamesDir <- NULL
   
   f2 <-
-    mpiBpred::fitModel(
+    Bpred::fitModel(
       y = yobs,
       X = data.frame(x= xobs),
       yUnc = yunc,

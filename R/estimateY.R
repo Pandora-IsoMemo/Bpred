@@ -63,7 +63,7 @@
 #' referenceSample = c(60, 52, 75, 48, 50, 56))
 #' 
 #' #Alternative: Start Shiny-App
-#' shiny::runApp(paste0(system.file(package = "mpiBpred"),"/app"))
+#' shiny::runApp(paste0(system.file(package = "Bpred"),"/app"))
 #' }
 #' @export
 estimateY <- function(relationship, regfunctions,
@@ -206,6 +206,18 @@ estimateY <- function(relationship, regfunctions,
     if(inherits(ret, "try-error")){
       ret <- "Independent variables or regression function not found in your formula. Please review your formula and regression functions to ensure all independent variables are included. Also check for correct placement of brackets or if brackets are missing."
     }
+    
+    if (is.na(ret)) {
+      # get arguments from formula
+      argsInRelationship <- relationship %>% 
+        gsub(pattern = ".*\\((c\\([^()]*\\))\\)$", replacement = "\\1")
+      argsInRelationship <- try(eval(parse(text = argsInRelationship)))
+      
+      # check if number of arguments in formula matches number of independent variables
+      if (length(indVars) != length(argsInRelationship)) {
+        ret <- "Number of independent variables in formula does not match number of independent variables in data. Please separate variables in formula call with a comma, e.g. 'formula_1([X], [Y])'."
+      }
+    }
       ret
   }
   
@@ -284,6 +296,8 @@ estimateY <- function(relationship, regfunctions,
     
       }
     retSamples <- unlist(lapply(1:n_samples, function(x) tempFunction(relationship, values[x, ], indVars)))
+    if (all(is.character(retSamples))) return(retSamples[1])
+    
     retSamples <- retSamples[retSamples >= rangeY[1] & retSamples <= rangeY[2]]
     if(length(retSamples) < 10){
       return("Restriction values do not fit to the formula. Please widen or omit them")

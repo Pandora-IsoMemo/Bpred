@@ -10,9 +10,9 @@ ckanFileTypes:
 ckanModelTypes:
   - "zip"
   - "bpred"
-githubRepo: "bpred"        # for import of models
+githubRepo: "Bpred"        # for import of models
 fileExtension: "bpred"      # for download of models
-rPackageName: "mpiBpred"       # for download and import of models
+rPackageName: "Bpred"       # for download and import of models
 # default values for plot titles
 plotTitle:
   text: ""

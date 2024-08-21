@@ -30,8 +30,11 @@ convergenceDiagnostics <- function(parameters, nChains){
 
 #' Text Export Button UI
 #' 
+#' @param id namespace id
+#' @param title title of tab in tabset panel
+#' @rdname textExport
+#' 
 #' @export
-#' @rdname shinyModule
 textExportButton <- function(id, title = "Download") {
   ns <- NS(id)
   downloadButton(ns("download"), title)
@@ -39,10 +42,13 @@ textExportButton <- function(id, title = "Download") {
 
 #' Text Export Server
 #' 
-#' @export
-#' @rdname shinyModule
+#' @param input shiny input object
+#' @param output shiny output object
+#' @param session shiny session
 #' @param printFun print function
 #' @param filename (character) file name
+#' 
+#' @export
 textExport <- function(input, output, session, printFun, filename = "output") {
   content <- reactive({
     capture.output(printFun()())
