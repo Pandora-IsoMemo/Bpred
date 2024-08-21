@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Bpred</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">24.08.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">24.08.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,16 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotFunctions</span><span class="op">(</span><span class="va">data</span>, <span class="va">xVar</span>, <span class="va">yVar</span>, <span class="va">object</span>, PointSize <span class="op">=</span> <span class="fl">1</span>, LineWidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotFunctions</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">xVar</span>,</span>
+<span>  <span class="va">yVar</span>,</span>
+<span>  <span class="va">object</span>,</span>
+<span>  PointSize <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  LineWidth <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  prop <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,6 +76,16 @@
 
 <dt id="arg-linewidth">LineWidth<a class="anchor" aria-label="anchor" href="#arg-linewidth"></a></dt>
 <dd><p>line width</p></dd>
+
+
+<dt id="arg-prop">prop<a class="anchor" aria-label="anchor" href="#arg-prop"></a></dt>
+<dd><p>(numeric) double between 0 and 1: length of credibility interval. The default value is 80 percent.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Other arguments passed on to <code>layer()</code> for display of the credibility interval.
+These are often aesthetics, used to set an aesthetic to a fixed value, like
+<code>colour = "red"</code> or <code>alpha = 0.5</code>.</p></dd>
 
 </dl></div>
 
