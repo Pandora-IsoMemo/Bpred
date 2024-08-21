@@ -1,66 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/404.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/Bpred.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/bayes_R2_res.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/config.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/convergenceDiagnostics.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/enrichForm.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/estimateY.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/fitModel.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/getHelp.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/measureMatrixToDf.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/plotDensities.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/plotFunctions.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/setDefaultTitle.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/shinyModule.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/startApplication.html</loc>
-  </url>
-  <url>
-    <loc>https://pandora-isomemo.github.io/bpred/reference/summariseEstimates.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://pandora-isomemo.github.io/bpred/404.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/LICENSE.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/authors.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/index.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/news/index.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/Bpred.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/bayes_R2_res.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/config.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/convergenceDiagnostics.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/enrichForm.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/estimateY.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/fitModel.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/getHelp.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/index.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/measureMatrixToDf.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/plotDensities.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/plotFunctions.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/setDefaultTitle.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/shinyModule.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/startApplication.html</loc></url>
+<url><loc>https://pandora-isomemo.github.io/bpred/reference/summariseEstimates.html</loc></url>
 </urlset>
+
