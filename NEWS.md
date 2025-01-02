@@ -1,3 +1,8 @@
+# Bpred 25.01.0
+
+## Updates
+- update links in ReadMe and in app header
+
 # Bpred 24.08.0
 
 ## Bug Fixes

@@ -1,6 +1,6 @@
 Package: Bpred
 Title: Bayesian multivariate regression application
-Version: 24.08.0.1
+Version: 25.01.0
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut")),
@@ -26,7 +26,7 @@ Imports:
   shinycssloaders,
   shinyjs,
   shinythemes,
-  shinyTools (>= 24.03.3),
+  shinyTools (>= 24.12.0.1),
   yaml
 Suggests: lintr, testthat
 License: GPL (>= 3)
@@ -35,4 +35,3 @@ LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
 RoxygenNote: 7.3.1
-

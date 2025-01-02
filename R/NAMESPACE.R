@@ -22,7 +22,7 @@
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset useShinyjs
 #' @importFrom shinyTools dataExportButton dataExportServer formatTitlesOfGGplot 
-#'  formatRangesOfGGplot headerButtonsUI plotExportButton plotExportServer 
+#'  formatScalesOfGGplot headerButtonsUI plotExportButton plotExportServer 
 #'  plotRangesUI plotRangesServer plotTitlesUI plotTitlesServer shinyTryCatch
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif var
 #' @importFrom utils capture.output combn packageVersion
