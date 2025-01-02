@@ -252,7 +252,7 @@ shinyServer(function(input, output, session) {
     
     formulasPlotList()$g %>%
       shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
+      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges)
   })
   
   formulasPlotExport <- reactive({
@@ -260,7 +260,7 @@ shinyServer(function(input, output, session) {
     
     formulasPlotList()$g %>%
       shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
+      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges)
   })
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
@@ -550,7 +550,7 @@ if(is.null(input$regfunctions)){
                       whiskerMultiplier = input$whiskerMultiplier,
                       boxQuantile = input$boxQuantile) %>%
           shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
-          shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
+          shinyTools::formatScalesOfGGplot(ranges = plotEstimatesRanges) %>%
       shinyTools::shinyTryCatch(errorTitle = "Plotting failed")
   })
   
@@ -676,12 +676,4 @@ if(is.null(input$regfunctions)){
     yEstimates(uploadedModel)
   }) %>% 
     bindEvent(uploadedValues())
-    
-  observeEvent(input$getHelp, {
-    showModal(modalDialog(
-      title = "Help",
-      easyClose = TRUE,
-      getHelp(input$tab)
-    ))
-  })
 })
