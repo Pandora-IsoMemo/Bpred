@@ -85,7 +85,7 @@ estimateY <- function(relationship, regfunctions,
         data[, category] <- factor(data[, category])
       }
     }
-    imputed_Data <- mice(data, m=10, maxit = 50, seed = 500, printFlag = FALSE)
+    imputed_Data <- mice(data[, !(names(data) %in% indVarsUnc)], m=10, maxit = 50, seed = 500, printFlag = FALSE)
     completed <- complete(imputed_Data, "all")
     new_data <- data
     new_data[, indVarsUnc][is.na(new_data[, indVarsUnc])] <- 0
