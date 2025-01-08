@@ -306,11 +306,12 @@ shinyServer(function(input, output, session) {
   output$measures <- DT::renderDataTable(DT::datatable(data$measures))
   
   observeEvent(input$simulateMeasures, {
-    data$measures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
-                              X1 = c(1, 0.9, 1.2, 4, 5),
-                              SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
-                              X2 = c(1.5, 1.8, 1.1, 2.25, NA),
-                              SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
+    data$measures <- data.frame(
+                              Category = factor(c("Site1", "Site1", "Site1", "Site2", "Site2", "Site2", "Site1", "Site1", "Site1", "Site1", "Site2", "Site2", "Site2", "Site1")),
+                              X1 = c(1.1, 0.9, 1.2, 4.2, 5.1, 5.2, 1.2, 1.2, 0.85, 1.1, 4.5, 5, 5.1, 1.3),
+                              SD_X1 = c(0.24, 0.31, 0.29, 0.21, 0.31, 0.48, 0.21,0.27, 0.3, 0.27, 0.24, 0.32, 0.47, 0.23),
+                              X2 = c(1.52, 1.83, 1.11, 2.25, NA, 2.27, 1.52, 1.53, 1.87, 1, 2.29, 2.05, 2.22, 1.58),
+                              SD_X2 = c(0.55, 0.33, 0.22, 0.21, 0.35, 0.37, 0.37,0.51, 0.34, 0.22, 0.22, 0.37, 0.34, 0.38))
   })
   
   importedMeasures <- DataTools::importDataServer(

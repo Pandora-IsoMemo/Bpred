@@ -1,3 +1,8 @@
+# Bpred 25.01.1
+
+## Updates
+- prevents a warning during imputation of example data (#25)
+
 # Bpred 25.01.0
 
 ## Updates
