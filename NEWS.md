@@ -1,4 +1,4 @@
-# Bpred 25.01.1
+# Bpred 25.01.2
 
 ## New Features
 - integrate new module from `shinyTools` to add points with custom layout to plots (#55)
