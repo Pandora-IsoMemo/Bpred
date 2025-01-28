@@ -226,6 +226,9 @@ shinyServer(function(input, output, session) {
                       yAxis = config()[["plotRange"]])
   )
   
+  # custom points ----
+  custom_points_formulas <- shinyTools::customPointsServer("FormulasCustomPoints", plot_type = "ggplot")
+  
   formulasPlotList <- reactiveVal()
   observe({
     req(data, input$xVarDisp)
@@ -252,7 +255,8 @@ shinyServer(function(input, output, session) {
     
     formulasPlotList()$g %>%
       shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges)
+      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges) %>%
+      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_formulas())
   })
   
   formulasPlotExport <- reactive({
@@ -260,7 +264,8 @@ shinyServer(function(input, output, session) {
     
     formulasPlotList()$g %>%
       shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges)
+      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges) %>%
+      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_formulas())
   })
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
@@ -542,16 +547,37 @@ if(is.null(input$regfunctions)){
                       yAxis = config()[["plotRange"]])
   )
   
+  # custom points (estimates)----
+  custom_points_estimates <- reactiveVal(list())
+  shinyTools::customPointsServer("EstimatesCustomPoints", plot_type = "ggplot", custom_points = custom_points_estimates)
+  
+  custom_points_estimates_list <- reactiveValues(
+    KernelDensity = list(),
+    Histogram = list(),
+    Boxplot = list()
+  )
+  
+  observe({
+    custom_points_estimates_list[[input$summaryPlotType]] <- custom_points_estimates()
+  }) %>%
+    bindEvent(custom_points_estimates())
+  
+  observe({
+    custom_points_estimates(custom_points_estimates_list[[input$summaryPlotType]])
+  }) %>%
+    bindEvent(input$summaryPlotType)
+  
   output$plot <- renderPlot({
     req(yEstimates())
     
     plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType,
-                      nBins = input$nBins, meanType = input$meanType,
-                      showLegend = input$showLegend,
-                      whiskerMultiplier = input$whiskerMultiplier,
-                      boxQuantile = input$boxQuantile) %>%
-          shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
-          shinyTools::formatScalesOfGGplot(ranges = plotEstimatesRanges) %>%
+                  nBins = input$nBins, meanType = input$meanType,
+                  showLegend = input$showLegend,
+                  whiskerMultiplier = input$whiskerMultiplier,
+                  boxQuantile = input$boxQuantile) %>%
+      shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
+      shinyTools::formatScalesOfGGplot(ranges = plotEstimatesRanges) %>%
+      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_estimates_list[[input$summaryPlotType]]) %>%
       shinyTools::shinyTryCatch(errorTitle = "Plotting failed")
   })
   
