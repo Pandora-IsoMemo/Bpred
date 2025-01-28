@@ -1,5 +1,10 @@
 # Bpred 25.01.1
 
+## New Features
+- integrate new module from `shinyTools` to add points with custom layout to plots (#55)
+
+# Bpred 25.01.1
+
 ## Updates
 - prevents a warning during imputation of example data (#25)
 
