@@ -1,3 +1,8 @@
+# Bpred 25.02.0
+
+## New Features
+- option to change the layout of points or to hide points in "Formulas" plot (#57)
+
 # Bpred 25.01.2
 
 ## New Features
