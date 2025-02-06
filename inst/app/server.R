@@ -226,6 +226,12 @@ shinyServer(function(input, output, session) {
                       yAxis = config()[["plotRange"]])
   )
   
+  plotFormulasPoints <- shinyTools::plotPointsServer(
+    "FormulasPoints",
+    type = "ggplot",
+    initStyle = list(dataPoints = config()[["defaultPointStyle"]])
+  )
+  
   # custom points ----
   custom_points_formulas <- shinyTools::customPointsServer("FormulasCustomPoints", plot_type = "ggplot")
   
@@ -238,7 +244,7 @@ shinyServer(function(input, output, session) {
         xVar = input$xVarDisp,
         yVar = formulas$f[formulas$f == input$dispF, "y"],
         obj = formulas$objects[[input$dispF]],
-        PointSize = input$PointSizeF,
+        PointSize = 0,
         LineWidth = input$LineWidthF,
         prop = input[["credibilityIntPercent"]]/100,
         alpha = input[["alphaCredInt"]]
@@ -247,29 +253,29 @@ shinyServer(function(input, output, session) {
       formulasPlotList(newPlotObject)
     }, message = "Drawing plot")
   }) %>%
-    bindEvent(input[["applyPlotFormulas"]])
+    bindEvent(list(input[["applyPlotFormulas"]], input[["applyPlotFormulasLines"]]), ignoreInit = TRUE)
   
+  formulas_rendered_plot <- reactive({
+    if (length(formulasPlotList()) == 0) return(NULL)
+    
+    req(formulasPlotList())
+    formulasPlotList()$g %>%
+      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+      shinyTools::formatPointsOfGGplot(pointStyle = plotFormulasPoints) %>%
+      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges) %>%
+      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_formulas())
+  })
   output$plotDisp <- renderPlot({
     validate(need(formulasPlotList(), 
                   "Choose x variable and press 'Apply' ..."))
+    logDebug("Rendering formula plot.")
     
-    formulasPlotList()$g %>%
-      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges) %>%
-      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_formulas())
+    formulas_rendered_plot()
   })
   
-  formulasPlotExport <- reactive({
-    req(formulasPlotList())
-    
-    formulasPlotList()$g %>%
-      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges) %>%
-      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_formulas())
-  })
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
-                                 formulasPlotExport()
+                                 formulas_rendered_plot()
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
@@ -277,6 +283,7 @@ shinyServer(function(input, output, session) {
                                initRanges = plotFormulasRanges)
   
   formulasDataExport <- reactive({
+    if (length(formulasPlotList()) == 0) return(NULL)
     req(formulasPlotList())
     
     formulasPlotList()$exportData

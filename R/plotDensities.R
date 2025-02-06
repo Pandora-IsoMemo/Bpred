@@ -383,16 +383,22 @@ plotFunctions <- function(data,
                          yMin = apply(predMatrix, MARGIN = 2, FUN = quantile, probs = probs[1]),
                          yMax = apply(predMatrix, MARGIN = 2, FUN = quantile, probs = probs[2]))
   
-  g <- ggplot(as.data.frame(data)) + 
-    geom_point(aes_string(x = xVar, y = yVar), size = PointSize) + 
+  g <- ggplot(as.data.frame(data), aes(x = .data[[xVar]], y = .data[[yVar]])) 
+  
+  if (!is.null(PointSize) && PointSize > 0) {
+    g <- g + geom_point(size = PointSize)
+  }
+  
+  g <- g + 
     geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yPred"]]),
-              size = LineWidth) +
+              linewidth = LineWidth) +
     geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMin"]]),
-              size = 0.2*LineWidth, ...) +
+              linewidth = 0.2*LineWidth, ...) +
     geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMax"]]),
-              size = 0.2*LineWidth, ...) +
+              linewidth = 0.2*LineWidth, ...) +
     ggplot2::geom_ribbon(data = lineData, 
                          aes(x = .data[["xPred"]], 
+                             y = .data[["yMin"]],
                              ymin = .data[["yMin"]], 
                              ymax = .data[["yMax"]]), 
                          linetype = 2, ...)
