@@ -391,11 +391,11 @@ plotFunctions <- function(data,
   
   g <- g + 
     geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yPred"]]),
-              size = LineWidth) +
+              linewidth = LineWidth) +
     geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMin"]]),
-              size = 0.2*LineWidth, ...) +
+              linewidth = 0.2*LineWidth, ...) +
     geom_line(data = lineData, aes(x = .data[["xPred"]], y = .data[["yMax"]]),
-              size = 0.2*LineWidth, ...) +
+              linewidth = 0.2*LineWidth, ...) +
     ggplot2::geom_ribbon(data = lineData, 
                          aes(x = .data[["xPred"]], 
                              y = .data[["yMin"]],
