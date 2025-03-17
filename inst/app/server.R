@@ -268,7 +268,6 @@ shinyServer(function(input, output, session) {
   output$plotDisp <- renderPlot({
     validate(need(formulasPlotList(), 
                   "Choose x variable and press 'Apply' ..."))
-    logDebug("Rendering formula plot.")
     
     formulas_rendered_plot()
   })
