@@ -1,6 +1,6 @@
 Package: Bpred
 Title: Bayesian multivariate regression application
-Version: 25.02.0
+Version: 25.02.0.1
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut")),
@@ -14,7 +14,7 @@ Imports:
   dplyr,
   futile.logger,
   ggplot2 (>= 2.2.1),
-  DataTools (>= 24.04.2),
+  DataTools (>= 25.03.2),
   DT,
   httr,
   magrittr,
