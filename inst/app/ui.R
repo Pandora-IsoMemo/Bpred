@@ -238,45 +238,50 @@ tagList(
             tags$br(),
             plotOutput("plotDisp"),
             fluidRow(
-              column(6, selectInput("xVarDisp", "Choose x variable", choices = character(0))),
-              column(6,
+              column(8, selectInput("xVarDisp", "Choose x variable", choices = character(0), width = "100%")),
+              column(4,
                      align = "right",
                      style = "margin-top: 1em",
-                     actionButton("applyPlotFormulas", label = "Apply")),
+                     actionButton("applyPlotFormulas", label = "Apply"),
+                     shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
+                     shinyTools::dataExportButton("exportDataF", label = "Export Data")),
             ),
             tags$br(),
             fluidRow(
-              column(3, shinyTools::plotTitlesUI("FormulasTitles")),
-              column(3, shinyTools::plotRangesUI("FormulasRanges")),
-              column(3,
-                     tags$h4("Plot Data"),
-                     sliderInput(
-                       inputId = "PointSizeF",
-                       label = "Point size",
-                       min = 0.1, max = 5,value =  1, step = 0.1),
-                     sliderInput(
-                       inputId = "LineWidthF",
-                       label = "Line Width",
-                       min = 0.1, max = 5,value =  1, step = 0.1)
-              ),
-              column(3,
-                     tags$h4("Credibility interval"),
+              column(4,
+                     shinyTools::plotTitlesUI("FormulasTitles"),
+                     tags$br(),
+                     shinyTools::plotRangesUI("FormulasRanges", title = "Axes Range")),
+              column(4,
+                     shinyTools::plotPointsUI("FormulasPoints", initStyle = list(dataPoints = config()[["defaultPointStyle"]])),
+                     tags$br(),
+                     tags$h4("Formula & Credibility interval"),
+                     sliderInput("LineWidthF",
+                                 "Line Width",
+                                 min = 0.1, 
+                                 max = 5,
+                                 value =  1, 
+                                 step = 0.1,
+                                 width = "100%"),
                      sliderInput("credibilityIntPercent",
                                  "Length of interval in percent",
                                  min = 0,
                                  max = 99,
                                  value = 80,
-                                 step = 5),
+                                 step = 5,
+                                 width = "100%"),
                      sliderInput("alphaCredInt",
                                  "Transparency of uncertainty region",
                                  min = 0,
                                  max = 1, 
-                                 value = 0.1))),
-            fluidRow(
-              column(12, align = "right", 
-                     shinyTools::plotExportButton("exportPlotF", label = "Export Plot"),
-                     shinyTools::dataExportButton("exportDataF", label = "Export Data"))
+                                 value = 0.1,
+                                 width = "100%"),
+                     actionButton("applyPlotFormulasLines", label = "Apply")
               ),
+              column(4,
+                     shinyTools::customPointsUI("FormulasCustomPoints"),
+                     tags$br()
+                     )),
             tags$br()
           )
           ))
@@ -397,57 +402,75 @@ tagList(
                   )
                 )
               ),
-              selectInput(
-                "summaryPlotType",
-                "Plot Type",
-                choices = c("KernelDensity", "Histogram", "Boxplot"),
-                selected = "KernelDensity"
-              ),
-              conditionalPanel(
-                condition = "input.summaryPlotType == 'Histogram'",
-                sliderInput(
-                  "nBins",
-                  label = "Number of histogram bins",
-                  min = 3,
-                  max = 500,
-                  value = 50,
-                  step = 1
+              plotOutput("plot") %>% withSpinner(color = "#20c997"),
+              fluidRow(
+                column(4,
+                       selectInput(
+                         "summaryPlotType",
+                         "Plot Type",
+                         choices = c("KernelDensity", "Histogram", "Boxplot"),
+                         selected = "KernelDensity",
+                         width = "100%"
+                       )
+                ),
+                column(4,
+                       conditionalPanel(
+                         condition = "input.summaryPlotType == 'Histogram'",
+                         sliderInput(
+                           "nBins",
+                           label = "Number of histogram bins",
+                           min = 3,
+                           max = 500,
+                           value = 50,
+                           step = 1,
+                           width = "100%"
+                         )
+                       )
+                ),
+                column(4, align = "right",
+                       style = "margin-top: 1em",
+                       shinyTools::plotExportButton("exportPlot", label = "Export Plot"),
+                       shinyTools::dataExportButton("exportData", label = "Export Data")
                 )
               ),
-              
-              plotOutput("plot") %>% withSpinner(color =
-                                                   "#20c997"),
+              tags$br(),
               fluidRow(
                 column(4, shinyTools::plotTitlesUI("EstimateTitles")),
-                column(4, shinyTools::plotRangesUI("EstimateRanges")),
-              column(4,
-                     tags$h4("Plot Data"),
-              checkboxInput(
-                inputId = ("showLegend"),
-                label = "Show legend",
-                value = TRUE
+                column(4, 
+                       tags$h4("Plot Data"),
+                       checkboxInput(
+                         inputId = ("showLegend"),
+                         label = "Show legend",
+                         value = TRUE
+                       ),
+                       conditionalPanel(
+                         condition = "input.summaryPlotType == 'Boxplot'",
+                         sliderInput(
+                           inputId = ("boxQuantile"),
+                           label = "Box upper quantile",
+                           value = 0.68,
+                           min = 0.5,
+                           max = 0.99,
+                           step = 0.01,
+                           width = "100%"
+                         ),
+                         sliderInput(
+                           inputId = ("whiskerMultiplier"),
+                           label = "Whiskers coverage interval",
+                           value = 0.95,
+                           min = 0.5,
+                           max = 1,
+                           step = 0.001,
+                           width = "100%"
+                         )
+                       ),
+                       tags$br(),
+                       shinyTools::plotRangesUI("EstimateRanges", title = "Axes Range")
+                ),
+                # custom points (estimates) ----
+                column(4, shinyTools::customPointsUI("EstimatesCustomPoints"))
               ),
-              conditionalPanel(
-                condition = "input.summaryPlotType == 'Boxplot'",
-              sliderInput(
-                inputId = ("boxQuantile"),
-                label = "Box upper quantile",
-                value = 0.68,
-                min = 0.5,
-                max = 0.99,
-                step = 0.01
-              ),
-              sliderInput(
-                inputId = ("whiskerMultiplier"),
-                label = "Whiskers coverage interval",
-                value = 0.95,
-                min = 0.5,
-                max = 1,
-                step = 0.001
-              )),
-              shinyTools::plotExportButton("exportPlot", label = "Export Plot"),
-              shinyTools::dataExportButton("exportData", label = "Export Data")
-              ))
+              tags$br()
             ),
             tabPanel(
               ### Summary Statistics ----
@@ -572,32 +595,5 @@ tagList(
       )
     )
   ),
-  #shinyTools::headerButtonsUI(id = "header", help_link = "https://pandora-isomemo.github.io/MapR/articles/how-to-use-MapR.html"),
-  div(
-    id = "header-right",
-    div(
-      id = "logo-mpi",
-      tags$a(
-        href = "https://www.mpg.de/en",
-        img(src = "MPIlogo.png", alt = "Supported by the Max Planck society"),
-        target = "_blank"
-      )
-    ),
-    div(
-      id = "logo-isomemo",
-      tags$a(
-        href = "https://isomemo.com/",
-        img(src = "IsoMemoLogo.png", alt = "IsoMemo"),
-        target = "_blank"
-      )
-    ),
-    div(
-      id = "further-help",
-      tags$button(onclick = "window.open('https://isomemo.com','_blank');",
-                  class = "btn btn-default",
-                  "Further Help")
-    ),
-    div(id = "help",
-        actionButton("getHelp", "?"))
-  )
+  shinyTools::headerButtonsUI(id = "header", help_link = "https://pandora-isomemo.github.io/Bpred/")
 )

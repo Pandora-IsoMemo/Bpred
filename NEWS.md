@@ -1,3 +1,23 @@
+# Bpred 25.02.0
+
+## New Features
+- option to change the layout of points or to hide points in "Formulas" plot (#57)
+
+# Bpred 25.01.2
+
+## New Features
+- integrate new module from `shinyTools` to add points with custom layout to plots (#55)
+
+# Bpred 25.01.1
+
+## Updates
+- prevents a warning during imputation of example data (#25)
+
+# Bpred 25.01.0
+
+## Updates
+- update links in ReadMe and in app header
+
 # Bpred 24.08.0
 
 ## Bug Fixes

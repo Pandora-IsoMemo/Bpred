@@ -226,6 +226,15 @@ shinyServer(function(input, output, session) {
                       yAxis = config()[["plotRange"]])
   )
   
+  plotFormulasPoints <- shinyTools::plotPointsServer(
+    "FormulasPoints",
+    type = "ggplot",
+    initStyle = list(dataPoints = config()[["defaultPointStyle"]])
+  )
+  
+  # custom points ----
+  custom_points_formulas <- shinyTools::customPointsServer("FormulasCustomPoints", plot_type = "ggplot")
+  
   formulasPlotList <- reactiveVal()
   observe({
     req(data, input$xVarDisp)
@@ -235,7 +244,7 @@ shinyServer(function(input, output, session) {
         xVar = input$xVarDisp,
         yVar = formulas$f[formulas$f == input$dispF, "y"],
         obj = formulas$objects[[input$dispF]],
-        PointSize = input$PointSizeF,
+        PointSize = 0,
         LineWidth = input$LineWidthF,
         prop = input[["credibilityIntPercent"]]/100,
         alpha = input[["alphaCredInt"]]
@@ -244,27 +253,28 @@ shinyServer(function(input, output, session) {
       formulasPlotList(newPlotObject)
     }, message = "Drawing plot")
   }) %>%
-    bindEvent(input[["applyPlotFormulas"]])
+    bindEvent(list(input[["applyPlotFormulas"]], input[["applyPlotFormulasLines"]]), ignoreInit = TRUE)
   
+  formulas_rendered_plot <- reactive({
+    if (length(formulasPlotList()) == 0) return(NULL)
+    
+    req(formulasPlotList())
+    formulasPlotList()$g %>%
+      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
+      shinyTools::formatPointsOfGGplot(pointStyle = plotFormulasPoints) %>%
+      shinyTools::formatScalesOfGGplot(ranges = plotFormulasRanges) %>%
+      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_formulas())
+  })
   output$plotDisp <- renderPlot({
     validate(need(formulasPlotList(), 
                   "Choose x variable and press 'Apply' ..."))
     
-    formulasPlotList()$g %>%
-      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
+    formulas_rendered_plot()
   })
   
-  formulasPlotExport <- reactive({
-    req(formulasPlotList())
-    
-    formulasPlotList()$g %>%
-      shinyTools::formatTitlesOfGGplot(text = plotFormulasText) %>%
-      shinyTools::formatRangesOfGGplot(ranges = plotFormulasRanges)
-  })
   shinyTools::plotExportServer("exportPlotF",
                                plotFun = reactive(function() {
-                                 formulasPlotExport()
+                                 formulas_rendered_plot()
                                }),
                                plotType = "ggplot",
                                filename = paste(gsub("-", "", Sys.Date()), "plotFormulas", sep = "_"),
@@ -272,6 +282,7 @@ shinyServer(function(input, output, session) {
                                initRanges = plotFormulasRanges)
   
   formulasDataExport <- reactive({
+    if (length(formulasPlotList()) == 0) return(NULL)
     req(formulasPlotList())
     
     formulasPlotList()$exportData
@@ -306,11 +317,12 @@ shinyServer(function(input, output, session) {
   output$measures <- DT::renderDataTable(DT::datatable(data$measures))
   
   observeEvent(input$simulateMeasures, {
-    data$measures <- data.frame(Category = c("Site1", "Site1", NA, "Site2", "Site2"),
-                              X1 = c(1, 0.9, 1.2, 4, 5),
-                              SD_X1 = c(0.2, 0.3, 0.2, 0.2, 0.3),
-                              X2 = c(1.5, 1.8, 1.1, 2.25, NA),
-                              SD_X2 = c(0.5, 0.3, 0.2, 0.2, 0.3))
+    data$measures <- data.frame(
+                              Category = factor(c("Site1", "Site1", "Site1", "Site2", "Site2", "Site2", "Site1", "Site1", "Site1", "Site1", "Site2", "Site2", "Site2", "Site1")),
+                              X1 = c(1.1, 0.9, 1.2, 4.2, 5.1, 5.2, 1.2, 1.2, 0.85, 1.1, 4.5, 5, 5.1, 1.3),
+                              SD_X1 = c(0.24, 0.31, 0.29, 0.21, 0.31, 0.48, 0.21,0.27, 0.3, 0.27, 0.24, 0.32, 0.47, 0.23),
+                              X2 = c(1.52, 1.83, 1.11, 2.25, NA, 2.27, 1.52, 1.53, 1.87, 1, 2.29, 2.05, 2.22, 1.58),
+                              SD_X2 = c(0.55, 0.33, 0.22, 0.21, 0.35, 0.37, 0.37,0.51, 0.34, 0.22, 0.22, 0.37, 0.34, 0.38))
   })
   
   importedMeasures <- DataTools::importDataServer(
@@ -541,16 +553,37 @@ if(is.null(input$regfunctions)){
                       yAxis = config()[["plotRange"]])
   )
   
+  # custom points (estimates)----
+  custom_points_estimates <- reactiveVal(list())
+  shinyTools::customPointsServer("EstimatesCustomPoints", plot_type = "ggplot", custom_points = custom_points_estimates)
+  
+  custom_points_estimates_list <- reactiveValues(
+    KernelDensity = list(),
+    Histogram = list(),
+    Boxplot = list()
+  )
+  
+  observe({
+    custom_points_estimates_list[[input$summaryPlotType]] <- custom_points_estimates()
+  }) %>%
+    bindEvent(custom_points_estimates())
+  
+  observe({
+    custom_points_estimates(custom_points_estimates_list[[input$summaryPlotType]])
+  }) %>%
+    bindEvent(input$summaryPlotType)
+  
   output$plot <- renderPlot({
     req(yEstimates())
     
     plotDensities(yEstimates(), type = input$summaryType, plotType = input$summaryPlotType,
-                      nBins = input$nBins, meanType = input$meanType,
-                      showLegend = input$showLegend,
-                      whiskerMultiplier = input$whiskerMultiplier,
-                      boxQuantile = input$boxQuantile) %>%
-          shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
-          shinyTools::formatRangesOfGGplot(ranges = plotEstimatesRanges) %>%
+                  nBins = input$nBins, meanType = input$meanType,
+                  showLegend = input$showLegend,
+                  whiskerMultiplier = input$whiskerMultiplier,
+                  boxQuantile = input$boxQuantile) %>%
+      shinyTools::formatTitlesOfGGplot(text = plotEstimatesText) %>%
+      shinyTools::formatScalesOfGGplot(ranges = plotEstimatesRanges) %>%
+      shinyTools::addCustomPointsToGGplot(custom_points = custom_points_estimates_list[[input$summaryPlotType]]) %>%
       shinyTools::shinyTryCatch(errorTitle = "Plotting failed")
   })
   
@@ -676,12 +709,4 @@ if(is.null(input$regfunctions)){
     yEstimates(uploadedModel)
   }) %>% 
     bindEvent(uploadedValues())
-    
-  observeEvent(input$getHelp, {
-    showModal(modalDialog(
-      title = "Help",
-      easyClose = TRUE,
-      getHelp(input$tab)
-    ))
-  })
 })
