@@ -1,5 +1,5 @@
 testthat::test_that("Summarise estimates table", {
-  load(testthat::test_path("testdata/test_plots.RData"))
+  yEstimates <- readRDS(testthat::test_path("testdata/yEstimates.rds"))
   
   result <-
     Bpred::summariseEstimates(
