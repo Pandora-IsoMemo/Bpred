@@ -1,5 +1,5 @@
 testthat::test_that("plots creation", {
-  load(testthat::test_path("testdata/test_plots.RData"))
+  yEstimates <- readRDS(testthat::test_path("testdata/yEstimates.rds"))
   
   g <-
     Bpred::plotDensities(yEstimates, type = "Category", plotType = "KernelDensity")
@@ -20,7 +20,7 @@ testthat::test_that("plots creation", {
 })
 
 testthat::test_that("plot of formulas", {
-  load(testthat::test_path("testdata/test_plots.RData"))
+  yEstimates <- readRDS(testthat::test_path("testdata/yEstimates.rds"))
   
   g <-
     plotFunctions(

@@ -1,3 +1,8 @@
+# Bpred 25.03.0
+
+## Updates
+- reduce package size by optimizing test data and adding test-model files to the `.Rbuildignore`
+
 # Bpred 25.02.0
 
 ## New Features

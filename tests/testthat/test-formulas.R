@@ -14,7 +14,8 @@ testthat::test_that("enrichForm", {
       row.names = c(NA, -1L)
     )
   
-  testFormulas <- readRDS(file.path(testthat::test_path("test-formulas_data.rds")))
+  f1 <- readRDS(testthat::test_path("testdata", "formula1.rds"))
+  f2 <- readRDS(testthat::test_path("testdata", "formula2.rds"))
   
   testY <- c(0.731, -2.593, 4.93, -0.207, 3.008, 2.025, 5.122, -0.771, 7.548, 
              -3.588, 2.989, -1.177, -0.959, 1.629, 4.362, -2.415, -2.49, 5.34, 
@@ -30,7 +31,7 @@ testthat::test_that("enrichForm", {
              0.015)
   
   testFormRes <- testFormDF %>% enrichForm(parNames = c("slope", "intercept"),
-                                           formulasObject = testFormulas, 
+                                           formulasObject = f1, 
                                            y = testY)
   
   formExpected <-
@@ -43,10 +44,10 @@ testthat::test_that("enrichForm", {
         xUnc = "none",
         link = "none",
         formula = "{slope} * [x] + {intercept}",
-        parameter = "slope = 2.026, intercept = 1.537",
-        credible_intervals_95p = "slope = (1.824,2.221), intercept = (1.342,1.726)",
-        R_squared = 0.8164,
-        Bayes_R_squared = 0.8146,
+        parameter = "slope = 2.126, intercept = 1.451",
+        credible_intervals_95p = "slope = (1.937,2.318), intercept = (1.23,1.66)",
+        R_squared = -1.268,
+        Bayes_R_squared = 0.2871,
         p_direction = "slope = (1), intercept = (1)"
       ),
       class = "data.frame",

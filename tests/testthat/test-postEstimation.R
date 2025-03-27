@@ -1,5 +1,6 @@
 testthat::test_that("posterior estimation simple", {
-  load(testthat::test_path("testdata/test_post.RData"))
+  f1 <- readRDS(testthat::test_path("testdata", "formula1.rds"))
+  f2 <- readRDS(testthat::test_path("testdata", "formula2.rds"))
   set.seed(1000)
   data <-
     data.frame(
@@ -43,7 +44,8 @@ testthat::test_that("posterior estimation simple", {
 })
 
 testthat::test_that("posterior estimation complex", {
-  load(testthat::test_path("testdata/test_post.RData"))
+  f1 <- readRDS(testthat::test_path("testdata", "formula1.rds"))
+  f2 <- readRDS(testthat::test_path("testdata", "formula2.rds"))
   set.seed(1000)
   data <-
     data.frame(
@@ -72,7 +74,8 @@ testthat::test_that("posterior estimation complex", {
 })
 
 testthat::test_that("posterior estimation no uncertainty", {
-  load(testthat::test_path("testdata/test_post.RData"))
+  f1 <- readRDS(testthat::test_path("testdata", "formula1.rds"))
+  f2 <- readRDS(testthat::test_path("testdata", "formula2.rds"))
   set.seed(1000)
   data <-
     data.frame(
