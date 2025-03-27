@@ -1,6 +1,6 @@
 Package: Bpred
 Title: Bayesian multivariate regression application
-Version: 25.02.0.2
+Version: 25.03.0
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut")),
