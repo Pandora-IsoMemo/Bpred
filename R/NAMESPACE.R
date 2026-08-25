@@ -8,12 +8,12 @@
 #' @importFrom coda raftery.diag gelman.diag geweke.diag heidel.diag mcmc
 #' @importFrom dplyr bind_cols bind_rows filter group_by if_else mutate summarise ungroup
 #' @importFrom futile.logger flog.debug flog.info flog.warn
-#' @importFrom ggplot2 aes aes_ geom_boxplot geom_density geom_errorbar geom_histogram 
-#' ggplot geom_point ggtitle geom_line geom_ribbon theme
+#' @importFrom ggplot2 aes aes_ geom_boxplot geom_density geom_errorbar geom_histogram ggplot
+#' @importFrom ggplot2 geom_point ggtitle geom_line geom_ribbon theme
 #' @importFrom graphics lines
 #' @importFrom httr content
-#' @importFrom DataTools checkAnyNonNumericColumns downloadModelUI downloadModelServer importDataUI 
-#'  importDataServer importUI importServer importOptions
+#' @importFrom DataTools checkAnyNonNumericColumns downloadModelUI downloadModelServer importDataUI
+#' @importFrom DataTools importDataServer importUI importServer importOptions
 #' @importFrom DT datatable dataTableOutput renderDataTable
 #' @importFrom magrittr %>%
 #' @importFrom grDevices dev.off pdf png svg tiff
@@ -22,10 +22,11 @@
 #' @importFrom rlang .data
 #' @importFrom rsync rsync getData sendObject listFiles
 #' @importFrom shinyjs alert reset useShinyjs
-#' @importFrom shinyTools customPointsServer customPointsUI dataExportButton dataExportServer 
-#'  formatPointsOfGGplot formatScalesOfGGplot formatTitlesOfGGplot headerButtonsUI
-#'  plotExportButton plotExportServer plotPointsServer plotPointsUI plotRangesServer plotRangesUI
-#'  plotTitlesServer plotTitlesUI shinyTryCatch
+#' @importFrom shinyTools customPointsServer customPointsUI dataExportButton dataExportServer
+#' @importFrom shinyTools formatPointsOfGGplot formatScalesOfGGplot formatTitlesOfGGplot
+#' @importFrom shinyTools headerButtonsUI plotExportButton plotExportServer plotPointsServer
+#' @importFrom shinyTools plotPointsUI plotRangesServer plotRangesUI plotTitlesServer plotTitlesUI
+#' @importFrom shinyTools shinyTryCatch
 #' @importFrom stats density median na.omit quantile rgamma rlnorm rnorm sd optim runif var
 #' @importFrom utils capture.output combn packageVersion
 #' @importFrom yaml read_yaml

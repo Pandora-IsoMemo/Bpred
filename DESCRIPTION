@@ -1,6 +1,6 @@
 Package: Bpred
 Title: Bayesian multivariate regression application
-Version: 25.03.0
+Version: 26.08.0
 Authors@R: c(
     person("Marcus", "Gross", email = "marcus.gross@inwt-statistics.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut")),
@@ -14,7 +14,7 @@ Imports:
   dplyr,
   futile.logger,
   ggplot2 (>= 2.2.1),
-  DataTools (>= 25.03.2),
+  DataTools (>= 26.08.2),
   DT,
   httr,
   magrittr,
@@ -35,4 +35,4 @@ Encoding: UTF-8
 LazyData: true
 ByteCompile: true
 NeedsCompilation: yes
-RoxygenNote: 7.3.1
+Config/roxygen2/version: 8.0.0
