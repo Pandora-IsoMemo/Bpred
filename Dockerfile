@@ -5,8 +5,10 @@ RUN echo "options(repos = c(getOption('repos'), PANDORA = 'https://Pandora-IsoMe
 RUN Rscript -e "remotes::install_github('r-lib/httr2@v1.2.3')" \
     && Rscript -e "remotes::install_github('tidyverse/ellmer@v0.4.1')"
 
-ADD . .
+COPY . .
 
 RUN installPackage
+
+EXPOSE 3838
 
 CMD ["Rscript", "-e", "Bpred::startApplication(3838)"]
