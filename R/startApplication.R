@@ -1,6 +1,7 @@
 #' Start Application
 #'
 #' @param port port of web application
+#' @param launch.browser whether to launch the browser
 #'
 #' @export
 startApplication <- function(
