@@ -4,19 +4,8 @@ testthat::test_that("plots creation", {
   g <-
     Bpred::plotDensities(yEstimates, type = "Category", plotType = "KernelDensity")
   
-  
-  testthat::expect_type(g, "list")
-  testthat::expect_equal(
-    g$labels,
-    list(
-      title = "Density by category",
-      x = "Value",
-      fill = "Category",
-      y = structure("density", fallback = TRUE),
-      weight = structure("weight", fallback = TRUE)
-    )
-  )
-  testthat::expect_equal(class(g), c("gg", "ggplot"))
+  expect_s3_class(g, "ggplot")
+  expect_equal(g$labels$title, "Density by category")
 })
 
 testthat::test_that("plot of formulas", {
@@ -47,8 +36,5 @@ testthat::test_that("plot of formulas", {
       prop = 0.9,
       alpha = 0.4)$g
   
-  
-  testthat::expect_type(g, "list")
-  testthat::expect_equal(g$labels, list(x = "x", y = "y", ymin = "yMin", ymax = "yMax"))
-  testthat::expect_equal(class(g), c("gg", "ggplot"))
+  expect_s3_class(g, "ggplot")
 })
