@@ -1,3 +1,9 @@
+# Bpred 26.08.0
+
+## Updates
+- Increased the required DataTools version to the most recent version.
+- Expanded and organized .Rbuildignore, .gitignore, and .dockerignore entries to reduce accidental inclusion of local/CI/build artifacts.
+
 # Bpred 25.03.0
 
 ## Updates
