@@ -1,7 +1,6 @@
 library(shiny)
 library(shinyWidgets)
 library(shinythemes)
-library(shinyMatrix)
 library(dplyr)
 library(shinycssloaders)
 library(ggplot2)
