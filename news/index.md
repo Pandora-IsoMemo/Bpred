@@ -1,5 +1,11 @@
 # Changelog
 
+## Bpred 26.08.1
+
+### Bug Fixes
+
+- Removed unused dependency.
+
 ## Bpred 26.08.0
 
 ### Updates
